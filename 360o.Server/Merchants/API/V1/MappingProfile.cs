@@ -2,6 +2,7 @@
 using _360o.Server.Merchants.API.V1.Controllers.DTOs;
 using _360o.Server.Merchants.API.V1.Model;
 using AutoMapper;
+using NetTopologySuite.Geometries;
 
 namespace _360o.Server.Merchants.API.V1
 {

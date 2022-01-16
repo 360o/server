@@ -5,6 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NetTopologySuite.Geometries;
 using Npgsql;
 
 namespace _360o.Server.Merchants.API.V1.Controllers
@@ -56,6 +57,24 @@ namespace _360o.Server.Merchants.API.V1.Controllers
             }
 
             return CreatedAtAction(nameof(GetMerchantByIdAsync), new { id = merchant.Id }, _mapper.Map<MerchantDTO>(merchant));
+        }
+
+        [HttpGet]
+        public async Task<IEnumerable<MerchantDTO>> ListMerchantsAsync([FromQuery] ListMerchantsRequest request)
+        {
+            var merchants = _merchantsContext.Merchants.AsQueryable();
+
+            if (request.Latitude.HasValue && request.Longitude.HasValue && request.Radius.HasValue)
+            {
+                var locationPoint = new Point(request.Longitude.Value, request.Latitude.Value);
+                merchants = merchants.Include(m => m.Places.Where(p => p.Point.Distance(locationPoint) <= request.Radius.Value));
+            }
+            else
+            {
+                merchants = merchants.Include(m => m.Places);
+            }
+
+            return await merchants.Select(m => _mapper.Map<MerchantDTO>(m)).ToListAsync();
         }
 
         [HttpGet("{id}")]

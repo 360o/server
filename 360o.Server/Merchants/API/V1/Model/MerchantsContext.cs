@@ -20,8 +20,9 @@ namespace _360o.Server.Merchants.API.V1.Model
             modelBuilder.Entity<Merchant>().HasIndex(m => m.UserId).IsUnique();
             modelBuilder.Entity<Merchant>().HasIndex(m => new { m.DisplayName }).IsTsVectorExpressionIndex("simple");
 
+            modelBuilder.Entity<Place>().Ignore(m => m.Location);
+            modelBuilder.Entity<Place>().Property(p => p.Point).HasColumnType("geography (point)");
             modelBuilder.Entity<Place>().HasOne(p => p.Merchant).WithMany(m => m.Places);
-            modelBuilder.Entity<Place>().Property(p => p.Location).HasConversion(l => new Point(l.Longitude, l.Latitude), p => new Location(p.Y, p.X));
         }
     }
 }
