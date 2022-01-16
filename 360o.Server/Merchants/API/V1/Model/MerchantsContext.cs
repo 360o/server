@@ -18,9 +18,20 @@ namespace _360o.Server.Merchants.API.V1.Model
             modelBuilder.HasPostgresExtension("postgis");
 
             modelBuilder.Entity<Merchant>().HasIndex(m => m.UserId).IsUnique();
-            modelBuilder.Entity<Merchant>().HasIndex(m => new { m.DisplayName }).IsTsVectorExpressionIndex("simple");
+            modelBuilder.Entity<Merchant>().Property(m => m.EnglishCategories).HasConversion(v => v != null ? string.Join(' ', v) : string.Empty, v => v.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToHashSet());
+            modelBuilder.Entity<Merchant>().Property(m => m.FrenchCategories).HasConversion(v => v != null ? string.Join(' ', v) : string.Empty, v => v.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToHashSet());
+            modelBuilder
+                .Entity<Merchant>()
+                .HasGeneratedTsVectorColumn(m => m.EnglishSearchVector, "english", m => new { m.DisplayName, m.EnglishShortDescription, m.EnglishLongDescription, m.EnglishCategories })
+                .HasIndex(m => m.EnglishSearchVector)
+                .HasMethod("GIN");
+            modelBuilder
+                .Entity<Merchant>()
+                .HasGeneratedTsVectorColumn(m => m.FrenchSearchVector, "french", m => new { m.DisplayName, m.FrenchShortDescription, m.FrenchLongDescription, m.FrenchCategories })
+                .HasIndex(m => m.FrenchSearchVector)
+                .HasMethod("GIN");
 
-            modelBuilder.Entity<Place>().Ignore(m => m.Location);
+            modelBuilder.Entity<Place>().Ignore(p => p.Location);
             modelBuilder.Entity<Place>().Property(p => p.Point).HasColumnType("geography (point)");
             modelBuilder.Entity<Place>().HasOne(p => p.Merchant).WithMany(m => m.Places);
         }

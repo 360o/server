@@ -5,6 +5,8 @@ namespace _360o.Server.Merchants.API.V1.Controllers
 {
 	public class ListMerchantsRequest
 	{
+		public string? Query { get; set; }
+
 		public double? Latitude { get; set; }
 
 		public double? Longitude { get; set; }

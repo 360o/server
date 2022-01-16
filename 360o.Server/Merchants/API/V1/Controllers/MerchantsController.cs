@@ -28,7 +28,7 @@ namespace _360o.Server.Merchants.API.V1.Controllers
         [Authorize]
         public async Task<ActionResult<MerchantDTO>> CreateMerchantAsync([FromBody] CreateMerchantRequest request)
         {
-            var merchant = new Merchant(User.Identity.Name, request.DisplayName);
+            var merchant = new Merchant(User.Identity.Name, request.DisplayName, request.EnglishShortDescription, request.EnglishLongDescription, request.EnglishCategories, request.FrenchShortDescription, request.FrenchLongDescription, request.FrenchCategories);
 
             foreach (var place in request.Places)
             {
@@ -63,6 +63,11 @@ namespace _360o.Server.Merchants.API.V1.Controllers
         public async Task<IEnumerable<MerchantDTO>> ListMerchantsAsync([FromQuery] ListMerchantsRequest request)
         {
             var merchants = _merchantsContext.Merchants.AsQueryable();
+
+            if (request.Query != null)
+            {
+                merchants = merchants.Where(m => m.EnglishSearchVector.Matches(request.Query) || m.FrenchSearchVector.Matches(request.Query));
+            }
 
             if (request.Latitude.HasValue && request.Longitude.HasValue && request.Radius.HasValue)
             {
