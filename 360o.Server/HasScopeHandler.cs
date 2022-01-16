@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace _360o.Server
 {
-	public class HasScopeHandler : AuthorizationHandler<HasScopeRequirement>
-	{
+    public class HasScopeHandler : AuthorizationHandler<HasScopeRequirement>
+    {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, HasScopeRequirement requirement)
         {
             // If user does not have the scope claim, get out of here
