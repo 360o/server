@@ -9,6 +9,7 @@ using Microsoft.OpenApi.Models;
 using FluentValidation.AspNetCore;
 using System.Reflection;
 using _360o.Server.Merchants.API.V1;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +41,10 @@ builder.Services
     .AddControllers(options =>
     {
         options.SuppressAsyncSuffixInActionNames = false;
+    })
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     })
     .AddFluentValidation(fv =>
     {

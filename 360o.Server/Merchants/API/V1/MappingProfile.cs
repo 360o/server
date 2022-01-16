@@ -9,9 +9,8 @@ namespace _360o.Server.Merchants.API.V1
     {
         public MappingProfile()
         {
-            CreateMap<PlaceDTO, Place>();
-            CreateMap<Place, PlaceDTO>();
-            CreateMap<Merchant, MerchantDTO>();
+            CreateMap<Place, PlaceDTO>().ReverseMap();
+            CreateMap<Merchant, MerchantDTO>().ReverseMap();
         }
     }
 }

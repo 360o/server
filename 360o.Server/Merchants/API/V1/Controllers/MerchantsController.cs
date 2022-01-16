@@ -5,6 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace _360o.Server.Merchants.API.V1.Controllers
 {
@@ -35,7 +36,24 @@ namespace _360o.Server.Merchants.API.V1.Controllers
 
             _merchantsContext.Add(merchant);
 
-            await _merchantsContext.SaveChangesAsync();
+            try
+            {
+                await _merchantsContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException e)
+            {
+                // See https://www.postgresql.org/docs/current/errcodes-appendix.html
+                if (e.InnerException is PostgresException innerException && innerException.SqlState == "23505")
+                {
+                    return Conflict(new ErrorDTO
+                    {
+                        Code = ErrorCode.NameAlreadyExists,
+                        Message = e.InnerException.Message
+                    });
+                }
+
+                throw;
+            }
 
             return CreatedAtAction(nameof(GetMerchantByIdAsync), new { id = merchant.Id }, _mapper.Map<MerchantDTO>(merchant));
         }
@@ -49,10 +67,37 @@ namespace _360o.Server.Merchants.API.V1.Controllers
 
             if (merchant == null)
             {
-                return NotFound();
+                return NotFound(new ErrorDTO
+                {
+                    Code = ErrorCode.ItemNotFound,
+                    Message = $"Merchant not found"
+                });
             }
 
             return _mapper.Map<MerchantDTO>(merchant);
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteMerchantByIdAsync(Guid id)
+        {
+            var merchant = await _merchantsContext.Merchants.FindAsync(id);
+
+            if (merchant == null)
+            {
+                return NotFound(new ErrorDTO
+                {
+                    Code = ErrorCode.ItemNotFound,
+                    Message = $"Merchant not found"
+                });
+            }
+
+            _merchantsContext.Remove(merchant);
+
+            await _merchantsContext.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }
