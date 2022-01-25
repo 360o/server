@@ -1,11 +1,15 @@
-﻿using _360o.Server.API.V1.Stores.Controllers.DTOs;
+﻿using _360o.Server.API.V1.Errors.Enums;
+using _360o.Server.API.V1.Stores.Controllers.DTOs;
+using _360o.Server.API.V1.Stores.Controllers.Validators;
 using _360o.Server.API.V1.Stores.Model;
 using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.Geometries;
 using Npgsql;
+using System.Net;
 
 namespace _360o.Server.API.V1.Stores.Controllers
 {
@@ -27,9 +31,13 @@ namespace _360o.Server.API.V1.Stores.Controllers
         [Authorize]
         public async Task<ActionResult<StoreDTO>> CreateStoreAsync([FromBody] CreateStoreRequest request)
         {
-            var merchant = new Store(userId: User.Identity.Name, displayName: request.DisplayName, englishShortDescription: request.EnglishShortDescription, englishLongDescription: request.EnglishLongDescription, englishCategories: request.EnglishCategories, frenchShortDescription: request.FrenchShortDescription, frenchLongDescription: request.FrenchLongDescription, frenchCategories: request.FrenchCategories, place: _mapper.Map<Place>(request.Place));
+            var validator = new CreateStoreRequestValidator();
 
-            _storesContext.Add(merchant);
+            validator.ValidateAndThrow(request);
+
+            var store = new Store(userId: User.Identity.Name, displayName: request.DisplayName, englishShortDescription: request.EnglishShortDescription, englishLongDescription: request.EnglishLongDescription, englishCategories: request.EnglishCategories, frenchShortDescription: request.FrenchShortDescription, frenchLongDescription: request.FrenchLongDescription, frenchCategories: request.FrenchCategories, place: _mapper.Map<Place>(request.Place));
+
+            _storesContext.Add(store);
 
             try
             {
@@ -40,17 +48,13 @@ namespace _360o.Server.API.V1.Stores.Controllers
                 // See https://www.postgresql.org/docs/current/errcodes-appendix.html
                 if (e.InnerException is PostgresException innerException && innerException.SqlState == "23505")
                 {
-                    return Conflict(new ErrorDTO
-                    {
-                        Code = ErrorCode.NameAlreadyExists,
-                        Message = e.InnerException.Message
-                    });
+                    return Problem(detail: e.InnerException.Message, statusCode: (int)HttpStatusCode.Conflict, title: ErrorCode.NameAlreadyExists.ToString());
                 }
 
                 throw;
             }
 
-            return CreatedAtAction(nameof(GetStoreByIdAsync), new { id = merchant.Id }, _mapper.Map<StoreDTO>(merchant));
+            return CreatedAtAction(nameof(GetStoreByIdAsync), new { id = store.Id }, _mapper.Map<StoreDTO>(store));
         }
 
         [HttpGet]
@@ -77,18 +81,14 @@ namespace _360o.Server.API.V1.Stores.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<StoreDTO>> GetStoreByIdAsync(Guid id)
         {
-            var merchant = await _storesContext.Merchants.Include(s => s.Place).SingleOrDefaultAsync(m => m.Id == id);
+            var store = await _storesContext.Merchants.Include(s => s.Place).SingleOrDefaultAsync(m => m.Id == id);
 
-            if (merchant == null)
+            if (store == null)
             {
-                return NotFound(new ErrorDTO
-                {
-                    Code = ErrorCode.ItemNotFound,
-                    Message = $"Store not found"
-                });
+                return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.ItemNotFound.ToString());
             }
 
-            return _mapper.Map<StoreDTO>(merchant);
+            return _mapper.Map<StoreDTO>(store);
         }
 
         [HttpDelete("{id}")]
@@ -96,18 +96,14 @@ namespace _360o.Server.API.V1.Stores.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteStoreByIdAsync(Guid id)
         {
-            var merchant = await _storesContext.Merchants.FindAsync(id);
+            var store = await _storesContext.Merchants.FindAsync(id);
 
-            if (merchant == null)
+            if (store == null)
             {
-                return NotFound(new ErrorDTO
-                {
-                    Code = ErrorCode.ItemNotFound,
-                    Message = $"Store not found"
-                });
+                return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.ItemNotFound.ToString());
             }
 
-            _storesContext.Remove(merchant);
+            _storesContext.Remove(store);
 
             await _storesContext.SaveChangesAsync();
 

@@ -7,6 +7,7 @@ namespace _360o.Server.API.V1.Stores.Controllers.Validators
     {
         public CreateStoreRequestValidator()
         {
+            RuleFor(r => r.DisplayName).NotNull().NotEmpty();
             RuleFor(r => r.Place).SetValidator(new CreateMerchantPlaceValidator());
         }
 

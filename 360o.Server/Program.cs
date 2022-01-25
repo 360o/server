@@ -5,8 +5,6 @@ using Microsoft.IdentityModel.Tokens;
 using _360o.Server;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using FluentValidation.AspNetCore;
-using System.Reflection;
 using System.Text.Json.Serialization;
 using _360o.Server.API.V1.Stores.Model;
 using _360o.Server.API.V1.Stores;
@@ -45,10 +43,6 @@ builder.Services
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    })
-    .AddFluentValidation(fv =>
-    {
-        fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
     });
 
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
@@ -107,6 +101,8 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseHttpsRedirection();
+
+app.UseExceptionHandler("/error");
 
 app.UseAuthentication();
 app.UseAuthorization();
