@@ -1,7 +1,7 @@
 ﻿using System;
-namespace _360o.Server.API.V1.Merchants.Controllers.DTOs
+namespace _360o.Server.API.V1.Stores.Controllers.DTOs
 {
-    public record struct MerchantDTO
+    public record struct StoreDTO
     {
         public Guid Id { get; set; }
 
@@ -19,7 +19,7 @@ namespace _360o.Server.API.V1.Merchants.Controllers.DTOs
 
         public ISet<string> FrenchCategories { get; set; }
 
-        public IList<PlaceDTO> Places { get; set; }
+        public PlaceDTO Place { get; set; }
     }
 }
 

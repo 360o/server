@@ -1,15 +1,14 @@
-﻿using _360o.Server.API.V1.Merchants.Model;
-using NpgsqlTypes;
+﻿using NpgsqlTypes;
 
-namespace _360o.Server.Merchants.API.V1.Model
+namespace _360o.Server.API.V1.Stores.Model
 {
-    public class Merchant : BaseEntity
+    public class Store : BaseEntity
     {
-        private Merchant()
+        private Store()
         {
         }
 
-        public Merchant(string userId, string displayName, string? englishShortDescription, string? englishLongDescription, ISet<string>? englishCategories, string? frenchShortDescription, string? frenchLongDescription, ISet<string>? frenchCategories)
+        public Store(string userId, string displayName, string? englishShortDescription, string? englishLongDescription, ISet<string>? englishCategories, string? frenchShortDescription, string? frenchLongDescription, ISet<string>? frenchCategories, Place place)
         {
             UserId = userId;
             DisplayName = displayName;
@@ -19,6 +18,7 @@ namespace _360o.Server.Merchants.API.V1.Model
             FrenchShortDescription = frenchShortDescription ?? string.Empty;
             FrenchLongDescription = frenchLongDescription ?? string.Empty;
             _frenchCategories = frenchCategories != null ? frenchCategories.ToHashSet() : new HashSet<string>();
+            Place = place;
         }
 
         public string UserId { get; private set; }
@@ -43,9 +43,7 @@ namespace _360o.Server.Merchants.API.V1.Model
 
         public NpgsqlTsVector FrenchSearchVector { get; private set; }
 
-        private readonly HashSet<Place> _places = new HashSet<Place>();
-        public IReadOnlySet<Place> Places => _places;
-
+        public Place Place { get; private set; }
 
         public void AddEnglishCategory(string category)
         {
@@ -55,11 +53,6 @@ namespace _360o.Server.Merchants.API.V1.Model
         public void AddFrenchCategory(string category)
         {
             _frenchCategories.Add(category);
-        }
-
-        public void AddPlace(Place place)
-        {
-            _places.Add(place);
         }
     }
 }

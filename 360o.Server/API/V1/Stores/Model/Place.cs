@@ -1,8 +1,7 @@
 ﻿using System.Text.Json.Serialization;
-using _360o.Server.API.V1.Merchants.Model;
 using NetTopologySuite.Geometries;
 
-namespace _360o.Server.Merchants.API.V1.Model
+namespace _360o.Server.API.V1.Stores.Model
 {
     public class Place : BaseEntity
     {
@@ -17,7 +16,8 @@ namespace _360o.Server.Merchants.API.V1.Model
         {
             GooglePlaceId = googlePlaceId;
             FormattedAddress = formattedAddress;
-            Point = new Point(location.Longitude, location.Latitude);
+            // See https://docs.microsoft.com/en-us/ef/core/modeling/spatial#longitude-and-latitude
+            Point = new Point(x: location.Longitude, y: location.Latitude);
         }
 
         public string GooglePlaceId { get; private set; }
@@ -26,11 +26,11 @@ namespace _360o.Server.Merchants.API.V1.Model
 
         public Point Point { get; private set; }
 
-        public Location Location => new Location(Point.Y, Point.X);
+        public Location Location => new Location(latitude: Point.Y, longitude: Point.X);
 
         public Guid MerchantId { get; private set; }
         [JsonIgnore]
-        public Merchant Merchant { get; private set; }
+        public Store Merchant { get; private set; }
     }
 }
 

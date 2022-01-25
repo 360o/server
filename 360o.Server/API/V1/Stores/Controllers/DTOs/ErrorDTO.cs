@@ -1,4 +1,4 @@
-﻿namespace _360o.Server.API.V1.Merchants.Controllers.DTOs
+﻿namespace _360o.Server.API.V1.Stores.Controllers.DTOs
 {
     public record struct ErrorDTO
     {

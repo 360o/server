@@ -1,8 +1,8 @@
-﻿using _360o.Server.Merchants.API.V1.Model;
+﻿using _360o.Server.API.V1.Stores.Model;
 
-namespace _360o.Server.API.V1.Merchants.Controllers.DTOs
+namespace _360o.Server.API.V1.Stores.Controllers.DTOs
 {
-    public record struct CreateMerchantRequest
+    public record struct CreateStoreRequest
     {
         public string DisplayName { get; set; }
 
@@ -18,7 +18,7 @@ namespace _360o.Server.API.V1.Merchants.Controllers.DTOs
 
         public ISet<string>? FrenchCategories { get; set; }
 
-        public ISet<CreateMerchantPlace> Places { get; set; }
+        public CreateMerchantPlace Place { get; set; }
     }
 
     public record struct CreateMerchantPlace
@@ -27,7 +27,7 @@ namespace _360o.Server.API.V1.Merchants.Controllers.DTOs
 
         public string FormattedAddress { get; set; }
 
-        public Location Location { get; set; }
+        public LocationDTO Location { get; set; }
     }
 }
 

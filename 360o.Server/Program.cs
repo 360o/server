@@ -8,14 +8,14 @@ using Microsoft.OpenApi.Models;
 using FluentValidation.AspNetCore;
 using System.Reflection;
 using System.Text.Json.Serialization;
-using _360o.Server.Merchants.API.V1.Model;
-using _360o.Server.API.V1.Merchants;
+using _360o.Server.API.V1.Stores.Model;
+using _360o.Server.API.V1.Stores;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddDbContext<MerchantsContext>(options =>
+builder.Services.AddDbContext<StoresContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("MerchantsContext"), o => o.UseNetTopologySuite());
     options.UseSnakeCaseNamingConvention();
@@ -100,7 +100,7 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
 
-    var context = services.GetRequiredService<MerchantsContext>();
+    var context = services.GetRequiredService<StoresContext>();
     context.Database.EnsureDeleted();
     context.Database.EnsureCreated();
     // DbInitializer.Initialize(context);

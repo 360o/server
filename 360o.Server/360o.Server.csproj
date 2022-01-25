@@ -21,8 +21,8 @@
   <ItemGroup>
     <None Remove="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <None Remove="Merchants\" />
-    <None Remove="API\V1\Merchants\DTOs\" />
-    <None Remove="API\V1\Merchants\Commands\" />
+    <None Remove="API\V1\Stores\DTOs\" />
+    <None Remove="API\V1\Stores\Commands\" />
     <None Remove="Web\" />
     <None Remove="Web\Controllers\" />
     <None Remove="Web\Controllers\Home\" />
@@ -34,7 +34,7 @@
     <None Remove="EFCore.NamingConventions" />
     <None Remove="AutoMapper.Extensions.Microsoft.DependencyInjection" />
     <None Remove="FluentValidation.AspNetCore" />
-    <None Remove="API\V1\Merchants\Controllers\DTOs\" />
+    <None Remove="API\V1\Stores\Controllers\DTOs\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Web\" />

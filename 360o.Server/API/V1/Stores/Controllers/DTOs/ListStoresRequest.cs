@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 
-namespace _360o.Server.API.V1.Merchants.Controllers.DTOs
+namespace _360o.Server.API.V1.Stores.Controllers.DTOs
 {
-    public class ListMerchantsRequest
+    public class ListStoresRequest
     {
         public string? Query { get; set; }
 

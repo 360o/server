@@ -1,6 +1,6 @@
-﻿using _360o.Server.Merchants.API.V1.Model;
+﻿using _360o.Server.API.V1.Stores.Model;
 
-namespace _360o.Server.API.V1.Merchants.Controllers.DTOs
+namespace _360o.Server.API.V1.Stores.Controllers.DTOs
 {
     public record struct PlaceDTO
     {
@@ -10,7 +10,7 @@ namespace _360o.Server.API.V1.Merchants.Controllers.DTOs
 
         public string FormattedAddress { get; set; }
 
-        public Location Location { get; set; }
+        public LocationDTO Location { get; set; }
     }
 }
 

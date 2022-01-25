@@ -1,13 +1,13 @@
-﻿using _360o.Server.API.V1.Merchants.Controllers.DTOs;
+﻿using _360o.Server.API.V1.Stores.Controllers.DTOs;
 using FluentValidation;
 
-namespace _360o.Server.API.V1.Merchants.Controllers.Validators
+namespace _360o.Server.API.V1.Stores.Controllers.Validators
 {
-    public class CreateMerchantRequestValidator : AbstractValidator<CreateMerchantRequest>
+    public class CreateStoreRequestValidator : AbstractValidator<CreateStoreRequest>
     {
-        public CreateMerchantRequestValidator()
+        public CreateStoreRequestValidator()
         {
-            RuleForEach(r => r.Places).SetValidator(new CreateMerchantPlaceValidator());
+            RuleFor(r => r.Place).SetValidator(new CreateMerchantPlaceValidator());
         }
 
         private class CreateMerchantPlaceValidator : AbstractValidator<CreateMerchantPlace>
