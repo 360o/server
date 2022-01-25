@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.Geometries;
-using Npgsql;
 using System.Net;
 
 namespace _360o.Server.API.V1.Stores.Controllers
@@ -39,20 +38,7 @@ namespace _360o.Server.API.V1.Stores.Controllers
 
             _storesContext.Add(store);
 
-            try
-            {
-                await _storesContext.SaveChangesAsync();
-            }
-            catch (DbUpdateException e)
-            {
-                // See https://www.postgresql.org/docs/current/errcodes-appendix.html
-                if (e.InnerException is PostgresException innerException && innerException.SqlState == "23505")
-                {
-                    return Problem(detail: e.InnerException.Message, statusCode: (int)HttpStatusCode.Conflict, title: ErrorCode.NameAlreadyExists.ToString());
-                }
-
-                throw;
-            }
+            await _storesContext.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetStoreByIdAsync), new { id = store.Id }, _mapper.Map<StoreDTO>(store));
         }
