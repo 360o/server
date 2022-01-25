@@ -1,5 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using _360o.Server.API.V1.Stores.Controllers.DTOs;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace _360.Server.IntegrationTests.API.V1.Stores
@@ -19,7 +21,14 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
         {
             var request = _storesHelper.MakeRandomCreateMerchantRequest();
 
-            var result = await _storesHelper.CreateMerchantAsync(request);
+            var response = await _storesHelper.CreateStoreAsync(request);
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            var result = JsonSerializer.Deserialize<StoreDTO>(responseContent, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
 
             Assert.IsTrue(Guid.TryParse(result.Id.ToString(), out var _));
 

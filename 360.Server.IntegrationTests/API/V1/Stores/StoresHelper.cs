@@ -1,10 +1,7 @@
 ﻿using _360o.Server.API.V1.Stores.Controllers.DTOs;
-using _360o.Server.API.V1.Stores.Model;
 using Bogus;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -21,7 +18,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             _accessTokenHelper = accessTokenHelper;
         }
 
-        public async Task<StoreDTO> CreateMerchantAsync(CreateStoreRequest request)
+        public async Task<HttpResponseMessage> CreateStoreAsync(CreateStoreRequest request)
         {
             var token = await _accessTokenHelper.GetRegularUserToken();
 
@@ -29,40 +26,31 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             var response = await ProgramTest.NewClient(token.access_token).PostAsync("/api/v1/stores", jsonContent);
 
-            Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            var result = JsonSerializer.Deserialize<StoreDTO>(responseContent, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
-
-            return result;
+            return response;
         }
 
-        public async Task<StoreDTO> GetMerchantByIdAsync(Guid id)
+        public async Task<HttpResponseMessage> GetStoreByIdAsync(Guid id)
         {
             var uri = $"/api/v1/stores/{id}";
 
             var response = await ProgramTest.NewClient().GetAsync(uri);
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            return response;
+        }
 
-            var responseContent = await response.Content.ReadAsStringAsync();
+        public async Task<HttpResponseMessage> DeleteStoreByIdAsync(Guid id)
+        {
+            var uri = $"/api/v1/stores/{id}";
 
-            var result = JsonSerializer.Deserialize<StoreDTO>(responseContent, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
+            var response = await ProgramTest.NewClient().DeleteAsync(uri);
 
-            return result;
+            return response;
         }
 
         public CreateStoreRequest MakeRandomCreateMerchantRequest()
         {
             var englishFaker = new Faker();
-            var frenchFaker = new Faker("fr_CA");
+            var frenchFaker = new Faker(locale: "fr");
 
             var request = new CreateStoreRequest
             {

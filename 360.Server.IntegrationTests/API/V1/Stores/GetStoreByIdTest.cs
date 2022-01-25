@@ -1,4 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using _360o.Server.API.V1.Stores.Controllers.DTOs;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Net;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace _360.Server.IntegrationTests.API.V1.Stores
@@ -18,9 +21,27 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
         {
             var createMerchantRequest = _storesHelper.MakeRandomCreateMerchantRequest();
 
-            var createdMerchant = await _storesHelper.CreateMerchantAsync(createMerchantRequest);
+            var createdMerchantResponse = await _storesHelper.CreateStoreAsync(createMerchantRequest);
 
-            var result = await _storesHelper.GetMerchantByIdAsync(createdMerchant.Id);
+            Assert.AreEqual(HttpStatusCode.Created, createdMerchantResponse.StatusCode);
+
+            var createdMerchantResponseContent = await createdMerchantResponse.Content.ReadAsStringAsync();
+
+            var createdMerchant = JsonSerializer.Deserialize<StoreDTO>(createdMerchantResponseContent, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            var response = await _storesHelper.GetStoreByIdAsync(createdMerchant.Id);
+
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            var result = JsonSerializer.Deserialize<StoreDTO>(responseContent, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
 
             Assert.AreEqual(createdMerchant.Id, result.Id);
             Assert.AreEqual(createdMerchant.DisplayName, result.DisplayName);
