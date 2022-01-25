@@ -1,5 +1,5 @@
 ﻿using System;
-namespace _360o.Server.Merchants.API.V1.Controllers.DTOs
+namespace _360o.Server.API.V1.Merchants.Controllers.DTOs
 {
     public record struct MerchantDTO
     {
@@ -19,7 +19,7 @@ namespace _360o.Server.Merchants.API.V1.Controllers.DTOs
 
         public ISet<string> FrenchCategories { get; set; }
 
-        public ISet<PlaceDTO> Places { get; set; }
+        public IList<PlaceDTO> Places { get; set; }
     }
 }
 

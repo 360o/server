@@ -1,5 +1,5 @@
-﻿using System;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
+using _360o.Server.API.V1.Merchants.Model;
 using NetTopologySuite.Geometries;
 
 namespace _360o.Server.Merchants.API.V1.Model

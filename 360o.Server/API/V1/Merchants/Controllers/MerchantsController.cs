@@ -1,5 +1,4 @@
-﻿using System;
-using _360o.Server.Merchants.API.V1.Controllers.DTOs;
+﻿using _360o.Server.API.V1.Merchants.Controllers.DTOs;
 using _360o.Server.Merchants.API.V1.Model;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -8,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.Geometries;
 using Npgsql;
 
-namespace _360o.Server.Merchants.API.V1.Controllers
+namespace _360o.Server.API.V1.Merchants.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]

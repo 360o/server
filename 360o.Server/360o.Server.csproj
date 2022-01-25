@@ -21,32 +21,27 @@
   <ItemGroup>
     <None Remove="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <None Remove="Merchants\" />
-    <None Remove="Merchants\DTOs\" />
-    <None Remove="Merchants\Commands\" />
+    <None Remove="API\V1\Merchants\DTOs\" />
+    <None Remove="API\V1\Merchants\Commands\" />
     <None Remove="Web\" />
     <None Remove="Web\Controllers\" />
     <None Remove="Web\Controllers\Home\" />
     <None Remove="Merchant\API\" />
     <None Remove="Merchant\API\V1\" />
-    <None Remove="Merchants\API\V1\Controllers\" />
-    <None Remove="Merchants\API\V1\Services\" />
     <None Remove="Npgsql.EntityFrameworkCore.PostgreSQL" />
     <None Remove="Npgsql.EntityFrameworkCore.PostgreSQL.NetTopologySuite" />
     <None Remove="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" />
     <None Remove="EFCore.NamingConventions" />
     <None Remove="AutoMapper.Extensions.Microsoft.DependencyInjection" />
     <None Remove="FluentValidation.AspNetCore" />
-    <None Remove="Merchants\API\V1\Controllers\DTOs\" />
+    <None Remove="API\V1\Merchants\Controllers\DTOs\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Merchants\" />
     <Folder Include="Web\" />
     <Folder Include="Web\Controllers\" />
     <Folder Include="Web\Controllers\Home\" />
-    <Folder Include="Merchants\API\" />
-    <Folder Include="Merchants\API\V1\" />
-    <Folder Include="Merchants\API\V1\Controllers\" />
-    <Folder Include="Merchants\API\V1\Model\" />
-    <Folder Include="Merchants\API\V1\Controllers\DTOs\" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="360o.Server.IntegrationTests" />	
   </ItemGroup>
 </Project>

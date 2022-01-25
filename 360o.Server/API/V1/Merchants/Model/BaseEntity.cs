@@ -1,5 +1,4 @@
-﻿using System;
-namespace _360o.Server.Merchants.API.V1.Model
+﻿namespace _360o.Server.API.V1.Merchants.Model
 {
     public abstract class BaseEntity
     {

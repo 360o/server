@@ -1,7 +1,4 @@
-﻿using System;
-using System.Text.Json.Serialization;
-
-namespace _360o.Server.Merchants.API.V1.Controllers.DTOs
+﻿namespace _360o.Server.API.V1.Merchants.Controllers.DTOs
 {
     public record struct ErrorDTO
     {

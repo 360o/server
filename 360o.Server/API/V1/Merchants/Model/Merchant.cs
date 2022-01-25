@@ -1,4 +1,4 @@
-﻿using System;
+﻿using _360o.Server.API.V1.Merchants.Model;
 using NpgsqlTypes;
 
 namespace _360o.Server.Merchants.API.V1.Model

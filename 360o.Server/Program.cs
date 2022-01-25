@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using _360o.Server;
-using _360o.Server.Merchants.API.V1.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using FluentValidation.AspNetCore;
 using System.Reflection;
-using _360o.Server.Merchants.API.V1;
 using System.Text.Json.Serialization;
+using _360o.Server.Merchants.API.V1.Model;
+using _360o.Server.API.V1.Merchants;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -115,3 +115,4 @@ app.MapControllers();
 
 app.Run();
 
+public partial class Program { }

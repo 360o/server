@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 
-namespace _360o.Server.Merchants.API.V1.Controllers
+namespace _360o.Server.API.V1.Merchants.Controllers.DTOs
 {
     public class ListMerchantsRequest
     {
