@@ -10,6 +10,10 @@ namespace _360.Server.IntegrationTests
     {
         private readonly IConfiguration _configuration;
 
+        private string? _regularUserToken1;
+
+        private string? _regularUserToken2;
+
         public AccessTokenHelper()
         {
             var builder = new ConfigurationBuilder()
@@ -19,7 +23,31 @@ namespace _360.Server.IntegrationTests
             _configuration = builder.Build();
         }
 
-        public async Task<string> GetRegularUserToken()
+        public async Task<string> GetRegularUserToken1()
+        {
+            if (_regularUserToken1 != null)
+            {
+                return _regularUserToken1;
+            }
+
+            _regularUserToken1 = await GetAccessToken("regular-user-1@example.com", "37kV7n5ROU9z");
+
+            return _regularUserToken1;
+        }
+
+        public async Task<string> GetRegularUserToken2()
+        {
+            if (_regularUserToken2 != null)
+            {
+                return _regularUserToken2;
+            }
+
+            _regularUserToken2 = await GetAccessToken("regular-user-2@example.com", "wMa7O70jGwHn");
+
+            return _regularUserToken2;
+        }
+
+        private async Task<string> GetAccessToken(string username, string password)
         {
             using var client = new HttpClient();
             var uri = $"https://{_configuration["Auth0:Domain"]}/oauth/token";
@@ -28,8 +56,8 @@ namespace _360.Server.IntegrationTests
             request.Add(new KeyValuePair<string, string>("client_id", _configuration["Auth0:ClientId"]));
             request.Add(new KeyValuePair<string, string>("client_secret", _configuration["Auth0:ClientSecret"]));
             request.Add(new KeyValuePair<string, string>("audience", _configuration["Auth0:Audience"]));
-            request.Add(new KeyValuePair<string, string>("username", "regular-user@example.com"));
-            request.Add(new KeyValuePair<string, string>("password", "5T6YrFkp3trI"));
+            request.Add(new KeyValuePair<string, string>("username", username));
+            request.Add(new KeyValuePair<string, string>("password", password));
             using var content = new FormUrlEncodedContent(request);
             var response = await client.PostAsync(uri, content);
             response.EnsureSuccessStatusCode();

@@ -1,7 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
-
-namespace _360o.Server.API.V1.Stores.Controllers.DTOs
+﻿namespace _360o.Server.API.V1.Stores.Controllers.DTOs
 {
     public class ListStoresRequest
     {
