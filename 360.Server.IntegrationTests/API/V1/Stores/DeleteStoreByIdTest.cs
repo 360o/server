@@ -9,19 +9,12 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
     [TestClass]
     public class DeleteStoreByIdTest
     {
-        private readonly StoresHelper _storesHelper;
-
-        public DeleteStoreByIdTest()
-        {
-            _storesHelper = new StoresHelper(new AccessTokenHelper());
-        }
-
         [TestMethod]
         public async Task GivenStoreExistsShouldReturnNoContent()
         {
-            var createMerchantRequest = _storesHelper.MakeRandomCreateMerchantRequest();
+            var createMerchantRequest = ProgramTest.StoresHelper.MakeRandomCreateMerchantRequest();
 
-            var createMerchantResponse = await _storesHelper.CreateStoreAsync(createMerchantRequest);
+            var createMerchantResponse = await ProgramTest.StoresHelper.CreateStoreAsync(createMerchantRequest);
 
             Assert.AreEqual(HttpStatusCode.Created, createMerchantResponse.StatusCode);
 
@@ -32,11 +25,11 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
                 PropertyNameCaseInsensitive = true,
             });
 
-            var response = await _storesHelper.DeleteStoreByIdAsync(createdMerchant.Id);
+            var response = await ProgramTest.StoresHelper.DeleteStoreByIdAsync(createdMerchant.Id);
 
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
 
-            var getMerchantResponse = await _storesHelper.GetStoreByIdAsync(createdMerchant.Id);
+            var getMerchantResponse = await ProgramTest.StoresHelper.GetStoreByIdAsync(createdMerchant.Id);
 
             Assert.AreEqual(HttpStatusCode.NotFound, getMerchantResponse.StatusCode);
         }

@@ -10,8 +10,6 @@ namespace _360.Server.IntegrationTests
     {
         private readonly IConfiguration _configuration;
 
-        private Token? _regularUserToken;
-
         public AccessTokenHelper()
         {
             var builder = new ConfigurationBuilder()
@@ -21,13 +19,8 @@ namespace _360.Server.IntegrationTests
             _configuration = builder.Build();
         }
 
-        public async Task<Token> GetRegularUserToken()
+        public async Task<string> GetRegularUserToken()
         {
-            if (_regularUserToken.HasValue)
-            {
-                return _regularUserToken.Value;
-            }
-
             using var client = new HttpClient();
             var uri = $"https://{_configuration["Auth0:Domain"]}/oauth/token";
             var request = new List<KeyValuePair<string, string>>();
@@ -41,11 +34,11 @@ namespace _360.Server.IntegrationTests
             var response = await client.PostAsync(uri, content);
             response.EnsureSuccessStatusCode();
             var responseContent = await response.Content.ReadAsStringAsync();
-            _regularUserToken = JsonSerializer.Deserialize<Token>(responseContent);
-            return _regularUserToken.Value;
+            var token = JsonSerializer.Deserialize<Token>(responseContent);
+            return token.access_token;
         }
 
-        public record struct Token
+        private record struct Token
         {
             public string access_token { get; set; }
         }

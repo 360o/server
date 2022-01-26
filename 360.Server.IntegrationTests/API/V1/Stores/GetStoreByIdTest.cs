@@ -9,19 +9,12 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
     [TestClass]
     public class GetStoreByIdTest
     {
-        private readonly StoresHelper _storesHelper;
-
-        public GetStoreByIdTest()
-        {
-            _storesHelper = new StoresHelper(new AccessTokenHelper());
-        }
-
         [TestMethod]
         public async Task GivenStoreExistsShouldReturnOK()
         {
-            var createMerchantRequest = _storesHelper.MakeRandomCreateMerchantRequest();
+            var createMerchantRequest = ProgramTest.StoresHelper.MakeRandomCreateMerchantRequest();
 
-            var createdMerchantResponse = await _storesHelper.CreateStoreAsync(createMerchantRequest);
+            var createdMerchantResponse = await ProgramTest.StoresHelper.CreateStoreAsync(createMerchantRequest);
 
             Assert.AreEqual(HttpStatusCode.Created, createdMerchantResponse.StatusCode);
 
@@ -32,7 +25,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
                 PropertyNameCaseInsensitive = true
             });
 
-            var response = await _storesHelper.GetStoreByIdAsync(createdMerchant.Id);
+            var response = await ProgramTest.StoresHelper.GetStoreByIdAsync(createdMerchant.Id);
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 

@@ -9,9 +9,11 @@ using System.Threading.Tasks;
 
 namespace _360.Server.IntegrationTests.API.V1.Stores
 {
-    internal class StoresHelper
+    public class StoresHelper
     {
         private readonly AccessTokenHelper _accessTokenHelper;
+
+        private string? _regularUserAccessToken;
 
         public StoresHelper(AccessTokenHelper accessTokenHelper)
         {
@@ -20,11 +22,14 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
         public async Task<HttpResponseMessage> CreateStoreAsync(CreateStoreRequest request)
         {
-            var token = await _accessTokenHelper.GetRegularUserToken();
+            if (_regularUserAccessToken == null)
+            {
+                _regularUserAccessToken = await _accessTokenHelper.GetRegularUserToken();
+            }
 
             var jsonContent = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
 
-            var response = await ProgramTest.NewClient(token.access_token).PostAsync("/api/v1/stores", jsonContent);
+            var response = await ProgramTest.NewClient(_regularUserAccessToken).PostAsync("/api/v1/stores", jsonContent);
 
             return response;
         }

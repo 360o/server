@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
+﻿using _360.Server.IntegrationTests.API.V1.Stores;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Net.Http;
 
@@ -8,6 +9,8 @@ namespace _360.Server.IntegrationTests
     public class ProgramTest
     {
         private static WebApplicationFactory<Program> _application;
+
+        public static StoresHelper StoresHelper { get; private set; }
 
         public static HttpClient NewClient()
         {
@@ -25,6 +28,8 @@ namespace _360.Server.IntegrationTests
         public static void AssemblyInitialize(TestContext _)
         {
             _application = new WebApplicationFactory<Program>();
+
+            StoresHelper = new StoresHelper(new AccessTokenHelper());
         }
     }
 }
