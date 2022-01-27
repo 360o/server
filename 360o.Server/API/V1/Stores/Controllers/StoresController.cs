@@ -61,6 +61,10 @@ namespace _360o.Server.API.V1.Stores.Controllers
         [HttpGet]
         public async Task<IEnumerable<StoreDTO>> ListStoresAsync([FromQuery] ListStoresRequest request)
         {
+            var validator = new ListStoresRequestValidator();
+
+            validator.ValidateAndThrow(request);
+
             var stores = _storesContext.Stores.Include(m => m.Place).AsQueryable();
 
             if (request.Query != null)

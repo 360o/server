@@ -1,5 +1,7 @@
-﻿using _360o.Server.API.V1.Stores.Controllers.DTOs;
+﻿using _360o.Server.API.V1.Errors.Enums;
+using _360o.Server.API.V1.Stores.Controllers.DTOs;
 using Bogus;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -311,6 +313,153 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             {
                 ProgramTest.StoresHelper.AssertStoresEqual(storesWithinTenKilometers[store.Id], store);
             }
+        }
+
+        [TestMethod]
+        public async Task GivenRadiusAndNoLatitudeAndNoLongitudeShouldReturnBadRequest()
+        {
+            var faker = new Faker();
+
+            var response = await ProgramTest.StoresHelper.ListStoresAsync(new ListStoresRequest
+            {
+                Radius = faker.Random.Double()
+            });
+
+            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Detail);
+            Assert.IsNotNull(result.Status);
+            Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
+            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
+            Assert.IsTrue(result.Detail.Contains("Latitude"));
+            Assert.IsTrue(result.Detail.Contains("Longitude"));
+        }
+
+        [TestMethod]
+        public async Task GivenLatitudeAndNoRadiusAndNoLongitudeShouldReturnBadRequest()
+        {
+            var faker = new Faker();
+
+            var response = await ProgramTest.StoresHelper.ListStoresAsync(new ListStoresRequest
+            {
+                Latitude = faker.Address.Latitude()
+            });
+
+            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Detail);
+            Assert.IsNotNull(result.Status);
+            Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
+            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
+            Assert.IsTrue(result.Detail.Contains("Radius"));
+            Assert.IsTrue(result.Detail.Contains("Longitude"));
+        }
+
+        [TestMethod]
+        public async Task GivenLongitudeAndNoRadiusAndNoLatitudeShouldReturnBadRequest()
+        {
+            var faker = new Faker();
+
+            var response = await ProgramTest.StoresHelper.ListStoresAsync(new ListStoresRequest
+            {
+                Longitude = faker.Address.Longitude()
+            });
+
+            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Detail);
+            Assert.IsNotNull(result.Status);
+            Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
+            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
+            Assert.IsTrue(result.Detail.Contains("Radius"));
+            Assert.IsTrue(result.Detail.Contains("Latitude"));
+        }
+
+        public async Task GivenRadiusAndLatitudeAndNoLongitudeShouldReturnBadRequest()
+        {
+            var faker = new Faker();
+
+            var response = await ProgramTest.StoresHelper.ListStoresAsync(new ListStoresRequest
+            {
+                Latitude = faker.Address.Latitude(),
+                Radius = faker.Random.Double()
+            });
+
+            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Detail);
+            Assert.IsNotNull(result.Status);
+            Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
+            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
+            Assert.IsTrue(result.Detail.Contains("Longitude"));
+        }
+
+        public async Task GivenRadiusAndLongitudeAndNoLatitudeShouldReturnBadRequest()
+        {
+            var faker = new Faker();
+
+            var response = await ProgramTest.StoresHelper.ListStoresAsync(new ListStoresRequest
+            {
+                Longitude = faker.Address.Longitude(),
+                Radius = faker.Random.Double(),
+            });
+
+            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Detail);
+            Assert.IsNotNull(result.Status);
+            Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
+            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
+            Assert.IsTrue(result.Detail.Contains("Latitude"));
+        }
+
+        public async Task GivenLatitudeAndLongitudeAndNoRadiusShouldReturnBadRequest()
+        {
+            var faker = new Faker();
+
+            var response = await ProgramTest.StoresHelper.ListStoresAsync(new ListStoresRequest
+            {
+                Latitude = faker.Address.Latitude(),
+                Longitude = faker.Address.Longitude(),
+            });
+
+            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Detail);
+            Assert.IsNotNull(result.Status);
+            Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
+            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
+            Assert.IsTrue(result.Detail.Contains("Radius"));
         }
 
         [TestMethod]
