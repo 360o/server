@@ -4,6 +4,10 @@ namespace _360o.Server.API.V1.Stores.Model
 {
     public class Store : BaseEntity
     {
+        private readonly List<string> _englishCategories;
+
+        private readonly List<string> _frenchCategories;
+
         private Store()
         {
         }
@@ -14,10 +18,10 @@ namespace _360o.Server.API.V1.Stores.Model
             DisplayName = displayName;
             EnglishShortDescription = englishShortDescription ?? string.Empty;
             EnglishLongDescription = englishLongDescription ?? string.Empty;
-            _englishCategories = englishCategories != null ? englishCategories.ToHashSet() : new HashSet<string>();
+            _englishCategories = englishCategories != null ? englishCategories.ToList() : new List<string>();
             FrenchShortDescription = frenchShortDescription ?? string.Empty;
             FrenchLongDescription = frenchLongDescription ?? string.Empty;
-            _frenchCategories = frenchCategories != null ? frenchCategories.ToHashSet() : new HashSet<string>();
+            _frenchCategories = frenchCategories != null ? frenchCategories.ToList() : new List<string>();
             Place = place;
         }
 
@@ -31,29 +35,17 @@ namespace _360o.Server.API.V1.Stores.Model
 
         public NpgsqlTsVector EnglishSearchVector { get; private set; }
 
-        private readonly HashSet<string> _englishCategories;
-        public IReadOnlySet<string> EnglishCategories => _englishCategories;
+        public List<string> EnglishCategories => _englishCategories;
 
         public string FrenchShortDescription { get; private set; }
 
         public string FrenchLongDescription { get; private set; }
 
-        private readonly HashSet<string> _frenchCategories;
-        public IReadOnlySet<string> FrenchCategories => _frenchCategories;
+        public List<string> FrenchCategories => _frenchCategories;
 
         public NpgsqlTsVector FrenchSearchVector { get; private set; }
 
         public Place Place { get; private set; }
-
-        public void AddEnglishCategory(string category)
-        {
-            _englishCategories.Add(category);
-        }
-
-        public void AddFrenchCategory(string category)
-        {
-            _frenchCategories.Add(category);
-        }
     }
 }
 

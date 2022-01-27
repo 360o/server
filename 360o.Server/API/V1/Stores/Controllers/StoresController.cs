@@ -46,20 +46,20 @@ namespace _360o.Server.API.V1.Stores.Controllers
         [HttpGet]
         public async Task<IEnumerable<StoreDTO>> ListStoresAsync([FromQuery] ListStoresRequest request)
         {
-            var merchants = _storesContext.Merchants.Include(m => m.Place).AsQueryable();
+            var stores = _storesContext.Stores.Include(m => m.Place).AsQueryable();
 
             if (request.Query != null)
             {
-                merchants = merchants.Where(m => m.EnglishSearchVector.Matches(request.Query) || m.FrenchSearchVector.Matches(request.Query));
+                stores = stores.Where(m => m.EnglishCategories.Contains(request.Query) || m.FrenchCategories.Contains(request.Query) || m.EnglishSearchVector.Matches(EF.Functions.WebSearchToTsQuery("english", request.Query)) || m.FrenchSearchVector.Matches(EF.Functions.WebSearchToTsQuery("french", request.Query)));
             }
 
             if (request.Latitude.HasValue && request.Longitude.HasValue && request.Radius.HasValue)
             {
                 var locationPoint = new Point(x: request.Longitude.Value, y: request.Latitude.Value);
-                merchants = merchants.Where(p => p.Place.Point.Distance(locationPoint) < request.Radius.Value);
+                stores = stores.Where(p => p.Place.Point.Distance(locationPoint) < request.Radius.Value);
             }
 
-            return await merchants.Select(m => _mapper.Map<StoreDTO>(m)).ToListAsync();
+            return await stores.Select(m => _mapper.Map<StoreDTO>(m)).ToListAsync();
         }
 
         [HttpGet("{id}")]
@@ -67,7 +67,7 @@ namespace _360o.Server.API.V1.Stores.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<StoreDTO>> GetStoreByIdAsync(Guid id)
         {
-            var store = await _storesContext.Merchants.Include(s => s.Place).SingleOrDefaultAsync(m => m.Id == id);
+            var store = await _storesContext.Stores.Include(s => s.Place).SingleOrDefaultAsync(m => m.Id == id);
 
             if (store == null)
             {
@@ -82,7 +82,7 @@ namespace _360o.Server.API.V1.Stores.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteStoreByIdAsync(Guid id)
         {
-            var store = await _storesContext.Merchants.FindAsync(id);
+            var store = await _storesContext.Stores.FindAsync(id);
 
             if (store == null)
             {
