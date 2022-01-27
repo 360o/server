@@ -43,25 +43,6 @@ namespace _360o.Server.API.V1.Stores.Controllers
             return CreatedAtAction(nameof(GetStoreByIdAsync), new { id = store.Id }, _mapper.Map<StoreDTO>(store));
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<StoreDTO>> ListStoresAsync([FromQuery] ListStoresRequest request)
-        {
-            var stores = _storesContext.Stores.Include(m => m.Place).AsQueryable();
-
-            if (request.Query != null)
-            {
-                stores = stores.Where(m => m.EnglishCategories.Contains(request.Query) || m.FrenchCategories.Contains(request.Query) || m.EnglishSearchVector.Matches(EF.Functions.WebSearchToTsQuery("english", request.Query)) || m.FrenchSearchVector.Matches(EF.Functions.WebSearchToTsQuery("french", request.Query)));
-            }
-
-            if (request.Latitude.HasValue && request.Longitude.HasValue && request.Radius.HasValue)
-            {
-                var locationPoint = new Point(x: request.Longitude.Value, y: request.Latitude.Value);
-                stores = stores.Where(p => p.Place.Point.Distance(locationPoint) < request.Radius.Value);
-            }
-
-            return await stores.Select(m => _mapper.Map<StoreDTO>(m)).ToListAsync();
-        }
-
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Store))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -75,6 +56,25 @@ namespace _360o.Server.API.V1.Stores.Controllers
             }
 
             return _mapper.Map<StoreDTO>(store);
+        }
+
+        [HttpGet]
+        public async Task<IEnumerable<StoreDTO>> ListStoresAsync([FromQuery] ListStoresRequest request)
+        {
+            var stores = _storesContext.Stores.Include(m => m.Place).AsQueryable();
+
+            if (request.Query != null)
+            {
+                stores = stores.Where(m => m.EnglishSearchVector.Matches(EF.Functions.WebSearchToTsQuery("english", request.Query)) || m.FrenchSearchVector.Matches(EF.Functions.WebSearchToTsQuery("french", request.Query)));
+            }
+
+            if (request.Latitude.HasValue && request.Longitude.HasValue && request.Radius.HasValue)
+            {
+                var locationPoint = new Point(x: request.Longitude.Value, y: request.Latitude.Value);
+                stores = stores.Where(p => p.Place.Point.Distance(locationPoint) < request.Radius.Value);
+            }
+
+            return await stores.Select(m => _mapper.Map<StoreDTO>(m)).ToListAsync();
         }
 
         [HttpDelete("{id}")]

@@ -20,12 +20,12 @@ namespace _360o.Server.API.V1.Stores.Model
             modelBuilder.Entity<Store>().Property(s => s.FrenchCategories).HasField("_frenchCategories");
             modelBuilder
                 .Entity<Store>()
-                .HasGeneratedTsVectorColumn(s => s.EnglishSearchVector, "english", s => new { s.DisplayName, s.EnglishShortDescription, s.EnglishLongDescription })
+                .HasGeneratedTsVectorColumn(s => s.EnglishSearchVector, "english", s => new { s.DisplayName, s.EnglishShortDescription, s.EnglishLongDescription, s.EnglishCategoriesJoined })
                 .HasIndex(s => s.EnglishSearchVector)
                 .HasMethod("GIN");
             modelBuilder
                 .Entity<Store>()
-                .HasGeneratedTsVectorColumn(s => s.FrenchSearchVector, "french", s => new { s.DisplayName, s.FrenchShortDescription, s.FrenchLongDescription })
+                .HasGeneratedTsVectorColumn(s => s.FrenchSearchVector, "french", s => new { s.DisplayName, s.FrenchShortDescription, s.FrenchLongDescription, s.FrenchCategoriesJoined })
                 .HasIndex(s => s.FrenchSearchVector)
                 .HasMethod("GIN");
 

@@ -100,7 +100,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
         }
 
         [TestMethod]
-        public async Task GivenLatitudeLongitudeAndRadiusParamsShouldReturnStoresWithinTheRadiusOfThatLocationInMeters()
+        public async Task GivenLatitudeLongitudeAndRadiusParamsShouldReturnStoresWithinTheRadiusOfTheLocationInMeters()
         {
             var myLocation = new LocationDTO
             {
@@ -313,7 +313,105 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             }
         }
 
-        private async Task<List<StoreDTO>?> DeserializeResponseAsync(HttpResponseMessage response)
+        [TestMethod]
+        public async Task GivenQueryAndLatitudeAndLongitudeAndRadiusShouldReturnStoresThatMatchQueryWithinTheRadiusOfTheLocationInMeters()
+        {
+            var myQuery = "nail";
+            var myLocation = new LocationDTO
+            {
+                Latitude = 52.2318464,
+                Longitude = 20.9998793
+            };
+            var twoKilometers = 2000;
+
+            var user1Store1Request = ProgramTest.StoresHelper.MakeRandomCreateMerchantRequest();
+            var user1Store2Request = ProgramTest.StoresHelper.MakeRandomCreateMerchantRequest();
+            var user2Store1Request = ProgramTest.StoresHelper.MakeRandomCreateMerchantRequest();
+            var user2Store2Request = ProgramTest.StoresHelper.MakeRandomCreateMerchantRequest();
+
+            user1Store1Request.DisplayName = "BEAUTY STUDIO SOPHIA";
+            user1Store1Request.EnglishCategories = new HashSet<string>(new[] { "nail salon" });
+            user1Store1Request.Place = new CreateMerchantPlace
+            {
+                GooglePlaceId = "ChIJ_RYTY4nNHkcRl6fA-1FcRRE",
+                FormattedAddress = "Chmielna 106, 00-801 Warszawa, Poland",
+                Location = new LocationDTO
+                {
+                    Latitude = 52.2288783,
+                    Longitude = 20.9963373
+                }
+            };
+
+            user1Store2Request.DisplayName = "Portobello Pizza & Pasta - kuchnia włoska";
+            user1Store2Request.Place = new CreateMerchantPlace
+            {
+                GooglePlaceId = "ChIJSYbSBiXNHkcRPVTeBjMEWBE",
+                FormattedAddress = "al. Jana Pawła II 12, 00-001 Warszawa, Poland",
+                Location = new LocationDTO
+                {
+                    Latitude = 52.2318464,
+                    Longitude = 20.9998793
+                }
+            };
+
+            user2Store1Request.DisplayName = "Studio Hollywood Nails";
+            user2Store1Request.Place = new CreateMerchantPlace
+            {
+                GooglePlaceId = "ChIJkb3oh_TMHkcRvwTuCI-g9us",
+                FormattedAddress = "Świętokrzyska 30, 00-116 Warszawa, Poland",
+                Location = new LocationDTO
+                {
+                    Latitude = 52.2349257,
+                    Longitude = 21.0032608
+                }
+            };
+
+            user2Store2Request.DisplayName = "Aura Manicure & Pedicure";
+            user2Store2Request.EnglishCategories = new HashSet<string>(new[] { "nail salon" });
+            user2Store2Request.Place = new CreateMerchantPlace
+            {
+                GooglePlaceId = "ChIJAWdPJtEyGUcRFfnT7IcNGFg",
+                FormattedAddress = "Domaniewska 22A, 02-672 Warszawa, Poland",
+                Location = new LocationDTO
+                {
+                    Latitude = 52.1881715,
+                    Longitude = 21.0114313
+                }
+            };
+
+            var user1Store1 = await ProgramTest.StoresHelper.CreateStoreAndDeserializeAsync(user1Store1Request);
+            await ProgramTest.StoresHelper.CreateStoreAndDeserializeAsync(user1Store2Request);
+            var user2Store1 = await ProgramTest.StoresHelper.CreateStoreAndDeserializeAsync(user2Store1Request);
+            await ProgramTest.StoresHelper.CreateStoreAndDeserializeAsync(user2Store2Request);
+
+            var expectedStores = new Dictionary<Guid, StoreDTO>()
+            {
+                { user1Store1.Id, user1Store1 },
+                { user2Store1.Id, user2Store1 },
+            };
+
+            var response = await ProgramTest.StoresHelper.ListStoresAsync(new ListStoresRequest
+            {
+                Query = myQuery,
+                Latitude = myLocation.Latitude,
+                Longitude = myLocation.Longitude,
+                Radius = twoKilometers
+            });
+
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+
+            var result = await DeserializeResponseAsync(response);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(expectedStores.Count, result.Count);
+
+            foreach (var store in result)
+            {
+                ProgramTest.StoresHelper.AssertStoresEqual(expectedStores[store.Id], store);
+            }
+        }
+
+        private async Task<IList<StoreDTO>?> DeserializeResponseAsync(HttpResponseMessage response)
         {
             var responseContent = await response.Content.ReadAsStringAsync();
 
