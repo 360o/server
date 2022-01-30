@@ -1,10 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>_360o.Server</RootNamespace>
+    <UserSecretsId>29eb3784-7efa-495e-b8b7-b249ad4bce05</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,6 +1,4 @@
-﻿using _360o.Server.API.V1.Stores.Model;
-
-namespace _360o.Server.API.V1.Stores.Controllers.DTOs
+﻿namespace _360o.Server.API.V1.Stores.DTOs
 {
     public record struct PlaceDTO
     {

@@ -1,9 +1,9 @@
-﻿using _360o.Server.API.V1.Errors.Enums;
-using _360o.Server.API.V1.Stores.Controllers.DTOs;
+﻿using _360.Server.IntegrationTests.API.V1.Helpers.Generators;
+using _360o.Server.API.V1.Errors.Enums;
+using _360o.Server.API.V1.Stores.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -14,54 +14,27 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
     public class CreateStoreTest
     {
         [TestMethod]
-        public async Task GivenValidRequestShouldReturnCreated()
+        public async Task GivenOrganizationExistsAndValidRequestShouldReturnCreated()
         {
-            var request = ProgramTest.StoresHelper.MakeRandomCreateMerchantRequest();
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
 
-            var response = await ProgramTest.StoresHelper.CreateStoreAsync(request);
+            var request = RequestsGenerator.MakeRandomCreateStoreRequest(organization.Id);
 
-            Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
-            Assert.IsNotNull(response.Headers.Location);
+            var store = await ProgramTest.ApiClientUser1.Stores.CreateStoreAndDeserializeAsync(request);
 
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            var result = JsonSerializer.Deserialize<StoreDTO>(responseContent, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
-
-            Assert.IsTrue(Guid.TryParse(result.Id.ToString(), out var _));
-            Assert.AreEqual($"/api/v1/Stores/{result.Id}", response.Headers.Location.AbsolutePath);
-
-            Assert.AreEqual(request.DisplayName, result.DisplayName);
-
-            Assert.AreEqual(request.EnglishShortDescription, result.EnglishShortDescription);
-            Assert.AreEqual(request.EnglishLongDescription, result.EnglishLongDescription);
-            Assert.IsTrue(result.EnglishCategories.SetEquals(request.EnglishCategories));
-
-            Assert.AreEqual(request.FrenchLongDescription, result.FrenchLongDescription);
-            Assert.AreEqual(request.FrenchLongDescription, result.FrenchLongDescription);
-            Assert.IsTrue(result.FrenchCategories.SetEquals(request.FrenchCategories));
-
-            Assert.IsTrue(Guid.TryParse(result.Place.Id.ToString(), out var _));
-            Assert.AreEqual(request.Place.GooglePlaceId, result.Place.GooglePlaceId);
-            Assert.AreEqual(request.Place.FormattedAddress, result.Place.FormattedAddress);
-            Assert.AreEqual(request.Place.Location, result.Place.Location);
+            Assert.AreEqual(request.Place.GooglePlaceId, store.Place.GooglePlaceId);
+            Assert.AreEqual(request.Place.FormattedAddress, store.Place.FormattedAddress);
+            Assert.AreEqual(request.Place.Location, store.Place.Location);
         }
 
-        [DataTestMethod]
-        [DataRow(null)]
-        [DataRow("")]
-        [DataRow(" ")]
-        public async Task GivenNullOrWhitespaceDisplayNameShouldReturnBadRequest(string displayName)
+        [TestMethod]
+        public async Task GivenOrganizationDoesNotExistShouldReturnNotFound()
         {
-            var request = ProgramTest.StoresHelper.MakeRandomCreateMerchantRequest();
+            var request = RequestsGenerator.MakeRandomCreateStoreRequest(Guid.NewGuid());
 
-            request.DisplayName = displayName;
+            var response = await ProgramTest.ApiClientUser1.Stores.CreateStoreAsync(request);
 
-            var response = await ProgramTest.StoresHelper.CreateStoreAsync(request);
-
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
             var responseContent = await response.Content.ReadAsStringAsync();
 
@@ -70,195 +43,24 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.Detail);
             Assert.IsNotNull(result.Status);
-            Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
-            Assert.IsTrue(result.Detail.Contains("DisplayName"));
-        }
-
-        [DataTestMethod]
-        [DataRow(null)]
-        [DataRow("")]
-        [DataRow(" ")]
-        public async Task GivenNullOrWhitespaceEnglishShortDescriptionShouldReturnCreated(string englishShortDescription)
-        {
-            var request = ProgramTest.StoresHelper.MakeRandomCreateMerchantRequest();
-
-            request.EnglishShortDescription = englishShortDescription;
-
-            var response = await ProgramTest.StoresHelper.CreateStoreAsync(request);
-
-            Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            var result = JsonSerializer.Deserialize<StoreDTO>(responseContent);
-
-            Assert.IsNotNull(string.Empty, result.EnglishShortDescription);
-        }
-
-        [DataTestMethod]
-        [DataRow(null)]
-        [DataRow("")]
-        [DataRow(" ")]
-        public async Task GivenNullOrWhitespaceEnglishLongDescriptionShouldReturnCreated(string englishLongDescription)
-        {
-            var request = ProgramTest.StoresHelper.MakeRandomCreateMerchantRequest();
-
-            request.EnglishLongDescription = englishLongDescription;
-
-            var response = await ProgramTest.StoresHelper.CreateStoreAsync(request);
-
-            Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            var result = JsonSerializer.Deserialize<StoreDTO>(responseContent);
-
-            Assert.IsNotNull(string.Empty, result.EnglishLongDescription);
+            Assert.AreEqual(ErrorCode.ItemNotFound.ToString(), result.Title);
+            Assert.AreEqual((int)HttpStatusCode.UnprocessableEntity, result.Status.Value);
+            Assert.AreEqual("Organization does not exist", result.Detail);
         }
 
         [TestMethod]
-        public async Task GivenNullEnglishCategoriesShouldReturnCreated()
+        public async Task GivenNullGooglePlaceIdShouldReturnBadRequest()
         {
-            var request = ProgramTest.StoresHelper.MakeRandomCreateMerchantRequest();
+            var request = RequestsGenerator.MakeRandomCreateStoreRequest(Guid.NewGuid());
 
-            request.EnglishCategories = null;
-
-            var response = await ProgramTest.StoresHelper.CreateStoreAsync(request);
-
-            Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            var result = JsonSerializer.Deserialize<StoreDTO>(responseContent, new JsonSerializerOptions
+            request.Place = new CreateStorePlace
             {
-                PropertyNameCaseInsensitive = true
-            });
-
-            Assert.AreEqual(0, result.EnglishCategories.Count);
-        }
-
-        [TestMethod]
-        public async Task GivenEmptyEnglishCategoriesShouldReturnCreated()
-        {
-            var request = ProgramTest.StoresHelper.MakeRandomCreateMerchantRequest();
-
-            request.EnglishCategories = new HashSet<string>();
-
-            var response = await ProgramTest.StoresHelper.CreateStoreAsync(request);
-
-            Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            var result = JsonSerializer.Deserialize<StoreDTO>(responseContent, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
-
-            Assert.AreEqual(0, result.EnglishCategories.Count);
-        }
-
-        [DataTestMethod]
-        [DataRow(null)]
-        [DataRow("")]
-        [DataRow(" ")]
-        public async Task GivenNullOrWhitespaceFrenchShortDescriptionShouldReturnCreated(string frenchShortDescription)
-        {
-            var request = ProgramTest.StoresHelper.MakeRandomCreateMerchantRequest();
-
-            request.FrenchShortDescription = frenchShortDescription;
-
-            var response = await ProgramTest.StoresHelper.CreateStoreAsync(request);
-
-            Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            var result = JsonSerializer.Deserialize<StoreDTO>(responseContent);
-
-            Assert.IsNotNull(string.Empty, result.FrenchShortDescription);
-        }
-
-        [DataTestMethod]
-        [DataRow(null)]
-        [DataRow("")]
-        [DataRow(" ")]
-        public async Task GivenNullOrWhitespaceFrenchLongDescriptionShouldReturnCreated(string frenchLongDescription)
-        {
-            var request = ProgramTest.StoresHelper.MakeRandomCreateMerchantRequest();
-
-            request.FrenchLongDescription = frenchLongDescription;
-
-            var response = await ProgramTest.StoresHelper.CreateStoreAsync(request);
-
-            Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            var result = JsonSerializer.Deserialize<StoreDTO>(responseContent);
-
-            Assert.IsNotNull(string.Empty, result.FrenchLongDescription);
-        }
-
-        [TestMethod]
-        public async Task GivenNullFrenchCategoriesShouldReturnCreated()
-        {
-            var request = ProgramTest.StoresHelper.MakeRandomCreateMerchantRequest();
-
-            request.FrenchCategories = null;
-
-            var response = await ProgramTest.StoresHelper.CreateStoreAsync(request);
-
-            Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            var result = JsonSerializer.Deserialize<StoreDTO>(responseContent, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
-
-            Assert.AreEqual(0, result.FrenchCategories.Count);
-        }
-
-        [TestMethod]
-        public async Task GivenEmptyFrenchCategoriesShouldReturnCreated()
-        {
-            var request = ProgramTest.StoresHelper.MakeRandomCreateMerchantRequest();
-
-            request.FrenchCategories = new HashSet<string>();
-
-            var response = await ProgramTest.StoresHelper.CreateStoreAsync(request);
-
-            Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            var result = JsonSerializer.Deserialize<StoreDTO>(responseContent, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
-
-            Assert.AreEqual(0, result.FrenchCategories.Count);
-        }
-
-        [DataTestMethod]
-        [DataRow(null)]
-        [DataRow("")]
-        [DataRow(" ")]
-        public async Task GivenNullOrWhitespaceGooglePlaceIdShouldReturnBadRequest(string googlePlaceId)
-        {
-            var request = ProgramTest.StoresHelper.MakeRandomCreateMerchantRequest();
-
-            request.Place = new CreateMerchantPlace
-            {
-                GooglePlaceId = googlePlaceId,
+                GooglePlaceId = null!,
                 FormattedAddress = request.Place.FormattedAddress,
                 Location = request.Place.Location,
             };
 
-            var response = await ProgramTest.StoresHelper.CreateStoreAsync(request);
+            var response = await ProgramTest.ApiClientUser1.Stores.CreateStoreAsync(request);
 
             Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
@@ -275,21 +77,78 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
         }
 
         [DataTestMethod]
-        [DataRow(null)]
         [DataRow("")]
         [DataRow(" ")]
-        public async Task GivenNullOrWhitespaceFormattedAddressShouldReturnBadRequest(string formattedAddress)
+        public async Task GivenEmptyOrWhitespaceGooglePlaceIdShouldReturnBadRequest(string googlePlaceId)
         {
-            var request = ProgramTest.StoresHelper.MakeRandomCreateMerchantRequest();
+            var request = RequestsGenerator.MakeRandomCreateStoreRequest(Guid.NewGuid());
 
-            request.Place = new CreateMerchantPlace
+            request.Place = new CreateStorePlace
+            {
+                GooglePlaceId = googlePlaceId,
+                FormattedAddress = request.Place.FormattedAddress,
+                Location = request.Place.Location,
+            };
+
+            var response = await ProgramTest.ApiClientUser1.Stores.CreateStoreAsync(request);
+
+            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Detail);
+            Assert.IsNotNull(result.Status);
+            Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
+            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
+            Assert.IsTrue(result.Detail.Contains("GooglePlaceId"));
+        }
+
+        [TestMethod]
+        public async Task GivenNullFormattedAddressShouldReturnBadRequest()
+        {
+            var request = RequestsGenerator.MakeRandomCreateStoreRequest(Guid.NewGuid());
+
+            request.Place = new CreateStorePlace
+            {
+                GooglePlaceId = request.Place.GooglePlaceId,
+                FormattedAddress = null,
+                Location = request.Place.Location,
+            };
+
+            var response = await ProgramTest.ApiClientUser1.Stores.CreateStoreAsync(request);
+
+            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Detail);
+            Assert.IsNotNull(result.Status);
+            Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
+            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
+            Assert.IsTrue(result.Detail.Contains("FormattedAddress"));
+        }
+
+        [DataTestMethod]
+        [DataRow("")]
+        [DataRow(" ")]
+        public async Task GivenEmptyOrWhitespaceFormattedAddressShouldReturnBadRequest(string formattedAddress)
+        {
+            var request = RequestsGenerator.MakeRandomCreateStoreRequest(Guid.NewGuid());
+
+            request.Place = new CreateStorePlace
             {
                 GooglePlaceId = request.Place.GooglePlaceId,
                 FormattedAddress = formattedAddress,
                 Location = request.Place.Location,
             };
 
-            var response = await ProgramTest.StoresHelper.CreateStoreAsync(request);
+            var response = await ProgramTest.ApiClientUser1.Stores.CreateStoreAsync(request);
 
             Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
@@ -310,9 +169,9 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
         [DataRow(90 + double.MinValue)]
         public async Task GivenLatitudeOutOfRangeShouldReturnBadRequest(double latitude)
         {
-            var request = ProgramTest.StoresHelper.MakeRandomCreateMerchantRequest();
+            var request = RequestsGenerator.MakeRandomCreateStoreRequest(Guid.NewGuid());
 
-            request.Place = new CreateMerchantPlace
+            request.Place = new CreateStorePlace
             {
                 GooglePlaceId = request.Place.GooglePlaceId,
                 FormattedAddress = request.Place.FormattedAddress,
@@ -323,7 +182,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
                 }
             };
 
-            var response = await ProgramTest.StoresHelper.CreateStoreAsync(request);
+            var response = await ProgramTest.ApiClientUser1.Stores.CreateStoreAsync(request);
 
             Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
@@ -344,9 +203,9 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
         [DataRow(180 + double.MinValue)]
         public async Task GivenLongitudeOutOfRangeShouldReturnBadRequest(double longitude)
         {
-            var request = ProgramTest.StoresHelper.MakeRandomCreateMerchantRequest();
+            var request = RequestsGenerator.MakeRandomCreateStoreRequest(Guid.NewGuid());
 
-            request.Place = new CreateMerchantPlace
+            request.Place = new CreateStorePlace
             {
                 GooglePlaceId = request.Place.GooglePlaceId,
                 FormattedAddress = request.Place.FormattedAddress,
@@ -357,7 +216,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
                 }
             };
 
-            var response = await ProgramTest.StoresHelper.CreateStoreAsync(request);
+            var response = await ProgramTest.ApiClientUser1.Stores.CreateStoreAsync(request);
 
             Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 

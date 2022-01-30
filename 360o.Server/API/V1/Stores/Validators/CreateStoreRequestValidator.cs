@@ -1,19 +1,19 @@
-﻿using _360o.Server.API.V1.Stores.Controllers.DTOs;
+﻿using _360o.Server.API.V1.Stores.DTOs;
 using FluentValidation;
 
-namespace _360o.Server.API.V1.Stores.Controllers.Validators
+namespace _360o.Server.API.V1.Stores.Validators
 {
     public class CreateStoreRequestValidator : AbstractValidator<CreateStoreRequest>
     {
         public CreateStoreRequestValidator()
         {
-            RuleFor(r => r.DisplayName).NotNull().NotEmpty();
-            RuleFor(r => r.Place).SetValidator(new CreateMerchantPlaceValidator());
+            RuleFor(r => r.OrganizationId).NotEmpty();
+            RuleFor(r => r.Place).SetValidator(new CreateStorePlaceValidator());
         }
 
-        private class CreateMerchantPlaceValidator : AbstractValidator<CreateMerchantPlace>
+        private class CreateStorePlaceValidator : AbstractValidator<CreateStorePlace>
         {
-            public CreateMerchantPlaceValidator()
+            public CreateStorePlaceValidator()
             {
                 RuleFor(p => p.GooglePlaceId).NotEmpty();
                 RuleFor(p => p.FormattedAddress).NotEmpty();

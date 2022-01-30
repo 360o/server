@@ -1,5 +1,4 @@
 ﻿using _360o.Server.API.V1.Errors.Enums;
-using _360o.Server.API.V1.Stores.Controllers.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -15,37 +14,19 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
         [TestMethod]
         public async Task GivenStoreExistsShouldReturnOK()
         {
-            var createMerchantRequest = ProgramTest.StoresHelper.MakeRandomCreateMerchantRequest();
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
 
-            var createdMerchantResponse = await ProgramTest.StoresHelper.CreateStoreAsync(createMerchantRequest);
+            var createdStore = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
 
-            Assert.AreEqual(HttpStatusCode.Created, createdMerchantResponse.StatusCode);
+            var store = await ProgramTest.ApiClientUser1.Stores.GetStoreByIdAndDeserializeAsync(createdStore.Id);
 
-            var createdMerchantResponseContent = await createdMerchantResponse.Content.ReadAsStringAsync();
-
-            var createdMerchant = JsonSerializer.Deserialize<StoreDTO>(createdMerchantResponseContent, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
-
-            var response = await ProgramTest.StoresHelper.GetStoreByIdAsync(createdMerchant.Id);
-
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            var result = JsonSerializer.Deserialize<StoreDTO>(responseContent, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
-
-            ProgramTest.StoresHelper.AssertStoresEqual(createdMerchant, result);
+            Assert.AreEqual(createdStore, store);
         }
 
         [TestMethod]
         public async Task GivenStoreDoesNotExistShouldReturnNotFound()
         {
-            var response = await ProgramTest.StoresHelper.GetStoreByIdAsync(Guid.NewGuid());
+            var response = await ProgramTest.ApiClientUser1.Stores.GetStoreByIdAsync(Guid.NewGuid());
 
             Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 

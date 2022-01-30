@@ -1,7 +1,7 @@
 ﻿using _360o.Server.API.V1.Errors.Enums;
-using _360o.Server.API.V1.Stores.Controllers.DTOs;
-using _360o.Server.API.V1.Stores.Controllers.Validators;
+using _360o.Server.API.V1.Stores.DTOs;
 using _360o.Server.API.V1.Stores.Model;
+using _360o.Server.API.V1.Stores.Validators;
 using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
@@ -16,12 +16,12 @@ namespace _360o.Server.API.V1.Stores.Controllers
     [ApiController]
     public class StoresController : ControllerBase
     {
-        private readonly StoresContext _storesContext;
+        private readonly ApiContext _apiContext;
         private readonly IMapper _mapper;
 
-        public StoresController(StoresContext storesContext, IMapper mapper)
+        public StoresController(ApiContext apiContext, IMapper mapper)
         {
-            _storesContext = storesContext;
+            _apiContext = apiContext;
             _mapper = mapper;
         }
 
@@ -34,11 +34,11 @@ namespace _360o.Server.API.V1.Stores.Controllers
 
             validator.ValidateAndThrow(request);
 
-            var store = new Store(userId: User.Identity.Name, displayName: request.DisplayName, englishShortDescription: request.EnglishShortDescription, englishLongDescription: request.EnglishLongDescription, englishCategories: request.EnglishCategories, frenchShortDescription: request.FrenchShortDescription, frenchLongDescription: request.FrenchLongDescription, frenchCategories: request.FrenchCategories, place: _mapper.Map<Place>(request.Place));
+            var store = new Store(organizationId: request.OrganizationId, place: _mapper.Map<Place>(request.Place));
 
-            _storesContext.Add(store);
+            _apiContext.Add(store);
 
-            await _storesContext.SaveChangesAsync();
+            await _apiContext.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetStoreByIdAsync), new { id = store.Id }, _mapper.Map<StoreDTO>(store));
         }
@@ -48,7 +48,7 @@ namespace _360o.Server.API.V1.Stores.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<StoreDTO>> GetStoreByIdAsync(Guid id)
         {
-            var store = await _storesContext.Stores.Include(s => s.Place).SingleOrDefaultAsync(m => m.Id == id);
+            var store = await _apiContext.Stores.Include(s => s.Place).SingleOrDefaultAsync(m => m.Id == id);
 
             if (store == null)
             {
@@ -59,17 +59,17 @@ namespace _360o.Server.API.V1.Stores.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<StoreDTO>> ListStoresAsync([FromQuery] ListStoresRequest request)
+        public async Task<IList<StoreDTO>> ListStoresAsync([FromQuery] ListStoresRequest request)
         {
             var validator = new ListStoresRequestValidator();
 
             validator.ValidateAndThrow(request);
 
-            var stores = _storesContext.Stores.Include(m => m.Place).AsQueryable();
+            var stores = _apiContext.Stores.Include(m => m.Place).AsQueryable();
 
             if (request.Query != null)
             {
-                stores = stores.Where(m => m.EnglishSearchVector.Matches(EF.Functions.WebSearchToTsQuery("english", request.Query)) || m.FrenchSearchVector.Matches(EF.Functions.WebSearchToTsQuery("french", request.Query)));
+                stores = stores.Where(s => s.Organization.EnglishSearchVector.Matches(EF.Functions.WebSearchToTsQuery("english", request.Query)) || s.Organization.FrenchSearchVector.Matches(EF.Functions.WebSearchToTsQuery("french", request.Query)));
             }
 
             if (request.Latitude.HasValue && request.Longitude.HasValue && request.Radius.HasValue)
@@ -86,16 +86,16 @@ namespace _360o.Server.API.V1.Stores.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteStoreByIdAsync(Guid id)
         {
-            var store = await _storesContext.Stores.FindAsync(id);
+            var store = await _apiContext.Stores.FindAsync(id);
 
             if (store == null)
             {
                 return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.ItemNotFound.ToString());
             }
 
-            _storesContext.Remove(store);
+            _apiContext.Remove(store);
 
-            await _storesContext.SaveChangesAsync();
+            await _apiContext.SaveChangesAsync();
 
             return NoContent();
         }

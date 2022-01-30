@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using NetTopologySuite.Geometries;
+﻿using NetTopologySuite.Geometries;
 
 namespace _360o.Server.API.V1.Stores.Model
 {
@@ -28,9 +27,8 @@ namespace _360o.Server.API.V1.Stores.Model
 
         public Location Location => new Location(latitude: Point.Y, longitude: Point.X);
 
-        public Guid MerchantId { get; private set; }
-        [JsonIgnore]
-        public Store Merchant { get; private set; }
+        public Guid StoreId { get; private set; }
+        public Store Store { get; private set; }
     }
 }
 

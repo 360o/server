@@ -7,13 +7,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
 using _360o.Server.API.V1.Stores.Model;
-using _360o.Server.API.V1.Stores;
+using _360o.Server.API.V1;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddDbContext<StoresContext>(options =>
+builder.Services.AddDbContext<ApiContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("MerchantsContext"), o => o.UseNetTopologySuite());
     options.UseSnakeCaseNamingConvention();
@@ -94,7 +94,7 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
 
-    var context = services.GetRequiredService<StoresContext>();
+    var context = services.GetRequiredService<ApiContext>();
     context.Database.EnsureDeleted();
     context.Database.EnsureCreated();
     // DbInitializer.Initialize(context);

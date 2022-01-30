@@ -1,7 +1,7 @@
-﻿using _360o.Server.API.V1.Stores.Controllers.DTOs;
+﻿using _360o.Server.API.V1.Stores.DTOs;
 using FluentValidation;
 
-namespace _360o.Server.API.V1.Stores.Controllers.Validators
+namespace _360o.Server.API.V1.Stores.Validators
 {
     public class ListStoresRequestValidator : AbstractValidator<ListStoresRequest>
     {
