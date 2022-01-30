@@ -1,5 +1,6 @@
 ﻿using _360o.Server.API.V1.Organizations.DTOs;
 using _360o.Server.API.V1.Stores.DTOs;
+using _360o.Server.API.V1.Stores.Model;
 using Bogus;
 using System;
 using System.Linq;
@@ -34,15 +35,11 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.Generators
             var request = new CreateStoreRequest
             {
                 OrganizationId = organizationId,
-                Place = new CreateStorePlace
+                Place = new CreateStoreRequestPlace
                 {
                     GooglePlaceId = faker.Random.Uuid().ToString(),
                     FormattedAddress = faker.Address.FullAddress(),
-                    Location = new LocationDTO
-                    {
-                        Latitude = faker.Address.Latitude(),
-                        Longitude = faker.Address.Longitude()
-                    }
+                    Location = new Location(faker.Address.Latitude(), faker.Address.Longitude())
                 },
             };
 

@@ -11,7 +11,7 @@ namespace _360.Server.IntegrationTests
     {
         private static WebApplicationFactory<Program> _application;
 
-        public static ApiClient ApiClientUser1 { get; private set;}
+        public static ApiClient ApiClientUser1 { get; private set; }
 
         public static ApiClient ApiClientUser2 { get; private set; }
 
@@ -56,11 +56,11 @@ namespace _360.Server.IntegrationTests
             _application = new WebApplicationFactory<Program>();
 
             ApiClientUser1 = new ApiClient(
-                auth0Domain, 
-                auth0ClientId, 
-                auth0ClientSecret, 
+                auth0Domain,
+                auth0ClientId,
+                auth0ClientSecret,
                 auth0Audience,
-                user1.username, 
+                user1.username,
                 user1.password);
 
             ApiClientUser2 = new ApiClient(

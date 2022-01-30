@@ -22,14 +22,14 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
             var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
-            
+
             Assert.AreEqual(request.Name, organization.Name);
             Assert.AreEqual(request.EnglishShortDescription, organization.EnglishShortDescription);
             Assert.AreEqual(request.EnglishLongDescription, organization.EnglishLongDescription);
             CollectionAssert.AreEquivalent(request.EnglishCategories?.ToList(), organization.EnglishCategories.ToList());
             Assert.AreEqual(request.FrenchShortDescription, organization.FrenchShortDescription);
             Assert.AreEqual(request.FrenchLongDescription, organization.FrenchLongDescription);
-            CollectionAssert.AreEquivalent(request.FrenchCategories?.ToList(), organization.FrenchCategories.ToList()); 
+            CollectionAssert.AreEquivalent(request.FrenchCategories?.ToList(), organization.FrenchCategories.ToList());
         }
 
         [TestMethod]
@@ -169,8 +169,8 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
         }
 
         [TestMethod]
-        public async Task GivenNullFrenchShortDescriptionShouldReturnCreated() 
-        { 
+        public async Task GivenNullFrenchShortDescriptionShouldReturnCreated()
+        {
             var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
             request.FrenchShortDescription = null;

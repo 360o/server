@@ -23,7 +23,6 @@ namespace _360o.Server.API.V1.Errors
             else
             {
                 return Problem();
-                ;
             }
 
         }

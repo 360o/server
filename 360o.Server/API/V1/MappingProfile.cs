@@ -1,8 +1,11 @@
 ﻿using _360o.Server.API.V1.Organizations.DTOs;
 using _360o.Server.API.V1.Organizations.Model;
+using _360o.Server.API.V1.Organizations.Services;
 using _360o.Server.API.V1.Stores.DTOs;
 using _360o.Server.API.V1.Stores.Model;
+using _360o.Server.API.V1.Stores.Services;
 using AutoMapper;
+using static _360o.Server.API.V1.Stores.Services.CreateStoreInput;
 
 namespace _360o.Server.API.V1
 {
@@ -10,10 +13,12 @@ namespace _360o.Server.API.V1
     {
         public MappingProfile()
         {
-            CreateMap<Location, LocationDTO>().ReverseMap();
-            CreateMap<Place, PlaceDTO>().ReverseMap();
-            CreateMap<Place, CreateStorePlace>().ReverseMap();
-            CreateMap<Store, StoreDTO>().ReverseMap();
+            CreateMap<CreateStoreRequestPlace, CreateStoreInputPlace>();
+            CreateMap<CreateStoreRequest, CreateStoreInput>();
+            CreateMap<Place, PlaceDTO>();
+            CreateMap<Store, StoreDTO>();
+
+            CreateMap<CreateOrganizationInput, Organization>();
             CreateMap<Organization, OrganizationDTO>();
         }
     }

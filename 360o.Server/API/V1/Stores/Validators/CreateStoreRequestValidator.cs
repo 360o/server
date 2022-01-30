@@ -11,7 +11,7 @@ namespace _360o.Server.API.V1.Stores.Validators
             RuleFor(r => r.Place).SetValidator(new CreateStorePlaceValidator());
         }
 
-        private class CreateStorePlaceValidator : AbstractValidator<CreateStorePlace>
+        private class CreateStorePlaceValidator : AbstractValidator<CreateStoreRequestPlace>
         {
             public CreateStorePlaceValidator()
             {

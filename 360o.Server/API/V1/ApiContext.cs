@@ -31,11 +31,11 @@ namespace _360o.Server.API.V1.Stores.Model
                 .HasIndex(s => s.FrenchSearchVector)
                 .HasMethod("GIN");
 
-            modelBuilder.Entity<Store>().HasOne(s => s.Organization).WithMany(o => o.Stores);
+            modelBuilder.Entity<Store>().HasOne(e => e.Organization).WithMany(e => e.Stores);
 
-            modelBuilder.Entity<Place>().Ignore(p => p.Location);
-            modelBuilder.Entity<Place>().Property(p => p.Point).HasColumnType("geography (point)");
-            modelBuilder.Entity<Place>().HasOne(p => p.Store).WithOne(s => s.Place);
+            modelBuilder.Entity<Place>().Ignore(e => e.Location);
+            modelBuilder.Entity<Place>().Property(e => e.Point).HasColumnType("geography (point)");
+            modelBuilder.Entity<Place>().HasOne(e => e.Store).WithOne(e => e.Place);
         }
     }
 }

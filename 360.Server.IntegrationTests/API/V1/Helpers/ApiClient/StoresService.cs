@@ -107,9 +107,9 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
             return await Utils.DeserializeAsync<List<StoreDTO>>(response);
         }
 
-        public async Task DeleteStoreByIdAsync(Guid id)
+        public async Task<HttpResponseMessage> DeleteStoreByIdAsync(Guid id)
         {
-            await ProgramTest.NewClient(await _authService.GetAccessToken()).DeleteAsync($"/api/v1/stores/{id}");
+            return await ProgramTest.NewClient(await _authService.GetAccessToken()).DeleteAsync($"/api/v1/stores/{id}");
         }
     }
 }

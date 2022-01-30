@@ -1,6 +1,6 @@
 ﻿using _360o.Server.API.V1.Errors.Enums;
 using _360o.Server.API.V1.Organizations.DTOs;
-using _360o.Server.API.V1.Organizations.Model;
+using _360o.Server.API.V1.Organizations.Services;
 using _360o.Server.API.V1.Organizations.Validators;
 using _360o.Server.API.V1.Stores.Model;
 using AutoMapper;
@@ -15,13 +15,12 @@ namespace _360o.Server.API.V1.Organizations.Controllers
     [ApiController]
     public class OrganizationsController : ControllerBase
     {
-        private readonly ApiContext _apiContext;
-
+        private readonly IOrganizationsService _organizationsService;
         private readonly IMapper _mapper;
 
-        public OrganizationsController(ApiContext apiContext, IMapper mapper)
+        public OrganizationsController(IOrganizationsService organizationsService, IMapper mapper)
         {
-            _apiContext = apiContext;
+            _organizationsService = organizationsService;
             _mapper = mapper;
         }
 
@@ -34,11 +33,18 @@ namespace _360o.Server.API.V1.Organizations.Controllers
 
             validator.ValidateAndThrow(request);
 
-            var organization = new Organization(userId: User.Identity.Name, name: request.Name, englishLongDescription: request.EnglishLongDescription, englishShortDescription: request.EnglishShortDescription, englishCategories: request.EnglishCategories, frenchShortDescription: request.FrenchShortDescription, frenchLongDescription: request.FrenchLongDescription, frenchCategories: request.FrenchCategories);
-
-            _apiContext.Add(organization);
-
-            await _apiContext.SaveChangesAsync();
+            var organization = await _organizationsService.CreateOrganizationAsync(
+                new CreateOrganizationInput(
+                    User.Identity.Name,
+                    request.Name,
+                    request.EnglishShortDescription,
+                    request.EnglishLongDescription,
+                    request.EnglishCategories,
+                    request.FrenchShortDescription,
+                    request.FrenchLongDescription,
+                    request.FrenchCategories
+                    )
+                );
 
             return CreatedAtAction(nameof(GetOrganizationByIdAsync), new { id = organization.Id }, _mapper.Map<OrganizationDTO>(organization));
         }
@@ -48,7 +54,7 @@ namespace _360o.Server.API.V1.Organizations.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<OrganizationDTO>> GetOrganizationByIdAsync(Guid id)
         {
-            var organization = await _apiContext.Organizations.FindAsync(id);
+            var organization = await _organizationsService.GetOrganizationByIdAsync(id);
 
             if (organization == null)
             {

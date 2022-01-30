@@ -8,6 +8,8 @@ using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
 using _360o.Server.API.V1.Stores.Model;
 using _360o.Server.API.V1;
+using _360o.Server.API.V1.Organizations.Services;
+using _360o.Server.API.V1.Stores.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -74,6 +76,8 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
+builder.Services.AddScoped<IOrganizationsService, OrganizationsService>();
+builder.Services.AddScoped<IStoresService, StoresService>();
 
 var app = builder.Build();
 

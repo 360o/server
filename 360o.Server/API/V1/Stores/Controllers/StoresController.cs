@@ -1,13 +1,12 @@
 ﻿using _360o.Server.API.V1.Errors.Enums;
 using _360o.Server.API.V1.Stores.DTOs;
 using _360o.Server.API.V1.Stores.Model;
+using _360o.Server.API.V1.Stores.Services;
 using _360o.Server.API.V1.Stores.Validators;
 using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using NetTopologySuite.Geometries;
 using System.Net;
 
 namespace _360o.Server.API.V1.Stores.Controllers
@@ -16,12 +15,12 @@ namespace _360o.Server.API.V1.Stores.Controllers
     [ApiController]
     public class StoresController : ControllerBase
     {
-        private readonly ApiContext _apiContext;
+        private readonly IStoresService _storesService;
         private readonly IMapper _mapper;
 
-        public StoresController(ApiContext apiContext, IMapper mapper)
+        public StoresController(IStoresService storesService, IMapper mapper)
         {
-            _apiContext = apiContext;
+            _storesService = storesService;
             _mapper = mapper;
         }
 
@@ -34,13 +33,17 @@ namespace _360o.Server.API.V1.Stores.Controllers
 
             validator.ValidateAndThrow(request);
 
-            var store = new Store(organizationId: request.OrganizationId, place: _mapper.Map<Place>(request.Place));
+            try
+            {
+                var store = await _storesService.CreateStoreAsync(_mapper.Map<CreateStoreInput>(request));
 
-            _apiContext.Add(store);
+                return CreatedAtAction(nameof(GetStoreByIdAsync), new { id = store.Id }, _mapper.Map<StoreDTO>(store));
 
-            await _apiContext.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetStoreByIdAsync), new { id = store.Id }, _mapper.Map<StoreDTO>(store));
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return Problem(detail: ex.Message, statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.ItemNotFound.ToString());
+            }
         }
 
         [HttpGet("{id}")]
@@ -48,7 +51,7 @@ namespace _360o.Server.API.V1.Stores.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<StoreDTO>> GetStoreByIdAsync(Guid id)
         {
-            var store = await _apiContext.Stores.Include(s => s.Place).SingleOrDefaultAsync(m => m.Id == id);
+            var store = await _storesService.GetStoreByIdByAsync(id);
 
             if (store == null)
             {
@@ -65,20 +68,9 @@ namespace _360o.Server.API.V1.Stores.Controllers
 
             validator.ValidateAndThrow(request);
 
-            var stores = _apiContext.Stores.Include(m => m.Place).AsQueryable();
+            var stores = await _storesService.ListStoresAsync(_mapper.Map<ListStoresInput>(request));
 
-            if (request.Query != null)
-            {
-                stores = stores.Where(s => s.Organization.EnglishSearchVector.Matches(EF.Functions.WebSearchToTsQuery("english", request.Query)) || s.Organization.FrenchSearchVector.Matches(EF.Functions.WebSearchToTsQuery("french", request.Query)));
-            }
-
-            if (request.Latitude.HasValue && request.Longitude.HasValue && request.Radius.HasValue)
-            {
-                var locationPoint = new Point(x: request.Longitude.Value, y: request.Latitude.Value);
-                stores = stores.Where(p => p.Place.Point.Distance(locationPoint) < request.Radius.Value);
-            }
-
-            return await stores.Select(m => _mapper.Map<StoreDTO>(m)).ToListAsync();
+            return stores.Select(s => _mapper.Map<StoreDTO>(s)).ToList();
         }
 
         [HttpDelete("{id}")]
@@ -86,16 +78,14 @@ namespace _360o.Server.API.V1.Stores.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteStoreByIdAsync(Guid id)
         {
-            var store = await _apiContext.Stores.FindAsync(id);
-
-            if (store == null)
+            try
             {
-                return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.ItemNotFound.ToString());
+                await _storesService.DeleteStoreByIdAsync(id);
             }
-
-            _apiContext.Remove(store);
-
-            await _apiContext.SaveChangesAsync();
+            catch (KeyNotFoundException ex)
+            {
+                return Problem(detail: ex.Message, statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.ItemNotFound.ToString());
+            }
 
             return NoContent();
         }

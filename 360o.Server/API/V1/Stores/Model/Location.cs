@@ -1,7 +1,6 @@
-﻿using System;
-namespace _360o.Server.API.V1.Stores.Model
+﻿namespace _360o.Server.API.V1.Stores.Model
 {
-    public class Location
+    public record struct Location
     {
         public Location(double latitude, double longitude)
         {
@@ -9,9 +8,7 @@ namespace _360o.Server.API.V1.Stores.Model
             Longitude = longitude;
         }
 
-        public double Latitude { get; private set; }
-
-        public double Longitude { get; private set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
     }
 }
-
