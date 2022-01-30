@@ -113,7 +113,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
         [TestMethod]
         public async Task GivenLatitudeLongitudeAndRadiusParamsShouldReturnStoresWithinTheRadiusOfTheLocationInMeters()
         {
-            var myLocation = new Location(latitude: 46.8074417, longitude: -71.2271805);
+            var myLocation = new Location(46.8074417, -71.2271805);
 
             var twoHundredMeters = 200;
             var sixHundredMeters = 600;
@@ -272,249 +272,239 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             }
         }
 
-        //[TestMethod]
-        //public async Task GivenRadiusAndNoLatitudeAndNoLongitudeShouldReturnBadRequest()
-        //{
-        //    var faker = new Faker();
+        [TestMethod]
+        public async Task GivenRadiusAndNoLatitudeAndNoLongitudeShouldReturnBadRequest()
+        {
+            var faker = new Faker();
 
-        //    var response = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
-        //    {
-        //        Radius = faker.Random.Double()
-        //    });
+            var response = await ProgramTest.ApiClientUser1.Stores.ListStoresAsync(new ListStoresRequest
+            {
+                Radius = faker.Random.Double()
+            });
 
-        //    Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        //    var responseContent = await response.Content.ReadAsStringAsync();
+            var responseContent = await response.Content.ReadAsStringAsync();
 
-        //    var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
+            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
 
-        //    Assert.IsNotNull(result);
-        //    Assert.IsNotNull(result.Detail);
-        //    Assert.IsNotNull(result.Status);
-        //    Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
-        //    Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
-        //    Assert.IsTrue(result.Detail.Contains("Latitude"));
-        //    Assert.IsTrue(result.Detail.Contains("Longitude"));
-        //}
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Detail);
+            Assert.IsNotNull(result.Status);
+            Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
+            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
+            Assert.IsTrue(result.Detail.Contains("Latitude"));
+            Assert.IsTrue(result.Detail.Contains("Longitude"));
+        }
 
-        //[TestMethod]
-        //public async Task GivenLatitudeAndNoRadiusAndNoLongitudeShouldReturnBadRequest()
-        //{
-        //    var faker = new Faker();
+        [TestMethod]
+        public async Task GivenLatitudeAndNoRadiusAndNoLongitudeShouldReturnBadRequest()
+        {
+            var faker = new Faker();
 
-        //    var response = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
-        //    {
-        //        Latitude = faker.Address.Latitude()
-        //    });
+            var response = await ProgramTest.ApiClientUser1.Stores.ListStoresAsync(new ListStoresRequest
+            {
+                Latitude = faker.Address.Latitude()
+            });
 
-        //    Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        //    var responseContent = await response.Content.ReadAsStringAsync();
+            var responseContent = await response.Content.ReadAsStringAsync();
 
-        //    var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
+            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
 
-        //    Assert.IsNotNull(result);
-        //    Assert.IsNotNull(result.Detail);
-        //    Assert.IsNotNull(result.Status);
-        //    Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
-        //    Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
-        //    Assert.IsTrue(result.Detail.Contains("Radius"));
-        //    Assert.IsTrue(result.Detail.Contains("Longitude"));
-        //}
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Detail);
+            Assert.IsNotNull(result.Status);
+            Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
+            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
+            Assert.IsTrue(result.Detail.Contains("Radius"));
+            Assert.IsTrue(result.Detail.Contains("Longitude"));
+        }
 
-        //[TestMethod]
-        //public async Task GivenLongitudeAndNoRadiusAndNoLatitudeShouldReturnBadRequest()
-        //{
-        //    var faker = new Faker();
+        [TestMethod]
+        public async Task GivenLongitudeAndNoRadiusAndNoLatitudeShouldReturnBadRequest()
+        {
+            var faker = new Faker();
 
-        //    var response = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
-        //    {
-        //        Longitude = faker.Address.Longitude()
-        //    });
+            var response = await ProgramTest.ApiClientUser1.Stores.ListStoresAsync(new ListStoresRequest
+            {
+                Longitude = faker.Address.Longitude()
+            });
 
-        //    Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        //    var responseContent = await response.Content.ReadAsStringAsync();
+            var responseContent = await response.Content.ReadAsStringAsync();
 
-        //    var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
+            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
 
-        //    Assert.IsNotNull(result);
-        //    Assert.IsNotNull(result.Detail);
-        //    Assert.IsNotNull(result.Status);
-        //    Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
-        //    Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
-        //    Assert.IsTrue(result.Detail.Contains("Radius"));
-        //    Assert.IsTrue(result.Detail.Contains("Latitude"));
-        //}
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Detail);
+            Assert.IsNotNull(result.Status);
+            Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
+            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
+            Assert.IsTrue(result.Detail.Contains("Radius"));
+            Assert.IsTrue(result.Detail.Contains("Latitude"));
+        }
 
-        //public async Task GivenRadiusAndLatitudeAndNoLongitudeShouldReturnBadRequest()
-        //{
-        //    var faker = new Faker();
+        public async Task GivenRadiusAndLatitudeAndNoLongitudeShouldReturnBadRequest()
+        {
+            var faker = new Faker();
 
-        //    var response = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
-        //    {
-        //        Latitude = faker.Address.Latitude(),
-        //        Radius = faker.Random.Double()
-        //    });
+            var response = await ProgramTest.ApiClientUser1.Stores.ListStoresAsync(new ListStoresRequest
+            {
+                Latitude = faker.Address.Latitude(),
+                Radius = faker.Random.Double()
+            });
 
-        //    Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        //    var responseContent = await response.Content.ReadAsStringAsync();
+            var responseContent = await response.Content.ReadAsStringAsync();
 
-        //    var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
+            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
 
-        //    Assert.IsNotNull(result);
-        //    Assert.IsNotNull(result.Detail);
-        //    Assert.IsNotNull(result.Status);
-        //    Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
-        //    Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
-        //    Assert.IsTrue(result.Detail.Contains("Longitude"));
-        //}
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Detail);
+            Assert.IsNotNull(result.Status);
+            Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
+            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
+            Assert.IsTrue(result.Detail.Contains("Longitude"));
+        }
 
-        //public async Task GivenRadiusAndLongitudeAndNoLatitudeShouldReturnBadRequest()
-        //{
-        //    var faker = new Faker();
+        public async Task GivenRadiusAndLongitudeAndNoLatitudeShouldReturnBadRequest()
+        {
+            var faker = new Faker();
 
-        //    var response = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
-        //    {
-        //        Longitude = faker.Address.Longitude(),
-        //        Radius = faker.Random.Double(),
-        //    });
+            var response = await ProgramTest.ApiClientUser1.Stores.ListStoresAsync(new ListStoresRequest
+            {
+                Longitude = faker.Address.Longitude(),
+                Radius = faker.Random.Double(),
+            });
 
-        //    Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        //    var responseContent = await response.Content.ReadAsStringAsync();
+            var responseContent = await response.Content.ReadAsStringAsync();
 
-        //    var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
+            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
 
-        //    Assert.IsNotNull(result);
-        //    Assert.IsNotNull(result.Detail);
-        //    Assert.IsNotNull(result.Status);
-        //    Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
-        //    Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
-        //    Assert.IsTrue(result.Detail.Contains("Latitude"));
-        //}
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Detail);
+            Assert.IsNotNull(result.Status);
+            Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
+            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
+            Assert.IsTrue(result.Detail.Contains("Latitude"));
+        }
 
-        //public async Task GivenLatitudeAndLongitudeAndNoRadiusShouldReturnBadRequest()
-        //{
-        //    var faker = new Faker();
+        public async Task GivenLatitudeAndLongitudeAndNoRadiusShouldReturnBadRequest()
+        {
+            var faker = new Faker();
 
-        //    var response = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
-        //    {
-        //        Latitude = faker.Address.Latitude(),
-        //        Longitude = faker.Address.Longitude(),
-        //    });
+            var response = await ProgramTest.ApiClientUser1.Stores.ListStoresAsync(new ListStoresRequest
+            {
+                Latitude = faker.Address.Latitude(),
+                Longitude = faker.Address.Longitude(),
+            });
 
-        //    Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        //    var responseContent = await response.Content.ReadAsStringAsync();
+            var responseContent = await response.Content.ReadAsStringAsync();
 
-        //    var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
+            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
 
-        //    Assert.IsNotNull(result);
-        //    Assert.IsNotNull(result.Detail);
-        //    Assert.IsNotNull(result.Status);
-        //    Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
-        //    Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
-        //    Assert.IsTrue(result.Detail.Contains("Radius"));
-        //}
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Detail);
+            Assert.IsNotNull(result.Status);
+            Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
+            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
+            Assert.IsTrue(result.Detail.Contains("Radius"));
+        }
 
-        //[TestMethod]
-        //public async Task GivenQueryAndLatitudeAndLongitudeAndRadiusShouldReturnStoresThatMatchQueryWithinTheRadiusOfTheLocationInMeters()
-        //{
-        //    var myQuery = "nail";
-        //    var myLocation = new LocationDTO
-        //    {
-        //        Latitude = 52.2318464,
-        //        Longitude = 20.9998793
-        //    };
-        //    var twoKilometers = 2000;
+        [TestMethod]
+        public async Task GivenQueryAndLatitudeAndLongitudeAndRadiusShouldReturnStoresThatMatchQueryWithinTheRadiusOfTheLocationInMeters()
+        {
+            var myQuery = "nail";
+            var myLocation = new Location(52.2318464, 20.9998793);
+            var twoKilometers = 2000;
 
-        //    var user1Store1Request = RequestsGenerator.MakeRandomCreateStoreRequest();
-        //    var user1Store2Request = RequestsGenerator.MakeRandomCreateStoreRequest();
-        //    var user2Store1Request = RequestsGenerator.MakeRandomCreateStoreRequest();
-        //    var user2Store2Request = RequestsGenerator.MakeRandomCreateStoreRequest();
+            var user1Organization1Request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var user1Organization2Request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var user2Organization1Request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var user2Organization2Request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
-        //    user1Store1Request.DisplayName = "BEAUTY STUDIO SOPHIA";
-        //    user1Store1Request.EnglishCategories = new HashSet<string>(new[] { "nail salon" });
-        //    user1Store1Request.Place = new CreateMerchantPlace
-        //    {
-        //        GooglePlaceId = "ChIJ_RYTY4nNHkcRl6fA-1FcRRE",
-        //        FormattedAddress = "Chmielna 106, 00-801 Warszawa, Poland",
-        //        Location = new LocationDTO
-        //        {
-        //            Latitude = 52.2288783,
-        //            Longitude = 20.9963373
-        //        }
-        //    };
+            user1Organization1Request.Name = "BEAUTY STUDIO SOPHIA";
+            user1Organization1Request.EnglishCategories = new HashSet<string>(new[] { "nail salon" });
 
-        //    user1Store2Request.DisplayName = "Portobello Pizza & Pasta - kuchnia włoska";
-        //    user1Store2Request.Place = new CreateMerchantPlace
-        //    {
-        //        GooglePlaceId = "ChIJSYbSBiXNHkcRPVTeBjMEWBE",
-        //        FormattedAddress = "al. Jana Pawła II 12, 00-001 Warszawa, Poland",
-        //        Location = new LocationDTO
-        //        {
-        //            Latitude = 52.2318464,
-        //            Longitude = 20.9998793
-        //        }
-        //    };
+            user1Organization2Request.Name = "Portobello Pizza & Pasta - kuchnia włoska";
 
-        //    user2Store1Request.DisplayName = "Studio Hollywood Nails";
-        //    user2Store1Request.Place = new CreateMerchantPlace
-        //    {
-        //        GooglePlaceId = "ChIJkb3oh_TMHkcRvwTuCI-g9us",
-        //        FormattedAddress = "Świętokrzyska 30, 00-116 Warszawa, Poland",
-        //        Location = new LocationDTO
-        //        {
-        //            Latitude = 52.2349257,
-        //            Longitude = 21.0032608
-        //        }
-        //    };
+            user2Organization1Request.Name = "Studio Hollywood Nails";
 
-        //    user2Store2Request.DisplayName = "Aura Manicure & Pedicure";
-        //    user2Store2Request.EnglishCategories = new HashSet<string>(new[] { "nail salon" });
-        //    user2Store2Request.Place = new CreateMerchantPlace
-        //    {
-        //        GooglePlaceId = "ChIJAWdPJtEyGUcRFfnT7IcNGFg",
-        //        FormattedAddress = "Domaniewska 22A, 02-672 Warszawa, Poland",
-        //        Location = new LocationDTO
-        //        {
-        //            Latitude = 52.1881715,
-        //            Longitude = 21.0114313
-        //        }
-        //    };
+            user2Organization2Request.Name = "Aura Manicure & Pedicure";
+            user2Organization2Request.EnglishCategories = new HashSet<string>(new[] { "nail salon" });
 
-        //    var user1Store1 = await ProgramTest.StoresHelper.CreateStoreAndDeserializeAsync(user1Store1Request);
-        //    await ProgramTest.StoresHelper.CreateStoreAndDeserializeAsync(user1Store2Request);
-        //    var user2Store1 = await ProgramTest.StoresHelper.CreateStoreAndDeserializeAsync(user2Store1Request);
-        //    await ProgramTest.StoresHelper.CreateStoreAndDeserializeAsync(user2Store2Request);
+            var user1Organization1 = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(user1Organization1Request);
+            var user1Organization2 = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(user1Organization2Request);
+            var user2Organization1 = await ProgramTest.ApiClientUser2.Organizations.CreateOrganizationAndDeserializeAsync(user2Organization1Request);
+            var user2Organization2 = await ProgramTest.ApiClientUser2.Organizations.CreateOrganizationAndDeserializeAsync(user2Organization2Request);
 
-        //    var expectedStores = new Dictionary<Guid, StoreDTO>()
-        //    {
-        //        { user1Store1.Id, user1Store1 },
-        //        { user2Store1.Id, user2Store1 },
-        //    };
+            var user1Store1Request = RequestsGenerator.MakeRandomCreateStoreRequest(user1Organization1.Id);
+            var user1Store2Request = RequestsGenerator.MakeRandomCreateStoreRequest(user1Organization2.Id);
+            var user2Store1Request = RequestsGenerator.MakeRandomCreateStoreRequest(user2Organization1.Id);
+            var user2Store2Request = RequestsGenerator.MakeRandomCreateStoreRequest(user2Organization2.Id);
 
-        //    var response = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
-        //    {
-        //        Query = myQuery,
-        //        Latitude = myLocation.Latitude,
-        //        Longitude = myLocation.Longitude,
-        //        Radius = twoKilometers
-        //    });
+            user1Store1Request.Place = new CreateStoreRequestPlace
+            {
+                GooglePlaceId = "ChIJ_RYTY4nNHkcRl6fA-1FcRRE",
+                FormattedAddress = "Chmielna 106, 00-801 Warszawa, Poland",
+                Location = new Location(52.2288783, 20.9963373)
+            };
 
-        //    Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            user1Store2Request.Place = new CreateStoreRequestPlace
+            {
+                GooglePlaceId = "ChIJSYbSBiXNHkcRPVTeBjMEWBE",
+                FormattedAddress = "al. Jana Pawła II 12, 00-001 Warszawa, Poland",
+                Location = new Location(52.2318464, 20.9998793)
+            };
 
-        //    var result = await DeserializeResponseAsync(response);
+            user2Store1Request.Place = new CreateStoreRequestPlace
+            {
+                GooglePlaceId = "ChIJkb3oh_TMHkcRvwTuCI-g9us",
+                FormattedAddress = "Świętokrzyska 30, 00-116 Warszawa, Poland",
+                Location = new Location(52.2349257, 21.0032608)
+            };
 
-        //    Assert.IsNotNull(result);
-        //    Assert.AreEqual(expectedStores.Count, result.Count);
 
-        //    foreach (var store in result)
-        //    {
-        //        Assert.AreEqual(expectedStores[store.Id], store);
-        //    }
-        //}
+            user2Store2Request.Place = new CreateStoreRequestPlace
+            {
+                GooglePlaceId = "ChIJAWdPJtEyGUcRFfnT7IcNGFg",
+                FormattedAddress = "Domaniewska 22A, 02-672 Warszawa, Poland",
+                Location = new Location(52.1881715, 21.0114313)
+            };
+
+            var user1Store1 = await ProgramTest.ApiClientUser1.Stores.CreateStoreAndDeserializeAsync(user1Store1Request);
+            var user1Store2 = await ProgramTest.ApiClientUser1.Stores.CreateStoreAndDeserializeAsync(user1Store2Request);
+            var user2Store1 = await ProgramTest.ApiClientUser2.Stores.CreateStoreAndDeserializeAsync(user2Store1Request);
+            var user2Store2 = await ProgramTest.ApiClientUser2.Stores.CreateStoreAndDeserializeAsync(user2Store2Request);
+
+            var expectedStores = new Dictionary<Guid, StoreDTO>()
+            {
+                { user1Store1.Id, user1Store1 },
+                { user2Store1.Id, user2Store1 },
+            };
+
+            var stores = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
+            {
+                Query = myQuery,
+                Latitude = myLocation.Latitude,
+                Longitude = myLocation.Longitude,
+                Radius = twoKilometers
+            });
+
+            Assert.AreEqual(expectedStores.Count, stores.Count);
+
+            foreach (var store in stores)
+            {
+                Assert.AreEqual(expectedStores[store.Id], store);
+            }
+        }
     }
 }
