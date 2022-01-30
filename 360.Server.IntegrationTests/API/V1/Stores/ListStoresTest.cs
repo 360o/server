@@ -2,6 +2,7 @@
 using _360.Server.IntegrationTests.API.V1.Helpers.Generators;
 using _360o.Server.API.V1.Errors.Enums;
 using _360o.Server.API.V1.Stores.DTOs;
+using _360o.Server.API.V1.Stores.Model;
 using Bogus;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -109,226 +110,174 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             }
         }
 
-        //[TestMethod]
-        //public async Task GivenLatitudeLongitudeAndRadiusParamsShouldReturnStoresWithinTheRadiusOfTheLocationInMeters()
-        //{
-        //    var myLocation = new LocationDTO
-        //    {
-        //        Latitude = 46.8074417,
-        //        Longitude = -71.2271805
-        //    };
+        [TestMethod]
+        public async Task GivenLatitudeLongitudeAndRadiusParamsShouldReturnStoresWithinTheRadiusOfTheLocationInMeters()
+        {
+            var myLocation = new Location(latitude: 46.8074417, longitude: -71.2271805);
 
-        //    var twoHundredMeters = 200;
-        //    var sixHundredMeters = 600;
-        //    var twoKilometers = 2000;
-        //    var tenKilometers = 10000;
+            var twoHundredMeters = 200;
+            var sixHundredMeters = 600;
+            var twoKilometers = 2000;
+            var tenKilometers = 10000;
 
-        //    var storesWithinTwoHundredMeters = new Dictionary<Guid, StoreDTO>();
-        //    var storesWithinSixHundredMeters = new Dictionary<Guid, StoreDTO>();
-        //    var storesWithinTwoKilometers = new Dictionary<Guid, StoreDTO>();
-        //    var storesWithinTenKilometers = new Dictionary<Guid, StoreDTO>();
+            var storesWithinTwoHundredMeters = new Dictionary<Guid, StoreDTO>();
+            var storesWithinSixHundredMeters = new Dictionary<Guid, StoreDTO>();
+            var storesWithinTwoKilometers = new Dictionary<Guid, StoreDTO>();
+            var storesWithinTenKilometers = new Dictionary<Guid, StoreDTO>();
 
-        //    var user1Store1Request = RequestsGenerator.MakeRandomCreateStoreRequest();
-        //    var user1Store2Request = RequestsGenerator.MakeRandomCreateStoreRequest();
-        //    var user1Store3Request = RequestsGenerator.MakeRandomCreateStoreRequest();
-        //    var user1Store4Request = RequestsGenerator.MakeRandomCreateStoreRequest();
-        //    var user2Store1Request = RequestsGenerator.MakeRandomCreateStoreRequest();
-        //    var user2Store2Request = RequestsGenerator.MakeRandomCreateStoreRequest();
-        //    var user2Store3Request = RequestsGenerator.MakeRandomCreateStoreRequest();
+            var user1Organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+            var user2Organization = await ProgramTest.ApiClientUser2.Organizations.CreateRandomOrganizationAndDeserializeAsync();
 
-        //    // 200m
-        //    user1Store1Request.DisplayName = "Boulangerie La Molette";
-        //    user1Store1Request.Place = new CreateMerchantPlace
-        //    {
-        //        GooglePlaceId = "ChIJmwaUgluXuEwRWZsk59TJKnY",
-        //        FormattedAddress = "249 Rue Saint-Jean, Québec, QC G1R 1N8, Canada",
-        //        Location = new LocationDTO
-        //        {
-        //            Latitude = 46.8074417,
-        //            Longitude = -71.2271805
-        //        }
-        //    };
+            var user1Store1Request = RequestsGenerator.MakeRandomCreateStoreRequest(user1Organization.Id);
+            var user1Store2Request = RequestsGenerator.MakeRandomCreateStoreRequest(user1Organization.Id);
+            var user1Store3Request = RequestsGenerator.MakeRandomCreateStoreRequest(user1Organization.Id);
+            var user1Store4Request = RequestsGenerator.MakeRandomCreateStoreRequest(user1Organization.Id);
+            var user2Store1Request = RequestsGenerator.MakeRandomCreateStoreRequest(user2Organization.Id);
+            var user2Store2Request = RequestsGenerator.MakeRandomCreateStoreRequest(user2Organization.Id);
+            var user2Store3Request = RequestsGenerator.MakeRandomCreateStoreRequest(user2Organization.Id);
 
-        //    user1Store2Request.DisplayName = "Jumbo Jumbo Lounge";
-        //    user1Store2Request.Place = new CreateMerchantPlace
-        //    {
-        //        GooglePlaceId = "ChIJmTMHIHqWuEwRPXPWy5zuZNI",
-        //        FormattedAddress = "165 Rue Saint-Jean, Québec, QC G1R 1N4",
-        //        Location = new LocationDTO
-        //        {
-        //            Latitude = 46.807864,
-        //            Longitude = -71.2270421
-        //        }
-        //    };
+            // 200m
+            user1Store1Request.Place = new CreateStoreRequestPlace
+            {
+                GooglePlaceId = "ChIJmwaUgluXuEwRWZsk59TJKnY",
+                FormattedAddress = "249 Rue Saint-Jean, Québec, QC G1R 1N8, Canada",
+                Location = new Location(46.8074417, -71.2271805)
+            };
 
-        //    // 600m
-        //    user2Store1Request.DisplayName = "Chocolat Favoris";
-        //    user2Store1Request.Place = new CreateMerchantPlace
-        //    {
-        //        GooglePlaceId = "ChIJVTZiSnmWuEwRiMC1PoeqRFY",
-        //        FormattedAddress = "85 Boulevard René-Lévesque O, Québec, QC G1R 2A3, Canada",
-        //        Location = new LocationDTO
-        //        {
-        //            Latitude = 46.8048075,
-        //            Longitude = -71.2256069
-        //        }
-        //    };
+            user1Store2Request.Place = new CreateStoreRequestPlace
+            {
+                GooglePlaceId = "ChIJmTMHIHqWuEwRPXPWy5zuZNI",
+                FormattedAddress = "165 Rue Saint-Jean, Québec, QC G1R 1N4",
+                Location = new Location(46.807864, -71.2270421)
+            };
 
-        //    user1Store3Request.DisplayName = "Grand Théâtre de Québec";
-        //    user1Store3Request.Place = new CreateMerchantPlace
-        //    {
-        //        GooglePlaceId = "ChIJf4k1oo-WuEwRO-iB-_Asl5Q",
-        //        FormattedAddress = "269 Bd René-Lévesque E, Québec, QC G1R 2B3, Canada",
-        //        Location = new LocationDTO
-        //        {
-        //            Latitude = 46.8068828,
-        //            Longitude = -71.2245926
-        //        }
-        //    };
+            // 600m
+            user2Store1Request.Place = new CreateStoreRequestPlace
+            {
+                GooglePlaceId = "ChIJVTZiSnmWuEwRiMC1PoeqRFY",
+                FormattedAddress = "85 Boulevard René-Lévesque O, Québec, QC G1R 2A3, Canada",
+                Location = new Location(46.8048075, -71.2256069)
+            };
 
-        //    // 2km
-        //    user2Store2Request.DisplayName = "La Citadelle de Québec";
-        //    user2Store2Request.Place = new CreateMerchantPlace
-        //    {
-        //        GooglePlaceId = "ChIJO_wtXNqVuEwRBoNhbzRrcZg",
-        //        FormattedAddress = "1 Côte de la Citadelle, Québec, QC G1R 3R2, Canada",
-        //        Location = new LocationDTO
-        //        {
-        //            Latitude = 46.8079412,
-        //            Longitude = -71.2189697
-        //        }
-        //    };
+            user1Store3Request.Place = new CreateStoreRequestPlace
+            {
+                GooglePlaceId = "ChIJf4k1oo-WuEwRO-iB-_Asl5Q",
+                FormattedAddress = "269 Bd René-Lévesque E, Québec, QC G1R 2B3, Canada",
+                Location = new Location(46.8068828, -71.2245926)
+            };
 
-        //    // 10km
-        //    user1Store4Request.DisplayName = "Sakura BBQ Coréen";
-        //    user1Store4Request.Place = new CreateMerchantPlace
-        //    {
-        //        GooglePlaceId = "ChIJTWbEbimRuEwRT_YQIJcyOl8",
-        //        FormattedAddress = "3121 Bd Hochelaga, Québec, QC G1W 2P9, Canada",
-        //        Location = new LocationDTO
-        //        {
-        //            Latitude = 46.7863078,
-        //            Longitude = -71.2841527
-        //        }
-        //    };
+            // 2km
+            user2Store2Request.Place = new CreateStoreRequestPlace
+            {
+                GooglePlaceId = "ChIJO_wtXNqVuEwRBoNhbzRrcZg",
+                FormattedAddress = "1 Côte de la Citadelle, Québec, QC G1R 3R2, Canada",
+                Location = new Location(46.8079412, -71.2189697)
+            };
 
-        //    user2Store3Request.DisplayName = "Maxi";
-        //    user2Store3Request.Place = new CreateMerchantPlace
-        //    {
-        //        GooglePlaceId = "ChIJp8qY5EaWuEwR_Su2geare9E",
-        //        FormattedAddress = "552 Bd Wilfrid-Hamel, Québec, QC G1M 3E5, Canada",
-        //        Location = new LocationDTO
-        //        {
-        //            Latitude = 46.8180445,
-        //            Longitude = -71.2536773
-        //        }
-        //    };
+            // 10km
+            user1Store4Request.Place = new CreateStoreRequestPlace
+            {
+                GooglePlaceId = "ChIJTWbEbimRuEwRT_YQIJcyOl8",
+                FormattedAddress = "3121 Bd Hochelaga, Québec, QC G1W 2P9, Canada",
+                Location = new Location(46.7863078, -71.2841527)
+            };
 
-        //    var user1Store1 = await ProgramTest.StoresHelper.CreateStoreAndDeserializeAsync(user1Store1Request);
-        //    var user1Store2 = await ProgramTest.StoresHelper.CreateStoreAndDeserializeAsync(user1Store2Request);
-        //    var user1Store3 = await ProgramTest.StoresHelper.CreateStoreAndDeserializeAsync(user1Store3Request);
-        //    var user1Store4 = await ProgramTest.StoresHelper.CreateStoreAndDeserializeAsync(user1Store4Request);
-        //    var user2Store1 = await ProgramTest.StoresHelper.CreateStoreAndDeserializeAsync(user2Store1Request);
-        //    var user2Store2 = await ProgramTest.StoresHelper.CreateStoreAndDeserializeAsync(user2Store2Request);
-        //    var user2Store3 = await ProgramTest.StoresHelper.CreateStoreAndDeserializeAsync(user2Store3Request);
+            user2Store3Request.Place = new CreateStoreRequestPlace
+            {
+                GooglePlaceId = "ChIJp8qY5EaWuEwR_Su2geare9E",
+                FormattedAddress = "552 Bd Wilfrid-Hamel, Québec, QC G1M 3E5, Canada",
+                Location = new Location(46.8180445, -71.2536773)
+            };
 
-        //    storesWithinTwoHundredMeters.Add(user1Store1.Id, user1Store1);
-        //    storesWithinTwoHundredMeters.Add(user1Store2.Id, user1Store2);
+            var user1Store1 = await ProgramTest.ApiClientUser1.Stores.CreateStoreAndDeserializeAsync(user1Store1Request);
+            var user1Store2 = await ProgramTest.ApiClientUser1.Stores.CreateStoreAndDeserializeAsync(user1Store2Request);
+            var user1Store3 = await ProgramTest.ApiClientUser1.Stores.CreateStoreAndDeserializeAsync(user1Store3Request);
+            var user1Store4 = await ProgramTest.ApiClientUser1.Stores.CreateStoreAndDeserializeAsync(user1Store4Request);
+            var user2Store1 = await ProgramTest.ApiClientUser2.Stores.CreateStoreAndDeserializeAsync(user2Store1Request);
+            var user2Store2 = await ProgramTest.ApiClientUser2.Stores.CreateStoreAndDeserializeAsync(user2Store2Request);
+            var user2Store3 = await ProgramTest.ApiClientUser2.Stores.CreateStoreAndDeserializeAsync(user2Store3Request);
 
-        //    storesWithinTwoHundredMeters.ToList().ForEach(kv => storesWithinSixHundredMeters.Add(kv.Key, kv.Value));
-        //    storesWithinSixHundredMeters.Add(user2Store1.Id, user2Store1);
-        //    storesWithinSixHundredMeters.Add(user1Store3.Id, user1Store3);
+            storesWithinTwoHundredMeters.Add(user1Store1.Id, user1Store1);
+            storesWithinTwoHundredMeters.Add(user1Store2.Id, user1Store2);
 
-        //    storesWithinSixHundredMeters.ToList().ForEach(kv => storesWithinTwoKilometers.Add(kv.Key, kv.Value));
-        //    storesWithinTwoKilometers.Add(user2Store2.Id, user2Store2);
+            storesWithinTwoHundredMeters.ToList().ForEach(kv => storesWithinSixHundredMeters.Add(kv.Key, kv.Value));
+            storesWithinSixHundredMeters.Add(user2Store1.Id, user2Store1);
+            storesWithinSixHundredMeters.Add(user1Store3.Id, user1Store3);
 
-        //    storesWithinTwoKilometers.ToList().ForEach(kv => storesWithinTenKilometers.Add(kv.Key, kv.Value));
-        //    storesWithinTenKilometers.Add(user1Store4.Id, user1Store4);
-        //    storesWithinTenKilometers.Add(user2Store3.Id, user2Store3);
+            storesWithinSixHundredMeters.ToList().ForEach(kv => storesWithinTwoKilometers.Add(kv.Key, kv.Value));
+            storesWithinTwoKilometers.Add(user2Store2.Id, user2Store2);
 
-        //    var twoHundredMetersResponse = await ProgramTest.StoresHelper.ListStoresAsync(new ListStoresRequest
-        //    {
-        //        Latitude = myLocation.Latitude,
-        //        Longitude = myLocation.Longitude,
-        //        Radius = twoHundredMeters
-        //    });
+            storesWithinTwoKilometers.ToList().ForEach(kv => storesWithinTenKilometers.Add(kv.Key, kv.Value));
+            storesWithinTenKilometers.Add(user1Store4.Id, user1Store4);
+            storesWithinTenKilometers.Add(user2Store3.Id, user2Store3);
 
-        //    Assert.AreEqual(HttpStatusCode.OK, twoHundredMetersResponse.StatusCode);
+            var twoHundredMetersStores = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
+            {
+                Latitude = myLocation.Latitude,
+                Longitude = myLocation.Longitude,
+                Radius = twoHundredMeters
+            });
 
-        //    var twoHundredMetersResult = await DeserializeResponseAsync(twoHundredMetersResponse);
+            Assert.IsNotNull(twoHundredMetersStores);
+            Assert.AreEqual(storesWithinTwoHundredMeters.Count, twoHundredMetersStores.Count);
 
-        //    Assert.IsNotNull(twoHundredMetersResult);
-        //    Assert.AreEqual(storesWithinTwoHundredMeters.Count, twoHundredMetersResult.Count);
+            foreach (var store in twoHundredMetersStores)
+            {
+                Assert.AreEqual(storesWithinTwoHundredMeters[store.Id], store);
+            }
 
-        //    foreach (var store in twoHundredMetersResult)
-        //    {
-        //        ProgramTest.StoresHelper.AssertStoresEqual(storesWithinTwoHundredMeters[store.Id], store);
-        //    }
+            var sixHundredMetersStore = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
+            {
+                Latitude = myLocation.Latitude,
+                Longitude = myLocation.Longitude,
+                Radius = sixHundredMeters
+            });
 
-        //    var sixHundredMetersResponse = await ProgramTest.StoresHelper.ListStoresAsync(new ListStoresRequest
-        //    {
-        //        Latitude = myLocation.Latitude,
-        //        Longitude = myLocation.Longitude,
-        //        Radius = sixHundredMeters
-        //    });
+            Assert.IsNotNull(sixHundredMetersStore);
+            Assert.AreEqual(storesWithinSixHundredMeters.Count, sixHundredMetersStore.Count);
 
-        //    Assert.AreEqual(HttpStatusCode.OK, sixHundredMetersResponse.StatusCode);
+            foreach (var store in sixHundredMetersStore)
+            {
+                Assert.AreEqual(storesWithinSixHundredMeters[store.Id], store);
+            }
 
-        //    var sixHundredMetersResult = await DeserializeResponseAsync(sixHundredMetersResponse);
+            var twoKilometersStores = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
+            {
+                Latitude = myLocation.Latitude,
+                Longitude = myLocation.Longitude,
+                Radius = twoKilometers
+            });
 
-        //    Assert.IsNotNull(sixHundredMetersResult);
-        //    Assert.AreEqual(storesWithinSixHundredMeters.Count, sixHundredMetersResult.Count);
+            Assert.IsNotNull(twoKilometersStores);
+            Assert.AreEqual(storesWithinTwoKilometers.Count, twoKilometersStores.Count);
 
-        //    foreach (var store in sixHundredMetersResult)
-        //    {
-        //        ProgramTest.StoresHelper.AssertStoresEqual(storesWithinSixHundredMeters[store.Id], store);
-        //    }
+            foreach (var store in twoKilometersStores)
+            {
+                Assert.AreEqual(storesWithinTwoKilometers[store.Id], store);
+            }
 
-        //    var twoKilometersResponse = await ProgramTest.StoresHelper.ListStoresAsync(new ListStoresRequest
-        //    {
-        //        Latitude = myLocation.Latitude,
-        //        Longitude = myLocation.Longitude,
-        //        Radius = twoKilometers
-        //    });
+            var tenKilometersStores = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
+            {
+                Latitude = myLocation.Latitude,
+                Longitude = myLocation.Longitude,
+                Radius = tenKilometers
+            });
 
-        //    Assert.AreEqual(HttpStatusCode.OK, twoKilometersResponse.StatusCode);
+            Assert.IsNotNull(tenKilometersStores);
+            Assert.AreEqual(storesWithinTenKilometers.Count, tenKilometersStores.Count);
 
-        //    var twoKilometersResult = await DeserializeResponseAsync(twoKilometersResponse);
-
-        //    Assert.IsNotNull(twoKilometersResult);
-        //    Assert.AreEqual(storesWithinTwoKilometers.Count, twoKilometersResult.Count);
-
-        //    foreach (var store in twoKilometersResult)
-        //    {
-        //        ProgramTest.StoresHelper.AssertStoresEqual(storesWithinTwoKilometers[store.Id], store);
-        //    }
-
-        //    var tenKilometersResponse = await ProgramTest.StoresHelper.ListStoresAsync(new ListStoresRequest
-        //    {
-        //        Latitude = myLocation.Latitude,
-        //        Longitude = myLocation.Longitude,
-        //        Radius = tenKilometers
-        //    });
-
-        //    Assert.AreEqual(HttpStatusCode.OK, tenKilometersResponse.StatusCode);
-
-        //    var tenKilometersResult = await DeserializeResponseAsync(tenKilometersResponse);
-
-        //    Assert.IsNotNull(tenKilometersResult);
-        //    Assert.AreEqual(storesWithinTenKilometers.Count, tenKilometersResult.Count);
-
-        //    foreach (var store in tenKilometersResult)
-        //    {
-        //        ProgramTest.StoresHelper.AssertStoresEqual(storesWithinTenKilometers[store.Id], store);
-        //    }
-        //}
+            foreach (var store in tenKilometersStores)
+            {
+                Assert.AreEqual(storesWithinTenKilometers[store.Id], store);
+            }
+        }
 
         //[TestMethod]
         //public async Task GivenRadiusAndNoLatitudeAndNoLongitudeShouldReturnBadRequest()
         //{
         //    var faker = new Faker();
 
-        //    var response = await ProgramTest.StoresHelper.ListStoresAsync(new ListStoresRequest
+        //    var response = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
         //    {
         //        Radius = faker.Random.Double()
         //    });
@@ -353,7 +302,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
         //{
         //    var faker = new Faker();
 
-        //    var response = await ProgramTest.StoresHelper.ListStoresAsync(new ListStoresRequest
+        //    var response = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
         //    {
         //        Latitude = faker.Address.Latitude()
         //    });
@@ -378,7 +327,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
         //{
         //    var faker = new Faker();
 
-        //    var response = await ProgramTest.StoresHelper.ListStoresAsync(new ListStoresRequest
+        //    var response = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
         //    {
         //        Longitude = faker.Address.Longitude()
         //    });
@@ -402,7 +351,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
         //{
         //    var faker = new Faker();
 
-        //    var response = await ProgramTest.StoresHelper.ListStoresAsync(new ListStoresRequest
+        //    var response = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
         //    {
         //        Latitude = faker.Address.Latitude(),
         //        Radius = faker.Random.Double()
@@ -426,7 +375,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
         //{
         //    var faker = new Faker();
 
-        //    var response = await ProgramTest.StoresHelper.ListStoresAsync(new ListStoresRequest
+        //    var response = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
         //    {
         //        Longitude = faker.Address.Longitude(),
         //        Radius = faker.Random.Double(),
@@ -450,7 +399,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
         //{
         //    var faker = new Faker();
 
-        //    var response = await ProgramTest.StoresHelper.ListStoresAsync(new ListStoresRequest
+        //    var response = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
         //    {
         //        Latitude = faker.Address.Latitude(),
         //        Longitude = faker.Address.Longitude(),
@@ -547,7 +496,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
         //        { user2Store1.Id, user2Store1 },
         //    };
 
-        //    var response = await ProgramTest.StoresHelper.ListStoresAsync(new ListStoresRequest
+        //    var response = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
         //    {
         //        Query = myQuery,
         //        Latitude = myLocation.Latitude,
@@ -564,7 +513,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
         //    foreach (var store in result)
         //    {
-        //        ProgramTest.StoresHelper.AssertStoresEqual(expectedStores[store.Id], store);
+        //        Assert.AreEqual(expectedStores[store.Id], store);
         //    }
         //}
     }
