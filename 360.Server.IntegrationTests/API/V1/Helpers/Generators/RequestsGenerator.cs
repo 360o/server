@@ -14,7 +14,7 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.Generators
             var englishFaker = new Faker();
             var frenchFaker = new Faker(locale: "fr");
 
-            var request = new CreateOrganizationRequest
+            return new CreateOrganizationRequest
             {
                 Name = englishFaker.Company.CompanyName(),
                 EnglishShortDescription = englishFaker.Company.CatchPhrase(),
@@ -24,15 +24,13 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.Generators
                 FrenchLongDescription = frenchFaker.Commerce.ProductDescription(),
                 FrenchCategories = frenchFaker.Commerce.Categories(frenchFaker.Random.Int(0, 5)).ToHashSet(),
             };
-
-            return request;
         }
 
         public static CreateStoreRequest MakeRandomCreateStoreRequest(Guid organizationId)
         {
             var faker = new Faker();
 
-            var request = new CreateStoreRequest
+            return new CreateStoreRequest
             {
                 OrganizationId = organizationId,
                 Place = new CreateStoreRequestPlace
@@ -42,8 +40,24 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.Generators
                     Location = new Location(faker.Address.Latitude(), faker.Address.Longitude())
                 },
             };
+        }
 
-            return request;
+        public static CreateItemRequest MakeRandomCreateItemRequest()
+        {
+            var englishFaker = new Faker();
+            var frenchFaker = new Faker(locale: "fr");
+
+            return new CreateItemRequest
+            {
+                Name = englishFaker.Commerce.ProductName(),
+                EnglishDescription = englishFaker.Commerce.ProductDescription(),
+                FrenchDescription = frenchFaker.Commerce.ProductDescription(),
+                Price = new MoneyValue
+                {
+                    Amount = englishFaker.Random.Decimal(0, 100),
+                    CurrencyCode = englishFaker.PickRandom<Iso4217CurrencyCode>()
+                }
+            };
         }
     }
 }

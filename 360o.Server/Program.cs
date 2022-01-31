@@ -41,10 +41,6 @@ builder.Services
     .AddControllers(options =>
     {
         options.SuppressAsyncSuffixInActionNames = false;
-    })
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);

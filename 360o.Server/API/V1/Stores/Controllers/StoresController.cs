@@ -122,7 +122,7 @@ namespace _360o.Server.API.V1.Stores.Controllers
 
             var item = await _storesService.CreateItemAsync(new CreateItemInput(storeId, request.Name, request.EnglishDescription, request.FrenchDescription, request.Price));
 
-            return CreatedAtAction(nameof(GetStoreByIdAsync), new { id = item.Id }, _mapper.Map<StoreDTO>(item));
+            return CreatedAtAction(nameof(GetItemByIdAsync), new { storeId = storeId, itemId = item.Id }, _mapper.Map<ItemDTO>(item));
         }
 
         [HttpGet("{storeId}/items/{itemId}")]

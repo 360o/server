@@ -1,6 +1,5 @@
 ﻿using _360o.Server.API.V1.Organizations.DTOs;
 using _360o.Server.API.V1.Organizations.Model;
-using _360o.Server.API.V1.Organizations.Services;
 using _360o.Server.API.V1.Stores.DTOs;
 using _360o.Server.API.V1.Stores.Model;
 using _360o.Server.API.V1.Stores.Services;
@@ -20,6 +19,8 @@ namespace _360o.Server.API.V1
             CreateMap<ListStoresRequest, ListStoresInput>();
 
             CreateMap<Organization, OrganizationDTO>();
+
+            CreateMap<Item, ItemDTO>();
         }
     }
 }

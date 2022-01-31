@@ -14,8 +14,6 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
 {
     public class StoresService
     {
-        public static string BaseRoute => "/api/v1/Stores";
-
         private readonly IAuthService _authService;
 
         public StoresService(IAuthService authService)
@@ -40,7 +38,7 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
             var store = await Utils.DeserializeAsync<StoreDTO>(response);
 
             Assert.IsTrue(Guid.TryParse(store.Id.ToString(), out var _));
-            Assert.AreEqual($"{BaseRoute}/{store.Id}", response.Headers.Location.AbsolutePath);
+            Assert.AreEqual($"/api/v1/Stores/{store.Id}", response.Headers.Location.AbsolutePath);
 
             return store;
         }
@@ -110,6 +108,36 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
         public async Task<HttpResponseMessage> DeleteStoreByIdAsync(Guid id)
         {
             return await ProgramTest.NewClient(await _authService.GetAccessToken()).DeleteAsync($"/api/v1/stores/{id}");
+        }
+
+        public async Task<HttpResponseMessage> CreateItemAsync(Guid storeId, CreateItemRequest request)
+        {
+            var requestContent = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+
+            return await ProgramTest.NewClient(await _authService.GetAccessToken()).PostAsync($"/api/v1/stores/{storeId}/items", requestContent);
+        }
+
+        public async Task<ItemDTO> CreateItemAndDeserializeAsync(Guid storeId, CreateItemRequest request)
+        {
+            var response = await CreateItemAsync(storeId, request);
+
+            Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+            Assert.IsNotNull(response.Headers.Location);
+
+            var item = await Utils.DeserializeAsync<ItemDTO>(response);
+
+            Assert.IsNotNull(item);
+            Assert.IsTrue(Guid.TryParse(item.Id.ToString(), out var _));
+            Assert.AreEqual($"/api/v1/Stores/{storeId}/items/{item.Id}", response.Headers.Location.AbsolutePath);
+
+            return item;
+        }
+
+        public async Task<ItemDTO> CreateRandomItemAndDeserializeAsync(Guid storeId)
+        {
+            var request = RequestsGenerator.MakeRandomCreateItemRequest();
+
+            return await CreateItemAndDeserializeAsync(storeId, request);
         }
     }
 }
