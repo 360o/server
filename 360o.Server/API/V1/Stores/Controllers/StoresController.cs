@@ -1,6 +1,6 @@
 ﻿using _360o.Server.API.V1.Errors.Enums;
+using _360o.Server.API.V1.Organizations.Services;
 using _360o.Server.API.V1.Stores.DTOs;
-using _360o.Server.API.V1.Stores.Model;
 using _360o.Server.API.V1.Stores.Services;
 using _360o.Server.API.V1.Stores.Validators;
 using AutoMapper;
@@ -15,17 +15,19 @@ namespace _360o.Server.API.V1.Stores.Controllers
     [ApiController]
     public class StoresController : ControllerBase
     {
+        private readonly IOrganizationsService _organizationsService;
         private readonly IStoresService _storesService;
         private readonly IMapper _mapper;
 
-        public StoresController(IStoresService storesService, IMapper mapper)
+        public StoresController(IOrganizationsService organizations, IStoresService storesService, IMapper mapper)
         {
+            _organizationsService = organizations;
             _storesService = storesService;
             _mapper = mapper;
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(StoreDTO))]
         [Authorize]
         public async Task<ActionResult<StoreDTO>> CreateStoreAsync([FromBody] CreateStoreRequest request)
         {
@@ -33,21 +35,20 @@ namespace _360o.Server.API.V1.Stores.Controllers
 
             validator.ValidateAndThrow(request);
 
-            try
-            {
-                var store = await _storesService.CreateStoreAsync(_mapper.Map<CreateStoreInput>(request));
+            var organization = await _organizationsService.GetOrganizationByIdAsync(request.OrganizationId);
 
-                return CreatedAtAction(nameof(GetStoreByIdAsync), new { id = store.Id }, _mapper.Map<StoreDTO>(store));
-
-            }
-            catch (KeyNotFoundException ex)
+            if (organization == null)
             {
-                return Problem(detail: ex.Message, statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.ItemNotFound.ToString());
+                return Problem(detail: "Organization not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.ItemNotFound.ToString());
             }
+
+            var store = await _storesService.CreateStoreAsync(_mapper.Map<CreateStoreInput>(request));
+
+            return CreatedAtAction(nameof(GetStoreByIdAsync), new { id = store.Id }, _mapper.Map<StoreDTO>(store));
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Store))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(StoreDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<StoreDTO>> GetStoreByIdAsync(Guid id)
         {
@@ -62,6 +63,7 @@ namespace _360o.Server.API.V1.Stores.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IList<StoreDTO>))]
         public async Task<IList<StoreDTO>> ListStoresAsync([FromQuery] ListStoresRequest request)
         {
             var validator = new ListStoresRequestValidator();
@@ -88,6 +90,61 @@ namespace _360o.Server.API.V1.Stores.Controllers
             }
 
             return NoContent();
+        }
+
+        [HttpPost("{storeId}/items")]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ItemDTO))]
+        [Authorize]
+        public async Task<ActionResult<ItemDTO>> CreateItemAsync(Guid storeId, [FromBody] CreateItemRequest request)
+        {
+            var validator = new CreateItemRequestValidator();
+
+            validator.ValidateAndThrow(request);
+
+            var store = await _storesService.GetStoreByIdByAsync(storeId);
+
+            if (store == null)
+            {
+                return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.ItemNotFound.ToString());
+            }
+
+            var organization = await _organizationsService.GetOrganizationByIdAsync(store.OrganizationId);
+
+            if (organization == null)
+            {
+                return Problem(detail: "Organization not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.ItemNotFound.ToString());
+            }
+
+            if (User.Identity.Name != organization.UserId)
+            {
+                return Forbid();
+            }
+
+            var item = await _storesService.CreateItemAsync(new CreateItemInput(storeId, request.Name, request.EnglishDescription, request.FrenchDescription, request.Price));
+
+            return CreatedAtAction(nameof(GetStoreByIdAsync), new { id = item.Id }, _mapper.Map<StoreDTO>(item));
+        }
+
+        [HttpGet("{storeId}/items/{itemId}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ItemDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<ItemDTO>> GetItemByIdAsync(Guid storeId, Guid itemId)
+        {
+            var store = await _storesService.GetStoreByIdByAsync(storeId);
+
+            if (store == null)
+            {
+                return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.ItemNotFound.ToString());
+            }
+
+            var item = await _storesService.GetItembyIdAsync(itemId);
+
+            if (item == null)
+            {
+                return Problem(detail: "Item not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.ItemNotFound.ToString());
+            }
+
+            return _mapper.Map<ItemDTO>(item);
         }
     }
 }

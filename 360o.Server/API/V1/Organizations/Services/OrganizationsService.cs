@@ -7,17 +7,38 @@ namespace _360o.Server.API.V1.Organizations.Services
     public class OrganizationsService : IOrganizationsService
     {
         private readonly ApiContext _apiContext;
-        private readonly IMapper _mapper;
 
-        public OrganizationsService(ApiContext apiContext, IMapper mapper)
+        public OrganizationsService(ApiContext apiContext)
         {
             _apiContext = apiContext;
-            _mapper = mapper;
         }
 
         public async Task<Organization> CreateOrganizationAsync(CreateOrganizationInput input)
         {
-            var organization = _mapper.Map<Organization>(input);
+            var organization = new Organization(
+                input.UserId,
+                input.Name,
+                input.EnglishShortDescription,
+                input.EnglishLongDescription,
+                input.FrenchShortDescription,
+                input.FrenchLongDescription
+                );
+
+            if (input.EnglishCategories != null)
+            {
+                foreach (var category in input.EnglishCategories)
+                {
+                    organization.AddEnglishCategory(category);
+                }
+            }
+
+            if (input.FrenchCategories != null)
+            {
+                foreach (var category in input.FrenchCategories)
+                {
+                    organization.AddFrenchCategory(category);
+                }
+            }
 
             _apiContext.Add(organization);
 

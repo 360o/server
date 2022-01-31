@@ -1,5 +1,4 @@
-﻿using _360o.Server.API.V1.Organizations.Services;
-using _360o.Server.API.V1.Stores.Model;
+﻿using _360o.Server.API.V1.Stores.Model;
 using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.Geometries;
 
@@ -8,25 +7,16 @@ namespace _360o.Server.API.V1.Stores.Services
     public class StoresService : IStoresService
     {
         private readonly ApiContext _apiContext;
-        private readonly IOrganizationsService _organizationsService;
 
-        public StoresService(ApiContext apiContext, IOrganizationsService organizationsService)
+        public StoresService(ApiContext apiContext)
         {
             _apiContext = apiContext;
-            _organizationsService = organizationsService;
         }
 
         public async Task<Store> CreateStoreAsync(CreateStoreInput input)
         {
-            var organization = await _organizationsService.GetOrganizationByIdAsync(input.OrganizationId);
-
-            if (organization == null)
-            {
-                throw new KeyNotFoundException("Organization not found");
-            }
-
             var store = new Store(
-                organization.Id,
+                input.OrganizationId,
                 new Place(
                     input.Place.GooglePlaceId,
                     input.Place.FormattedAddress,
@@ -77,6 +67,28 @@ namespace _360o.Server.API.V1.Stores.Services
             _apiContext.Stores.Remove(store);
 
             await _apiContext.SaveChangesAsync();
+        }
+
+        public async Task<Item> CreateItemAsync(CreateItemInput input)
+        {
+            var item = new Item(
+                input.StoreId,
+                input.Name,
+                input.EnglishDescription,
+                input.FrenchDescription,
+                input.Price
+                );
+
+            _apiContext.Add(item);
+
+            await _apiContext.SaveChangesAsync();
+
+            return item;
+        }
+
+        public async Task<Item?> GetItembyIdAsync(Guid id)
+        {
+            return await _apiContext.Items.FindAsync(id);
         }
     }
 }

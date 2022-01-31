@@ -19,7 +19,6 @@ namespace _360o.Server.API.V1
             CreateMap<Store, StoreDTO>();
             CreateMap<ListStoresRequest, ListStoresInput>();
 
-            CreateMap<CreateOrganizationInput, Organization>();
             CreateMap<Organization, OrganizationDTO>();
         }
     }
