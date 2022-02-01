@@ -77,41 +77,11 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             Assert.AreEqual(HttpStatusCode.Forbidden, response.StatusCode);
         }
 
-        [TestMethod]
-        public async Task GivenNullGooglePlaceIdShouldReturnBadRequest()
-        {
-            var request = RequestsGenerator.MakeRandomCreateStoreRequest(Guid.NewGuid());
-
-            request = request with
-            {
-                Place = new CreateStoreRequestPlace
-                {
-                    GooglePlaceId = null!,
-                    FormattedAddress = request.Place.FormattedAddress,
-                    Location = request.Place.Location,
-                }
-            };
-
-            var response = await ProgramTest.ApiClientUser1.Stores.CreateStoreAsync(request);
-
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
-
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.Detail);
-            Assert.IsNotNull(result.Status);
-            Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
-            Assert.IsTrue(result.Detail.Contains("GooglePlaceId"));
-        }
-
         [DataTestMethod]
+        [DataRow(null)]
         [DataRow("")]
         [DataRow(" ")]
-        public async Task GivenEmptyOrWhitespaceGooglePlaceIdShouldReturnBadRequest(string googlePlaceId)
+        public async Task GivenNullOrWhitespaceGooglePlaceIdShouldReturnBadRequest(string googlePlaceId)
         {
             var request = RequestsGenerator.MakeRandomCreateStoreRequest(Guid.NewGuid());
 
@@ -141,41 +111,11 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             Assert.IsTrue(result.Detail.Contains("GooglePlaceId"));
         }
 
-        [TestMethod]
-        public async Task GivenNullFormattedAddressShouldReturnBadRequest()
-        {
-            var request = RequestsGenerator.MakeRandomCreateStoreRequest(Guid.NewGuid());
-
-            request = request with
-            {
-                Place = new CreateStoreRequestPlace
-                {
-                    GooglePlaceId = request.Place.GooglePlaceId,
-                    FormattedAddress = null,
-                    Location = request.Place.Location,
-                }
-            };
-
-            var response = await ProgramTest.ApiClientUser1.Stores.CreateStoreAsync(request);
-
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
-
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.Detail);
-            Assert.IsNotNull(result.Status);
-            Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
-            Assert.IsTrue(result.Detail.Contains("FormattedAddress"));
-        }
-
         [DataTestMethod]
+        [DataRow(null)]
         [DataRow("")]
         [DataRow(" ")]
-        public async Task GivenEmptyOrWhitespaceFormattedAddressShouldReturnBadRequest(string formattedAddress)
+        public async Task GivenNullOrWhitespaceFormattedAddressShouldReturnBadRequest(string formattedAddress)
         {
             var request = RequestsGenerator.MakeRandomCreateStoreRequest(Guid.NewGuid());
 

@@ -18,14 +18,14 @@
 
             StoreId = storeId;
             Name = name;
-            EnglishDescription = englishDescription;
-            FrenchDescription = frenchDescription;
+            EnglishDescription = englishDescription == null ? string.Empty : englishDescription.Trim();
+            FrenchDescription = frenchDescription == null ? string.Empty : frenchDescription.Trim();
             Price = price;
         }
 
         public string Name { get; private set; }
-        public string? EnglishDescription { get; private set; }
-        public string? FrenchDescription { get; private set; }
+        public string EnglishDescription { get; private set; }
+        public string FrenchDescription { get; private set; }
         public MoneyValue? Price { get; private set; }
 
         public Guid StoreId { get; private set; }

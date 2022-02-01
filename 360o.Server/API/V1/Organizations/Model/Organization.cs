@@ -13,10 +13,10 @@ namespace _360o.Server.API.V1.Organizations.Model
         {
             UserId = userId;
             Name = name;
-            EnglishShortDescription = englishShortDescription ?? string.Empty;
-            EnglishLongDescription = englishLongDescription ?? string.Empty;
-            FrenchShortDescription = frenchShortDescription ?? string.Empty;
-            FrenchLongDescription = frenchLongDescription ?? string.Empty;
+            EnglishShortDescription = englishShortDescription == null ? string.Empty : englishShortDescription.Trim();
+            EnglishLongDescription = englishLongDescription == null ? string.Empty : englishLongDescription.Trim();
+            FrenchShortDescription = frenchShortDescription == null ? string.Empty : frenchShortDescription.Trim();
+            FrenchLongDescription = frenchLongDescription == null ? string.Empty : frenchLongDescription.Trim();
         }
 
         public string UserId { get; private set; }

@@ -1,19 +1,23 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.IdentityModel.Tokens;
-using _360o.Server;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
-using System.Text.Json.Serialization;
-using _360o.Server.API.V1.Stores.Model;
+﻿using _360o.Server;
 using _360o.Server.API.V1;
 using _360o.Server.API.V1.Organizations.Services;
+using _360o.Server.API.V1.Stores.Model;
 using _360o.Server.API.V1.Stores.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.Configure<ApiBehaviorOptions>(
+    options => options.SuppressModelStateInvalidFilter = true
+    );
 
 builder.Services.AddDbContext<ApiContext>(options =>
 {

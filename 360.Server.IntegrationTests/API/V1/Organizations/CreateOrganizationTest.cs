@@ -44,30 +44,11 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
             Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
-        [TestMethod]
-        public async Task GivenNullNameShouldReturnBadRequest()
-        {
-            var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
-
-            request = request with { Name = null };
-
-            var response = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAsync(request);
-
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
-
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.Status);
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
-        }
-
         [DataTestMethod]
+        [DataRow(null)]
         [DataRow("")]
         [DataRow(" ")]
-        public async Task GivenEmptyOrWhitespaceNameShouldReturnBadRequest(string name)
+        public async Task GivenNullWhitespaceNameShouldReturnBadRequest(string name)
         {
             var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
@@ -89,22 +70,11 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
             Assert.IsTrue(result.Detail.Contains("Name"));
         }
 
-        [TestMethod]
-        public async Task GivenNullEnglishShortDescriptionShouldReturnCreated()
-        {
-            var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
-
-            request = request with { EnglishShortDescription = null };
-
-            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
-
-            Assert.AreEqual(string.Empty, organization.EnglishShortDescription);
-        }
-
         [DataTestMethod]
         [DataRow("")]
         [DataRow(" ")]
-        public async Task GivenEmptyOrWhitespaceEnglishShortDescriptionShouldReturnCreated(string englishShortDescription)
+        [DataRow(null)]
+        public async Task GivenNullOrWhitespaceEnglishShortDescriptionShouldReturnCreated(string englishShortDescription)
         {
             var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
@@ -112,25 +82,14 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
 
-            Assert.AreEqual(englishShortDescription, organization.EnglishShortDescription);
-        }
-
-        [TestMethod]
-        public async Task GivenNullEnglishLongDescriptionShouldReturnCreated()
-        {
-            var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
-
-            request = request with { EnglishLongDescription = null };
-
-            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
-
-            Assert.AreEqual(string.Empty, organization.EnglishLongDescription);
+            Assert.AreEqual(string.Empty, organization.EnglishShortDescription);
         }
 
         [DataTestMethod]
+        [DataRow(null)]
         [DataRow("")]
         [DataRow(" ")]
-        public async Task GivenEmptyOrWhitespaceEnglishLongDescriptionShouldReturnCreated(string englishLongDescription)
+        public async Task GivenNullOrWhitespaceEnglishLongDescriptionShouldReturnCreated(string englishLongDescription)
         {
             var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
@@ -138,7 +97,7 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
 
-            Assert.AreEqual(englishLongDescription, organization.EnglishLongDescription);
+            Assert.AreEqual(string.Empty, organization.EnglishLongDescription);
         }
 
         [TestMethod]
@@ -165,22 +124,11 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
             Assert.AreEqual(0, organization.EnglishCategories.Count);
         }
 
-        [TestMethod]
-        public async Task GivenNullFrenchShortDescriptionShouldReturnCreated()
-        {
-            var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
-
-            request = request with { FrenchShortDescription = null };
-
-            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
-
-            Assert.AreEqual(string.Empty, organization.FrenchShortDescription);
-        }
-
         [DataTestMethod]
+        [DataRow(null)]
         [DataRow("")]
         [DataRow(" ")]
-        public async Task GivenEmptyOrWhitespaceFrenchShortDescriptionShouldReturnCreated(string frenchShortDescription)
+        public async Task GivenNullOrWhitespaceFrenchShortDescriptionShouldReturnCreated(string frenchShortDescription)
         {
             var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
@@ -188,22 +136,11 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
 
-            Assert.AreEqual(frenchShortDescription, organization.FrenchShortDescription);
-        }
-
-        [TestMethod]
-        public async Task GivenNullFrenchLongDescriptionShouldReturnCreated()
-        {
-            var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
-
-            request = request with { FrenchLongDescription = null };
-
-            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
-
-            Assert.AreEqual(string.Empty, organization.FrenchLongDescription);
+            Assert.AreEqual(string.Empty, organization.FrenchShortDescription);
         }
 
         [DataTestMethod]
+        [DataRow(null)]
         [DataRow("")]
         [DataRow(" ")]
         public async Task GivenEmptyhitespaceFrenchLongDescriptionShouldReturnCreated(string frenchLongDescription)
@@ -214,7 +151,7 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
 
-            Assert.AreEqual(frenchLongDescription, organization.FrenchLongDescription);
+            Assert.AreEqual(string.Empty, organization.FrenchLongDescription);
         }
 
         [TestMethod]
