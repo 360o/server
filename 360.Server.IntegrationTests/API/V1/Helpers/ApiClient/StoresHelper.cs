@@ -160,5 +160,19 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
 
             return await Utils.DeserializeAsync<ItemDTO>(response);
         }
+
+        public async Task<HttpResponseMessage> ListItemsAsync(Guid storeId)
+        {
+            return await ProgramTest.NewClient().GetAsync(ItemsRoute(storeId));
+        }
+
+        public async Task<IList<ItemDTO>> ListItemsAndDeserializeAsync(Guid storeId)
+        {
+            var response = await ListItemsAsync(storeId);
+
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+
+            return await Utils.DeserializeAsync<IList<ItemDTO>>(response);
+        }
     }
 }

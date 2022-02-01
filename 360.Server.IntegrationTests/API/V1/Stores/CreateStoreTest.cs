@@ -66,6 +66,18 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
         }
 
         [TestMethod]
+        public async Task GivenOrganizationDoesNotBelongToUserShouldReturnForbidden()
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+
+            var request = RequestsGenerator.MakeRandomCreateStoreRequest(organization.Id);
+
+            var response = await ProgramTest.ApiClientUser2.Stores.CreateStoreAsync(request);
+
+            Assert.AreEqual(HttpStatusCode.Forbidden, response.StatusCode);
+        }
+
+        [TestMethod]
         public async Task GivenNullGooglePlaceIdShouldReturnBadRequest()
         {
             var request = RequestsGenerator.MakeRandomCreateStoreRequest(Guid.NewGuid());

@@ -55,9 +55,11 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
             var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
 
             Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Detail);
             Assert.IsNotNull(result.Status);
             Assert.AreEqual(ErrorCode.ItemNotFound.ToString(), result.Title);
             Assert.AreEqual((int)HttpStatusCode.NotFound, result.Status.Value);
+            Assert.AreEqual("Organization not found", result.Detail);
         }
     }
 }

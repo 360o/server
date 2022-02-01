@@ -97,5 +97,12 @@ namespace _360o.Server.API.V1.Stores.Services
         {
             return await _apiContext.Items.FindAsync(id);
         }
+
+        public async Task<IList<Item>> ListItemsAsync(Guid storeId)
+        {
+            return await _apiContext.Items
+                .Where(s => s.StoreId == storeId)
+                .ToListAsync();
+        }
     }
 }

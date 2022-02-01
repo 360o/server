@@ -27,7 +27,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             var user1Store1 = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(user1Organization.Id);
             var user1Store2 = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(user1Organization.Id);
-            var user2Store1 = await ProgramTest.ApiClientUser2.Stores.CreateRandomStoreAndDeserializeAsync(user1Organization.Id);
+            var user2Store1 = await ProgramTest.ApiClientUser2.Stores.CreateRandomStoreAndDeserializeAsync(user2Organization.Id);
 
             var response = await ProgramTest.ApiClientUser1.Stores.ListStoresAsync(new ListStoresRequest());
 

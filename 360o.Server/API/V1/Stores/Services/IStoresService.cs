@@ -10,5 +10,6 @@ namespace _360o.Server.API.V1.Stores.Services
         Task DeleteStoreByIdAsync(Guid id);
         Task<Item> CreateItemAsync(CreateItemInput input);
         Task<Item?> GetItembyIdAsync(Guid id);
+        Task<IList<Item>> ListItemsAsync(Guid storeId);
     }
 }
