@@ -8,6 +8,7 @@ namespace _360o.Server.API.V1.Errors
 {
     [Route("api/v1/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class ErrorsController : ControllerBase
     {
         [Route("/error")]

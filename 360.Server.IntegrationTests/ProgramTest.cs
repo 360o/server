@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Net.Http;
 
 namespace _360.Server.IntegrationTests
@@ -30,6 +31,8 @@ namespace _360.Server.IntegrationTests
         [AssemblyInitialize]
         public static void AssemblyInitialize(TestContext _)
         {
+            Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Testing");
+
             var builder = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .AddUserSecrets<ProgramTest>();

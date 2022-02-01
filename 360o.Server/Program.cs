@@ -21,7 +21,7 @@ builder.Services.Configure<ApiBehaviorOptions>(
 
 builder.Services.AddDbContext<ApiContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("MerchantsContext"), o => o.UseNetTopologySuite());
+    options.UseNpgsql(builder.Configuration.GetConnectionString("ApiContext"), o => o.UseNetTopologySuite());
     options.UseSnakeCaseNamingConvention();
 });
 
@@ -81,28 +81,30 @@ builder.Services.AddScoped<IStoresService, StoresService>();
 
 var app = builder.Build();
 
+if (app.Environment.EnvironmentName == "Testing")
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+
+        var context = services.GetRequiredService<ApiContext>();
+        context.Database.EnsureDeleted();
+        context.Database.EnsureCreated();
+    }
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-    app.UseMigrationsEndPoint();
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "API");
-        options.OAuthClientId(builder.Configuration["Auth0:ClientId"]);
-    });
 }
 
-using (var scope = app.Services.CreateScope())
+app.UseSwagger();
+app.UseSwaggerUI(options =>
 {
-    var services = scope.ServiceProvider;
-
-    var context = services.GetRequiredService<ApiContext>();
-    context.Database.EnsureDeleted();
-    context.Database.EnsureCreated();
-    // DbInitializer.Initialize(context);
-}
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "API");
+    options.OAuthClientId(builder.Configuration["Auth0:ClientId"]);
+});
 
 app.UseHttpsRedirection();
 

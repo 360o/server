@@ -49,7 +49,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
         [DataRow(null)]
         [DataRow("")]
         [DataRow(" ")]
-        public async Task GivenNullOrWhitespaceNameShouldReturnBadRequest(string name)
+        public async Task GivenNullOrWhitespaceEnglishDescriptionShouldReturnCreated(string englishDescription)
         {
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
 
@@ -57,22 +57,30 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             var request = RequestsGenerator.MakeRandomCreateItemRequest();
 
-            request = request with { Name = name };
+            request = request with { EnglishDescription = englishDescription };
 
-            var response = await ProgramTest.ApiClientUser1.Stores.CreateItemAsync(store.Id, request);
+            var item = await ProgramTest.ApiClientUser1.Stores.CreateItemAndDeserializeAsync(store.Id, request);
 
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.AreEqual(string.Empty, item.EnglishDescription);
+        }
 
-            var responseContent = await response.Content.ReadAsStringAsync();
+        [DataTestMethod]
+        [DataRow(null)]
+        [DataRow("")]
+        [DataRow(" ")]
+        public async Task GivenNullOrWhitespaceFrenchDescriptionShouldReturnCreated(string frenchDescription)
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
 
-            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
+            var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
 
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.Detail);
-            Assert.IsNotNull(result.Status);
-            Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
-            Assert.IsTrue(result.Detail.Contains("Name"));
+            var request = RequestsGenerator.MakeRandomCreateItemRequest();
+
+            request = request with { FrenchDescription = frenchDescription };
+
+            var item = await ProgramTest.ApiClientUser1.Stores.CreateItemAndDeserializeAsync(store.Id, request);
+
+            Assert.AreEqual(string.Empty, item.FrenchDescription);
         }
     }
 }
