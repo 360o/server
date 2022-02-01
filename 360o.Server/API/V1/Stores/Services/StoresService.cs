@@ -33,12 +33,18 @@ namespace _360o.Server.API.V1.Stores.Services
 
         public async Task<Store?> GetStoreByIdByAsync(Guid id)
         {
-            return await _apiContext.Stores.Include(s => s.Place).SingleOrDefaultAsync(m => m.Id == id);
+            return await _apiContext.Stores
+                .Where(s => !s.DeletedAt.HasValue)
+                .Include(s => s.Place)
+                .SingleOrDefaultAsync(s => s.Id == id);
         }
 
         public async Task<IList<Store>> ListStoresAsync(ListStoresInput input)
         {
-            var stores = _apiContext.Stores.Include(m => m.Place).AsQueryable();
+            var stores = _apiContext.Stores
+                .Where(s => !s.DeletedAt.HasValue)
+                .Include(s => s.Place)
+                .AsQueryable();
 
             if (input.Query != null)
             {
@@ -64,7 +70,7 @@ namespace _360o.Server.API.V1.Stores.Services
                 throw new KeyNotFoundException("Store not found");
             }
 
-            _apiContext.Stores.Remove(store);
+            store.DeletedAt = DateTime.UtcNow;
 
             await _apiContext.SaveChangesAsync();
         }

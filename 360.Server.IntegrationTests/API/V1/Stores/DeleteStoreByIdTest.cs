@@ -21,6 +21,10 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             var response = await ProgramTest.ApiClientUser1.Stores.DeleteStoreByIdAsync(store.Id);
 
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
+
+            var getStoreResponse = await ProgramTest.ApiClientUser1.Stores.GetStoreByIdAsync(store.Id);
+
+            Assert.AreEqual(HttpStatusCode.NotFound, getStoreResponse.StatusCode);
         }
 
         [TestMethod]
