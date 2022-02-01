@@ -26,6 +26,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             Assert.AreEqual(request.Place.GooglePlaceId, store.Place.GooglePlaceId);
             Assert.AreEqual(request.Place.FormattedAddress, store.Place.FormattedAddress);
             Assert.AreEqual(request.Place.Location, store.Place.Location);
+            Assert.AreEqual(request.OrganizationId, store.OrganizationId);
         }
 
         [TestMethod]
@@ -54,11 +55,14 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
         {
             var request = RequestsGenerator.MakeRandomCreateStoreRequest(Guid.NewGuid());
 
-            request.Place = new CreateStoreRequestPlace
+            request = request with
             {
-                GooglePlaceId = null!,
-                FormattedAddress = request.Place.FormattedAddress,
-                Location = request.Place.Location,
+                Place = new CreateStoreRequestPlace
+                {
+                    GooglePlaceId = null!,
+                    FormattedAddress = request.Place.FormattedAddress,
+                    Location = request.Place.Location,
+                }
             };
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateStoreAsync(request);
@@ -84,11 +88,14 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
         {
             var request = RequestsGenerator.MakeRandomCreateStoreRequest(Guid.NewGuid());
 
-            request.Place = new CreateStoreRequestPlace
+            request = request with
             {
-                GooglePlaceId = googlePlaceId,
-                FormattedAddress = request.Place.FormattedAddress,
-                Location = request.Place.Location,
+                Place = new CreateStoreRequestPlace
+                {
+                    GooglePlaceId = googlePlaceId,
+                    FormattedAddress = request.Place.FormattedAddress,
+                    Location = request.Place.Location,
+                }
             };
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateStoreAsync(request);
@@ -112,11 +119,14 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
         {
             var request = RequestsGenerator.MakeRandomCreateStoreRequest(Guid.NewGuid());
 
-            request.Place = new CreateStoreRequestPlace
+            request = request with
             {
-                GooglePlaceId = request.Place.GooglePlaceId,
-                FormattedAddress = null,
-                Location = request.Place.Location,
+                Place = new CreateStoreRequestPlace
+                {
+                    GooglePlaceId = request.Place.GooglePlaceId,
+                    FormattedAddress = null,
+                    Location = request.Place.Location,
+                }
             };
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateStoreAsync(request);
@@ -142,11 +152,14 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
         {
             var request = RequestsGenerator.MakeRandomCreateStoreRequest(Guid.NewGuid());
 
-            request.Place = new CreateStoreRequestPlace
+            request = request with
             {
-                GooglePlaceId = request.Place.GooglePlaceId,
-                FormattedAddress = formattedAddress,
-                Location = request.Place.Location,
+                Place = new CreateStoreRequestPlace
+                {
+                    GooglePlaceId = request.Place.GooglePlaceId,
+                    FormattedAddress = formattedAddress,
+                    Location = request.Place.Location,
+                }
             };
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateStoreAsync(request);
@@ -172,11 +185,14 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
         {
             var request = RequestsGenerator.MakeRandomCreateStoreRequest(Guid.NewGuid());
 
-            request.Place = new CreateStoreRequestPlace
+            request = request with
             {
-                GooglePlaceId = request.Place.GooglePlaceId,
-                FormattedAddress = request.Place.FormattedAddress,
-                Location = new Location(latitude, request.Place.Location.Longitude)
+                Place = new CreateStoreRequestPlace
+                {
+                    GooglePlaceId = request.Place.GooglePlaceId,
+                    FormattedAddress = request.Place.FormattedAddress,
+                    Location = new Location(latitude, request.Place.Location.Longitude)
+                }
             };
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateStoreAsync(request);
@@ -202,11 +218,14 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
         {
             var request = RequestsGenerator.MakeRandomCreateStoreRequest(Guid.NewGuid());
 
-            request.Place = new CreateStoreRequestPlace
+            request = request with
             {
-                GooglePlaceId = request.Place.GooglePlaceId,
-                FormattedAddress = request.Place.FormattedAddress,
-                Location = new Location(request.Place.Location.Latitude, longitude)
+                Place = new CreateStoreRequestPlace
+                {
+                    GooglePlaceId = request.Place.GooglePlaceId,
+                    FormattedAddress = request.Place.FormattedAddress,
+                    Location = new Location(request.Place.Location.Latitude, longitude)
+                }
             };
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateStoreAsync(request);

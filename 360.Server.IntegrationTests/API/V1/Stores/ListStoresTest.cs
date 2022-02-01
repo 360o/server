@@ -62,12 +62,12 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             var user2Organization2Request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
             var user2Organization3Request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
-            user1Organization1Request.Name = $"{user1Organization1Request.Name} {myQuery}";
-            user1Organization2Request.EnglishShortDescription = $"{user1Organization2Request.EnglishShortDescription} {myQuery}";
-            user1Organization3Request.EnglishLongDescription = $"{user1Organization3Request.EnglishLongDescription} {myQuery}";
+            user1Organization1Request = user1Organization1Request with { Name = $"{user1Organization1Request.Name} {myQuery}" };
+            user1Organization2Request = user1Organization1Request with { EnglishShortDescription = $"{user1Organization2Request.EnglishShortDescription} {myQuery}" };
+            user1Organization3Request = user1Organization1Request with { EnglishLongDescription = $"{user1Organization3Request.EnglishLongDescription} {myQuery}" };
             user1Organization4Request.EnglishCategories.Add(myQuery);
-            user2Organization1Request.FrenchShortDescription = $"{user2Organization1Request.FrenchShortDescription} {myQuery}";
-            user2Organization2Request.FrenchLongDescription = $"{user2Organization2Request.FrenchLongDescription} {myQuery}";
+            user2Organization1Request = user1Organization1Request with { FrenchShortDescription = $"{user2Organization1Request.FrenchShortDescription} {myQuery}" };
+            user2Organization2Request = user1Organization1Request with { FrenchLongDescription = $"{user2Organization2Request.FrenchLongDescription} {myQuery}" };
             user2Organization3Request.FrenchCategories.Add(myQuery);
 
             var user1Organization1 = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(user1Organization1Request);
@@ -137,56 +137,77 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             var user2Store3Request = RequestsGenerator.MakeRandomCreateStoreRequest(user2Organization.Id);
 
             // 200m
-            user1Store1Request.Place = new CreateStoreRequestPlace
+            user1Store1Request = user1Store1Request with
             {
-                GooglePlaceId = "ChIJmwaUgluXuEwRWZsk59TJKnY",
-                FormattedAddress = "249 Rue Saint-Jean, Québec, QC G1R 1N8, Canada",
-                Location = new Location(46.8074417, -71.2271805)
+                Place = new CreateStoreRequestPlace
+                {
+                    GooglePlaceId = "ChIJmwaUgluXuEwRWZsk59TJKnY",
+                    FormattedAddress = "249 Rue Saint-Jean, Québec, QC G1R 1N8, Canada",
+                    Location = new Location(46.8074417, -71.2271805)
+                }
             };
 
-            user1Store2Request.Place = new CreateStoreRequestPlace
+            user1Store2Request = user1Store2Request with
             {
-                GooglePlaceId = "ChIJmTMHIHqWuEwRPXPWy5zuZNI",
-                FormattedAddress = "165 Rue Saint-Jean, Québec, QC G1R 1N4",
-                Location = new Location(46.807864, -71.2270421)
+                Place = new CreateStoreRequestPlace
+                {
+                    GooglePlaceId = "ChIJmTMHIHqWuEwRPXPWy5zuZNI",
+                    FormattedAddress = "165 Rue Saint-Jean, Québec, QC G1R 1N4",
+                    Location = new Location(46.807864, -71.2270421)
+                }
             };
 
             // 600m
-            user2Store1Request.Place = new CreateStoreRequestPlace
+            user2Store1Request = user2Store1Request with
             {
-                GooglePlaceId = "ChIJVTZiSnmWuEwRiMC1PoeqRFY",
-                FormattedAddress = "85 Boulevard René-Lévesque O, Québec, QC G1R 2A3, Canada",
-                Location = new Location(46.8048075, -71.2256069)
+                Place = new CreateStoreRequestPlace
+                {
+                    GooglePlaceId = "ChIJVTZiSnmWuEwRiMC1PoeqRFY",
+                    FormattedAddress = "85 Boulevard René-Lévesque O, Québec, QC G1R 2A3, Canada",
+                    Location = new Location(46.8048075, -71.2256069)
+                }
             };
 
-            user1Store3Request.Place = new CreateStoreRequestPlace
+            user1Store3Request = user1Store3Request with
             {
-                GooglePlaceId = "ChIJf4k1oo-WuEwRO-iB-_Asl5Q",
-                FormattedAddress = "269 Bd René-Lévesque E, Québec, QC G1R 2B3, Canada",
-                Location = new Location(46.8068828, -71.2245926)
+                Place = new CreateStoreRequestPlace
+                {
+                    GooglePlaceId = "ChIJf4k1oo-WuEwRO-iB-_Asl5Q",
+                    FormattedAddress = "269 Bd René-Lévesque E, Québec, QC G1R 2B3, Canada",
+                    Location = new Location(46.8068828, -71.2245926)
+                }
             };
 
             // 2km
-            user2Store2Request.Place = new CreateStoreRequestPlace
+            user2Store2Request = user2Store2Request with
             {
-                GooglePlaceId = "ChIJO_wtXNqVuEwRBoNhbzRrcZg",
-                FormattedAddress = "1 Côte de la Citadelle, Québec, QC G1R 3R2, Canada",
-                Location = new Location(46.8079412, -71.2189697)
+                Place = new CreateStoreRequestPlace
+                {
+                    GooglePlaceId = "ChIJO_wtXNqVuEwRBoNhbzRrcZg",
+                    FormattedAddress = "1 Côte de la Citadelle, Québec, QC G1R 3R2, Canada",
+                    Location = new Location(46.8079412, -71.2189697)
+                }
             };
 
             // 10km
-            user1Store4Request.Place = new CreateStoreRequestPlace
+            user1Store4Request = user1Store4Request with
             {
-                GooglePlaceId = "ChIJTWbEbimRuEwRT_YQIJcyOl8",
-                FormattedAddress = "3121 Bd Hochelaga, Québec, QC G1W 2P9, Canada",
-                Location = new Location(46.7863078, -71.2841527)
+                Place = new CreateStoreRequestPlace
+                {
+                    GooglePlaceId = "ChIJTWbEbimRuEwRT_YQIJcyOl8",
+                    FormattedAddress = "3121 Bd Hochelaga, Québec, QC G1W 2P9, Canada",
+                    Location = new Location(46.7863078, -71.2841527)
+                }
             };
 
-            user2Store3Request.Place = new CreateStoreRequestPlace
+            user2Store3Request = user2Store3Request with
             {
-                GooglePlaceId = "ChIJp8qY5EaWuEwR_Su2geare9E",
-                FormattedAddress = "552 Bd Wilfrid-Hamel, Québec, QC G1M 3E5, Canada",
-                Location = new Location(46.8180445, -71.2536773)
+                Place = new CreateStoreRequestPlace
+                {
+                    GooglePlaceId = "ChIJp8qY5EaWuEwR_Su2geare9E",
+                    FormattedAddress = "552 Bd Wilfrid-Hamel, Québec, QC G1M 3E5, Canada",
+                    Location = new Location(46.8180445, -71.2536773)
+                }
             };
 
             var user1Store1 = await ProgramTest.ApiClientUser1.Stores.CreateStoreAndDeserializeAsync(user1Store1Request);
@@ -431,15 +452,27 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             var user2Organization1Request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
             var user2Organization2Request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
-            user1Organization1Request.Name = "BEAUTY STUDIO SOPHIA";
-            user1Organization1Request.EnglishCategories = new HashSet<string>(new[] { "nail salon" });
+            user1Organization1Request = user1Organization1Request with
+            {
+                Name = "BEAUTY STUDIO SOPHIA",
+                EnglishCategories = new HashSet<string>(new[] { "nail salon" })
+            };
 
-            user1Organization2Request.Name = "Portobello Pizza & Pasta - kuchnia włoska";
+            user1Organization2Request = user1Organization2Request with
+            {
+                Name = "Portobello Pizza & Pasta - kuchnia włoska"
+            };
 
-            user2Organization1Request.Name = "Studio Hollywood Nails";
+            user2Organization1Request = user2Organization1Request with
+            {
+                Name = "Studio Hollywood Nails"
+            };
 
-            user2Organization2Request.Name = "Aura Manicure & Pedicure";
-            user2Organization2Request.EnglishCategories = new HashSet<string>(new[] { "nail salon" });
+            user2Organization2Request = user2Organization2Request with
+            {
+                Name = "Aura Manicure & Pedicure",
+                EnglishCategories = new HashSet<string>(new[] { "nail salon" })
+            };
 
             var user1Organization1 = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(user1Organization1Request);
             var user1Organization2 = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(user1Organization2Request);
@@ -451,33 +484,45 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             var user2Store1Request = RequestsGenerator.MakeRandomCreateStoreRequest(user2Organization1.Id);
             var user2Store2Request = RequestsGenerator.MakeRandomCreateStoreRequest(user2Organization2.Id);
 
-            user1Store1Request.Place = new CreateStoreRequestPlace
+            user1Store1Request = user1Store1Request with
             {
-                GooglePlaceId = "ChIJ_RYTY4nNHkcRl6fA-1FcRRE",
-                FormattedAddress = "Chmielna 106, 00-801 Warszawa, Poland",
-                Location = new Location(52.2288783, 20.9963373)
+                Place = new CreateStoreRequestPlace
+                {
+                    GooglePlaceId = "ChIJ_RYTY4nNHkcRl6fA-1FcRRE",
+                    FormattedAddress = "Chmielna 106, 00-801 Warszawa, Poland",
+                    Location = new Location(52.2288783, 20.9963373)
+                }
             };
 
-            user1Store2Request.Place = new CreateStoreRequestPlace
+            user1Store2Request = user1Store2Request with
             {
-                GooglePlaceId = "ChIJSYbSBiXNHkcRPVTeBjMEWBE",
-                FormattedAddress = "al. Jana Pawła II 12, 00-001 Warszawa, Poland",
-                Location = new Location(52.2318464, 20.9998793)
+                Place = new CreateStoreRequestPlace
+                {
+                    GooglePlaceId = "ChIJSYbSBiXNHkcRPVTeBjMEWBE",
+                    FormattedAddress = "al. Jana Pawła II 12, 00-001 Warszawa, Poland",
+                    Location = new Location(52.2318464, 20.9998793)
+                }
             };
 
-            user2Store1Request.Place = new CreateStoreRequestPlace
+            user2Store1Request = user2Store1Request with
             {
-                GooglePlaceId = "ChIJkb3oh_TMHkcRvwTuCI-g9us",
-                FormattedAddress = "Świętokrzyska 30, 00-116 Warszawa, Poland",
-                Location = new Location(52.2349257, 21.0032608)
+                Place = new CreateStoreRequestPlace
+                {
+                    GooglePlaceId = "ChIJkb3oh_TMHkcRvwTuCI-g9us",
+                    FormattedAddress = "Świętokrzyska 30, 00-116 Warszawa, Poland",
+                    Location = new Location(52.2349257, 21.0032608)
+                }
             };
 
 
-            user2Store2Request.Place = new CreateStoreRequestPlace
+            user2Store2Request = user2Store2Request with
             {
-                GooglePlaceId = "ChIJAWdPJtEyGUcRFfnT7IcNGFg",
-                FormattedAddress = "Domaniewska 22A, 02-672 Warszawa, Poland",
-                Location = new Location(52.1881715, 21.0114313)
+                Place = new CreateStoreRequestPlace
+                {
+                    GooglePlaceId = "ChIJAWdPJtEyGUcRFfnT7IcNGFg",
+                    FormattedAddress = "Domaniewska 22A, 02-672 Warszawa, Poland",
+                    Location = new Location(52.1881715, 21.0114313)
+                }
             };
 
             var user1Store1 = await ProgramTest.ApiClientUser1.Stores.CreateStoreAndDeserializeAsync(user1Store1Request);

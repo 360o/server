@@ -2,11 +2,12 @@
 
 namespace _360o.Server.API.V1.Stores.DTOs
 {
-    public record struct CreateItemRequest
+    public readonly record struct CreateItemRequest(
+        string Name,
+        string? EnglishDescription,
+        string? FrenchDescription,
+        MoneyValue? Price
+        )
     {
-        public string Name { get; set; }
-        public string? EnglishDescription { get; set; }
-        public string? FrenchDescription { get; set; }
-        public MoneyValue? Price { get; set; }
     }
 }

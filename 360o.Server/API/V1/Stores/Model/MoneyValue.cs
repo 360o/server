@@ -1,8 +1,9 @@
 ﻿namespace _360o.Server.API.V1.Stores.Model
 {
-    public record struct MoneyValue
+    public readonly record struct MoneyValue(
+        decimal Amount,
+        Iso4217CurrencyCode CurrencyCode
+        )
     {
-        public decimal Amount { get; set; }
-        public Iso4217CurrencyCode CurrencyCode { get; set; }
     }
 }

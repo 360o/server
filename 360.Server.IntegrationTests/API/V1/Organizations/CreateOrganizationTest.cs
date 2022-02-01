@@ -49,7 +49,7 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
         {
             var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
-            request.Name = null;
+            request = request with { Name = null };
 
             var response = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAsync(request);
 
@@ -60,11 +60,8 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
             var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
 
             Assert.IsNotNull(result);
-            Assert.IsNotNull(result.Detail);
             Assert.IsNotNull(result.Status);
-            Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
             Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
-            Assert.IsTrue(result.Detail.Contains("Name"));
         }
 
         [DataTestMethod]
@@ -74,7 +71,7 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
         {
             var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
-            request.Name = name;
+            request = request with { Name = name };
 
             var response = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAsync(request);
 
@@ -97,7 +94,7 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
         {
             var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
-            request.EnglishShortDescription = null;
+            request = request with { EnglishShortDescription = null };
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
 
@@ -111,7 +108,7 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
         {
             var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
-            request.EnglishShortDescription = englishShortDescription;
+            request = request with { EnglishShortDescription = englishShortDescription };
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
 
@@ -123,7 +120,7 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
         {
             var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
-            request.EnglishLongDescription = null;
+            request = request with { EnglishLongDescription = null };
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
 
@@ -137,7 +134,7 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
         {
             var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
-            request.EnglishLongDescription = englishLongDescription;
+            request = request with { EnglishLongDescription = englishLongDescription };
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
 
@@ -149,7 +146,7 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
         {
             var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
-            request.EnglishCategories = null;
+            request = request with { EnglishCategories = null };
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
 
@@ -161,7 +158,7 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
         {
             var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
-            request.EnglishCategories = new HashSet<string>();
+            request = request with { EnglishCategories = new HashSet<string>() };
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
 
@@ -173,7 +170,7 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
         {
             var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
-            request.FrenchShortDescription = null;
+            request = request with { FrenchShortDescription = null };
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
 
@@ -187,7 +184,7 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
         {
             var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
-            request.FrenchShortDescription = frenchShortDescription;
+            request = request with { FrenchShortDescription = frenchShortDescription };
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
 
@@ -199,7 +196,7 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
         {
             var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
-            request.FrenchLongDescription = null;
+            request = request with { FrenchLongDescription = null };
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
 
@@ -213,7 +210,7 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
         {
             var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
-            request.FrenchLongDescription = frenchLongDescription;
+            request = request with { FrenchLongDescription = frenchLongDescription };
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
 
@@ -225,7 +222,7 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
         {
             var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
-            request.FrenchCategories = null;
+            request = request with { FrenchCategories = null };
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
 
@@ -237,7 +234,7 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
         {
             var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
-            request.FrenchCategories = new HashSet<string>();
+            request = request with { FrenchCategories = new HashSet<string>() };
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
 

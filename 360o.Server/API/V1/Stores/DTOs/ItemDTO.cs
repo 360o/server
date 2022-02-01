@@ -2,12 +2,14 @@
 
 namespace _360o.Server.API.V1.Stores.DTOs
 {
-    public class ItemDTO
+    public readonly record struct ItemDTO(
+        Guid Id,
+        string Name,
+        string? EnglishDescription,
+        string? FrenchDescription,
+        MoneyValue? Price,
+        Guid StoreId
+        )
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string? EnglishDescription { get; set; }
-        public string? FrenchDescription { get; set; }
-        public MoneyValue? Price { get; set; }
     }
 }

@@ -2,17 +2,19 @@
 
 namespace _360o.Server.API.V1.Stores.DTOs
 {
-    public record struct CreateStoreRequest
+    public readonly record struct CreateStoreRequest(
+        Guid OrganizationId,
+        CreateStoreRequestPlace Place
+        )
     {
-        public Guid OrganizationId { get; set; }
-        public CreateStoreRequestPlace Place { get; set; }
     }
 
-    public record struct CreateStoreRequestPlace
+    public record struct CreateStoreRequestPlace(
+        string? GooglePlaceId,
+        string? FormattedAddress,
+        Location Location
+        )
     {
-        public string? GooglePlaceId { get; set; }
-        public string? FormattedAddress { get; set; }
-        public Location Location { get; set; }
     }
 }
 

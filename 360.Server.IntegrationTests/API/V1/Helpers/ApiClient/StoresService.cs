@@ -59,6 +59,8 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
         {
             var response = await GetStoreByIdAsync(id);
 
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+
             return await Utils.DeserializeAsync<StoreDTO>(response);
         }
 
@@ -102,6 +104,8 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
         {
             var response = await ListStoresAsync(request);
 
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+
             return await Utils.DeserializeAsync<List<StoreDTO>>(response);
         }
 
@@ -138,6 +142,20 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
             var request = RequestsGenerator.MakeRandomCreateItemRequest();
 
             return await CreateItemAndDeserializeAsync(storeId, request);
+        }
+
+        public async Task<HttpResponseMessage> GetItemByIdAsync(Guid storeId, Guid itemId)
+        {
+            return await ProgramTest.NewClient().GetAsync($"/api/v1/stores/{storeId}/items/{itemId}");
+        }
+
+        public async Task<ItemDTO> GetItemByIdAndDeserializeAsync(Guid storeId, Guid itemId)
+        {
+            var response = await GetItemByIdAsync(storeId, itemId);
+
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+
+            return await Utils.DeserializeAsync<ItemDTO>(response);
         }
     }
 }

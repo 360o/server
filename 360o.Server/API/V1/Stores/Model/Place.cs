@@ -22,7 +22,11 @@ namespace _360o.Server.API.V1.Stores.Model
         public string GooglePlaceId { get; private set; }
         public string FormattedAddress { get; private set; }
         public Point Point { get; private set; }
-        public Location Location => new Location(latitude: Point.Y, longitude: Point.X);
+        public Location Location => new Location
+        {
+            Latitude = Point.Y,
+            Longitude = Point.X,
+        };
         public Guid StoreId { get; private set; }
         public Store Store { get; private set; }
     }

@@ -2,18 +2,21 @@
 
 namespace _360o.Server.API.V1.Stores.DTOs
 {
-    public record struct StoreDTO
+    public readonly record struct StoreDTO(
+        Guid Id,
+        PlaceDTO Place,
+        Guid OrganizationId
+        )
     {
-        public Guid Id { get; set; }
-        public PlaceDTO Place { get; set; }
     }
 
-    public record struct PlaceDTO
+    public readonly record struct PlaceDTO(
+        Guid Id,
+        string GooglePlaceId,
+        string FormattedAddress,
+        Location Location
+        )
     {
-        public Guid Id { get; set; }
-        public string GooglePlaceId { get; set; }
-        public string FormattedAddress { get; set; }
-        public Location Location { get; set; }
     }
 }
 

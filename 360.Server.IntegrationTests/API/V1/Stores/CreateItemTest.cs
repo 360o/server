@@ -22,6 +22,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             Assert.AreEqual(request.EnglishDescription, item.EnglishDescription);
             Assert.AreEqual(request.FrenchDescription, item.FrenchDescription);
             Assert.AreEqual(request.Price, item.Price);
+            Assert.AreEqual(store.Id, item.StoreId);
         }
     }
 }
