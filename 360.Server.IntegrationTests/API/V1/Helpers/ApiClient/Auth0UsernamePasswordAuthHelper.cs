@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
 {
-    internal class Auth0UsernamePasswordAuthService : IAuthService
+    internal class Auth0UsernamePasswordAuthHelper : IAuthHelper
     {
         private readonly string _auth0Domain;
         private readonly string _auth0ClientId;
@@ -18,7 +18,7 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
         private string? _accessToken;
         private DateTimeOffset? _expiresIn;
 
-        public Auth0UsernamePasswordAuthService(string auth0Domain, string auth0ClientId, string auth0ClientSecret, string auth0Audience, string username, string password)
+        public Auth0UsernamePasswordAuthHelper(string auth0Domain, string auth0ClientId, string auth0ClientSecret, string auth0Audience, string username, string password)
         {
             _auth0Domain = auth0Domain;
             _auth0Audience = auth0Audience;

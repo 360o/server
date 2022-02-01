@@ -2,7 +2,6 @@
 using _360o.Server.API.V1.Organizations.DTOs;
 using _360o.Server.API.V1.Organizations.Services;
 using _360o.Server.API.V1.Organizations.Validators;
-using _360o.Server.API.V1.Stores.Model;
 using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
@@ -25,7 +24,7 @@ namespace _360o.Server.API.V1.Organizations.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OrganizationDTO))]
         [Authorize]
         public async Task<ActionResult<OrganizationDTO>> CreateOrganizationAsync([FromBody] CreateOrganizationRequest request)
         {
@@ -50,7 +49,7 @@ namespace _360o.Server.API.V1.Organizations.Controllers
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Store))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OrganizationDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<OrganizationDTO>> GetOrganizationByIdAsync(Guid id)
         {
@@ -62,6 +61,29 @@ namespace _360o.Server.API.V1.Organizations.Controllers
             }
 
             return _mapper.Map<OrganizationDTO>(organization);
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize]
+        public async Task<ActionResult<OrganizationDTO>> DeleteOrganizationByIdAsync(Guid id)
+        {
+            var organization = await _organizationsService.GetOrganizationByIdAsync(id);
+
+            if (organization == null)
+            {
+                return Problem(detail: "Organization not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.ItemNotFound.ToString());
+            }
+
+            if (User.Identity.Name != organization.UserId)
+            {
+                return Forbid();
+            }
+
+            await _organizationsService.DeleteOrganizationByIdAsync(id);
+
+            return NoContent();
         }
     }
 }

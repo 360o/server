@@ -16,7 +16,7 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.GetOrganizationByIdAndDeserializeAsync(createdOrganization.Id);
 
-            OrganizationsService.AssertOrganizationsAreEqual(createdOrganization, organization);
+            OrganizationsHelper.AssertOrganizationsAreEqual(createdOrganization, organization);
         }
 
         [TestMethod]

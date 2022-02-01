@@ -5,7 +5,12 @@
         public Guid Id { get; protected set; }
         public DateTimeOffset CreatedAt { get; private set; } = DateTimeOffset.UtcNow;
         public DateTimeOffset UpdatedAt { get; protected set; } = DateTimeOffset.UtcNow;
-        public DateTimeOffset? DeletedAt { get; set; }
+        public DateTimeOffset? DeletedAt { get; private set; }
+
+        public void SetDelete()
+        {
+            DeletedAt = DateTimeOffset.UtcNow;
+        }
     }
 }
 

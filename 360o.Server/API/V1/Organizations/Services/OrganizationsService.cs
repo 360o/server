@@ -1,6 +1,6 @@
 ﻿using _360o.Server.API.V1.Organizations.Model;
 using _360o.Server.API.V1.Stores.Model;
-using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace _360o.Server.API.V1.Organizations.Services
 {
@@ -49,7 +49,23 @@ namespace _360o.Server.API.V1.Organizations.Services
 
         public async Task<Organization?> GetOrganizationByIdAsync(Guid id)
         {
-            return await _apiContext.Organizations.FindAsync(id);
+            return await _apiContext.Organizations
+                .Where(o => !o.DeletedAt.HasValue)
+                .SingleOrDefaultAsync(o => o.Id == id);
+        }
+
+        public async Task DeleteOrganizationByIdAsync(Guid id)
+        {
+            var organization = await _apiContext.Organizations.FindAsync(id);
+
+            if (organization == null)
+            {
+                throw new KeyNotFoundException("Organization not found");
+            }
+
+            organization.SetDelete();
+
+            await _apiContext.SaveChangesAsync();
         }
     }
 }

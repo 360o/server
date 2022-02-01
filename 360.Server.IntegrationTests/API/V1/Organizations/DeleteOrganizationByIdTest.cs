@@ -7,51 +7,46 @@ using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace _360.Server.IntegrationTests.API.V1.Stores
+namespace _360.Server.IntegrationTests.API.V1.Organizations
 {
     [TestClass]
-    public class DeleteStoreByIdTest
+    public class DeleteOrganizationByIdTest
     {
         [TestMethod]
-        public async Task GivenStoreExistsShouldReturnNoContent()
+        public async Task GivenOrganizationExistsShouldReturnNoContent()
         {
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
 
-            var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
-
-            var response = await ProgramTest.ApiClientUser1.Stores.DeleteStoreByIdAsync(store.Id);
+            var response = await ProgramTest.ApiClientUser1.Organizations.DeleteOrganizationByIdAsync(organization.Id);
 
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
 
-            var getStoreResponse = await ProgramTest.ApiClientUser1.Stores.GetStoreByIdAsync(store.Id);
+            var getOrganizationResponse = await ProgramTest.ApiClientUser1.Organizations.GetOrganizationByIdAsync(organization.Id);
 
-            Assert.AreEqual(HttpStatusCode.NotFound, getStoreResponse.StatusCode);
+            Assert.AreEqual(HttpStatusCode.NotFound, getOrganizationResponse.StatusCode);
         }
 
         [TestMethod]
         public async Task GivenNoAccessTokenShouldReturnUnauthorized()
         {
-            var response = await ProgramTest.NewClient().DeleteAsync($"{StoresHelper.StoresRoute}/{Guid.NewGuid()}");
+            var response = await ProgramTest.NewClient().DeleteAsync($"{OrganizationsHelper.OrganizationsRoute}/{Guid.NewGuid()}");
 
             Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
         [TestMethod]
-        public async Task GivenStoreDoesNotBelongToUserShouldReturnForbidden()
+        public async Task GivenOrganizationDoesNotBelongToUserShouldReturnForbidden()
         {
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
 
-            var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
-
-            var response = await ProgramTest.ApiClientUser2.Stores.DeleteStoreByIdAsync(store.Id);
+            var response = await ProgramTest.ApiClientUser2.Organizations.DeleteOrganizationByIdAsync(organization.Id);
 
             Assert.AreEqual(HttpStatusCode.Forbidden, response.StatusCode);
         }
 
-        [TestMethod]
-        public async Task GivenStoreDoesNotExistShouldReturnNotFound()
+        public async Task GivenOrganizationDoesNotExistShouldReturnNotFound()
         {
-            var response = await ProgramTest.ApiClientUser1.Stores.DeleteStoreByIdAsync(Guid.NewGuid());
+            var response = await ProgramTest.ApiClientUser1.Organizations.DeleteOrganizationByIdAsync(Guid.NewGuid());
 
             Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 

@@ -1,4 +1,5 @@
-﻿using _360.Server.IntegrationTests.API.V1.Helpers.Generators;
+﻿using _360.Server.IntegrationTests.API.V1.Helpers.ApiClient;
+using _360.Server.IntegrationTests.API.V1.Helpers.Generators;
 using _360o.Server.API.V1.Errors.Enums;
 using _360o.Server.API.V1.Stores.DTOs;
 using _360o.Server.API.V1.Stores.Model;
@@ -6,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Net;
+using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -27,6 +30,18 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             Assert.AreEqual(request.Place.FormattedAddress, store.Place.FormattedAddress);
             Assert.AreEqual(request.Place.Location, store.Place.Location);
             Assert.AreEqual(request.OrganizationId, store.OrganizationId);
+        }
+
+        [TestMethod]
+        public async Task GivenNoAccessTokenShouldReturnUnauthorized()
+        {
+            var request = RequestsGenerator.MakeRandomCreateStoreRequest(Guid.NewGuid());
+
+            var requestContent = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+
+            var response = await ProgramTest.NewClient().PostAsync(StoresHelper.StoresRoute, requestContent);
+
+            Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
         [TestMethod]

@@ -39,7 +39,7 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
 
             var requestContent = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
 
-            var response = await ProgramTest.NewClient().PostAsync(OrganizationsService.BaseRoute, requestContent);
+            var response = await ProgramTest.NewClient().PostAsync(OrganizationsHelper.OrganizationsRoute, requestContent);
 
             Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
         }

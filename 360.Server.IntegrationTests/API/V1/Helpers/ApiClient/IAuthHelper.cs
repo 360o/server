@@ -2,7 +2,7 @@
 
 namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
 {
-    public interface IAuthService
+    public interface IAuthHelper
     {
         Task<string> GetAccessToken();
     }

@@ -36,6 +36,7 @@ namespace _360o.Server.API.V1.Stores.Services
             return await _apiContext.Stores
                 .Where(s => !s.DeletedAt.HasValue)
                 .Include(s => s.Place)
+                .Include(s => s.Organization)
                 .SingleOrDefaultAsync(s => s.Id == id);
         }
 
@@ -70,7 +71,7 @@ namespace _360o.Server.API.V1.Stores.Services
                 throw new KeyNotFoundException("Store not found");
             }
 
-            store.DeletedAt = DateTime.UtcNow;
+            store.SetDelete();
 
             await _apiContext.SaveChangesAsync();
         }

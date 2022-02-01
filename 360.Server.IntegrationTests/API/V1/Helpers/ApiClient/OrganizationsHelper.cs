@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
 {
-    public class OrganizationsService
+    public class OrganizationsHelper
     {
-        public static string BaseRoute => "/api/v1/Organizations";
+        public static string OrganizationsRoute => "/api/v1/Organizations";
 
         public static void AssertOrganizationsAreEqual(OrganizationDTO expected, OrganizationDTO actual)
         {
@@ -26,18 +26,18 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
             CollectionAssert.AreEquivalent(expected.FrenchCategories.ToList(), actual.FrenchCategories.ToList());
         }
 
-        private readonly IAuthService _authService;
+        private readonly IAuthHelper _authHelper;
 
-        public OrganizationsService(IAuthService authService)
+        public OrganizationsHelper(IAuthHelper authService)
         {
-            _authService = authService;
+            _authHelper = authService;
         }
 
         public async Task<HttpResponseMessage> CreateOrganizationAsync(CreateOrganizationRequest request)
         {
             var requestContent = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
 
-            return await ProgramTest.NewClient(await _authService.GetAccessToken()).PostAsync(BaseRoute, requestContent);
+            return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).PostAsync(OrganizationsRoute, requestContent);
         }
 
         public async Task<OrganizationDTO> CreateOrganizationAndDeserializeAsync(CreateOrganizationRequest request)
@@ -50,7 +50,7 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
             var organization = await Utils.DeserializeAsync<OrganizationDTO>(response);
 
             Assert.IsTrue(Guid.TryParse(organization.Id.ToString(), out var _));
-            Assert.AreEqual($"{BaseRoute}/{organization.Id}", response.Headers.Location.AbsolutePath);
+            Assert.AreEqual($"{OrganizationsRoute}/{organization.Id}", response.Headers.Location.AbsolutePath);
 
             return organization;
         }
@@ -64,7 +64,7 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
 
         public async Task<HttpResponseMessage> GetOrganizationByIdAsync(Guid id)
         {
-            return await ProgramTest.NewClient().GetAsync($"{BaseRoute}/{id}");
+            return await ProgramTest.NewClient().GetAsync($"{OrganizationsRoute}/{id}");
         }
 
         public async Task<OrganizationDTO> GetOrganizationByIdAndDeserializeAsync(Guid id)
@@ -74,6 +74,11 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
             return await Utils.DeserializeAsync<OrganizationDTO>(response);
+        }
+
+        public async Task<HttpResponseMessage> DeleteOrganizationByIdAsync(Guid id)
+        {
+            return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).DeleteAsync($"{OrganizationsRoute}/{id}");
         }
     }
 }

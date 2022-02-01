@@ -12,20 +12,23 @@ using System.Web;
 
 namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
 {
-    public class StoresService
+    public class StoresHelper
     {
-        private readonly IAuthService _authService;
+        public static string StoresRoute => "/api/v1/Stores";
+        public static string ItemsRoute(Guid storeId) => $"{StoresRoute}/{storeId}/items";
 
-        public StoresService(IAuthService authService)
+        private readonly IAuthHelper _authHelper;
+
+        public StoresHelper(IAuthHelper authService)
         {
-            _authService = authService;
+            _authHelper = authService;
         }
 
         public async Task<HttpResponseMessage> CreateStoreAsync(CreateStoreRequest request)
         {
             var requestContent = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
 
-            return await ProgramTest.NewClient(await _authService.GetAccessToken()).PostAsync("/api/v1/stores", requestContent);
+            return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).PostAsync(StoresRoute, requestContent);
         }
 
         public async Task<StoreDTO> CreateStoreAndDeserializeAsync(CreateStoreRequest request)
@@ -38,7 +41,7 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
             var store = await Utils.DeserializeAsync<StoreDTO>(response);
 
             Assert.IsTrue(Guid.TryParse(store.Id.ToString(), out var _));
-            Assert.AreEqual($"/api/v1/Stores/{store.Id}", response.Headers.Location.AbsolutePath);
+            Assert.AreEqual($"{StoresRoute}/{store.Id}", response.Headers.Location.AbsolutePath);
 
             return store;
         }
@@ -52,7 +55,7 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
 
         public async Task<HttpResponseMessage> GetStoreByIdAsync(Guid id)
         {
-            return await ProgramTest.NewClient().GetAsync($"/api/v1/stores/{id}");
+            return await ProgramTest.NewClient().GetAsync($"{StoresRoute}/{id}");
         }
 
         public async Task<StoreDTO> GetStoreByIdAndDeserializeAsync(Guid id)
@@ -88,7 +91,7 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
                 queryString.Add("radius", request.Radius.ToString());
             }
 
-            var uri = "/api/v1/stores";
+            var uri = StoresRoute;
 
             var qs = queryString.ToString();
 
@@ -111,14 +114,14 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
 
         public async Task<HttpResponseMessage> DeleteStoreByIdAsync(Guid id)
         {
-            return await ProgramTest.NewClient(await _authService.GetAccessToken()).DeleteAsync($"/api/v1/stores/{id}");
+            return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).DeleteAsync($"{StoresRoute}/{id}");
         }
 
         public async Task<HttpResponseMessage> CreateItemAsync(Guid storeId, CreateItemRequest request)
         {
             var requestContent = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
 
-            return await ProgramTest.NewClient(await _authService.GetAccessToken()).PostAsync($"/api/v1/stores/{storeId}/items", requestContent);
+            return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).PostAsync(ItemsRoute(storeId), requestContent);
         }
 
         public async Task<ItemDTO> CreateItemAndDeserializeAsync(Guid storeId, CreateItemRequest request)
@@ -132,7 +135,7 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
 
             Assert.IsNotNull(item);
             Assert.IsTrue(Guid.TryParse(item.Id.ToString(), out var _));
-            Assert.AreEqual($"/api/v1/Stores/{storeId}/items/{item.Id}", response.Headers.Location.AbsolutePath);
+            Assert.AreEqual($"{ItemsRoute(storeId)}/{item.Id}", response.Headers.Location.AbsolutePath);
 
             return item;
         }
@@ -146,7 +149,7 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
 
         public async Task<HttpResponseMessage> GetItemByIdAsync(Guid storeId, Guid itemId)
         {
-            return await ProgramTest.NewClient().GetAsync($"/api/v1/stores/{storeId}/items/{itemId}");
+            return await ProgramTest.NewClient().GetAsync($"{ItemsRoute(storeId)}/{itemId}");
         }
 
         public async Task<ItemDTO> GetItemByIdAndDeserializeAsync(Guid storeId, Guid itemId)

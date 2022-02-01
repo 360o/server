@@ -78,16 +78,22 @@ namespace _360o.Server.API.V1.Stores.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize]
         public async Task<IActionResult> DeleteStoreByIdAsync(Guid id)
         {
-            try
+            var store = await _storesService.GetStoreByIdByAsync(id);
+
+            if (store == null)
             {
-                await _storesService.DeleteStoreByIdAsync(id);
+                return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.ItemNotFound.ToString());
             }
-            catch (KeyNotFoundException ex)
+
+            if (User.Identity.Name != store.Organization.UserId)
             {
-                return Problem(detail: ex.Message, statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.ItemNotFound.ToString());
+                return Forbid();
             }
+
+            await _storesService.DeleteStoreByIdAsync(id);
 
             return NoContent();
         }
