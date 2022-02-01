@@ -39,7 +39,7 @@ namespace _360o.Server.API.V1.Stores.Controllers
 
             if (organization == null)
             {
-                return Problem(detail: "Organization not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.ItemNotFound.ToString());
+                return Problem(detail: "Organization not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
             }
 
             if (User.Identity.Name != organization.UserId)
@@ -61,7 +61,7 @@ namespace _360o.Server.API.V1.Stores.Controllers
 
             if (store == null)
             {
-                return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.ItemNotFound.ToString());
+                return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
             }
 
             return _mapper.Map<StoreDTO>(store);
@@ -90,7 +90,7 @@ namespace _360o.Server.API.V1.Stores.Controllers
 
             if (store == null)
             {
-                return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.ItemNotFound.ToString());
+                return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
             }
 
             if (User.Identity.Name != store.Organization.UserId)
@@ -116,14 +116,14 @@ namespace _360o.Server.API.V1.Stores.Controllers
 
             if (store == null)
             {
-                return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.ItemNotFound.ToString());
+                return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
             }
 
             var organization = await _organizationsService.GetOrganizationByIdAsync(store.OrganizationId);
 
             if (organization == null)
             {
-                return Problem(detail: "Organization not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.ItemNotFound.ToString());
+                return Problem(detail: "Organization not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
             }
 
             if (User.Identity.Name != organization.UserId)
@@ -145,14 +145,14 @@ namespace _360o.Server.API.V1.Stores.Controllers
 
             if (store == null)
             {
-                return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.ItemNotFound.ToString());
+                return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
             }
 
             var item = await _storesService.GetItembyIdAsync(itemId);
 
             if (item == null)
             {
-                return Problem(detail: "Item not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.ItemNotFound.ToString());
+                return Problem(detail: "Item not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
             }
 
             return _mapper.Map<ItemDTO>(item);
@@ -167,7 +167,7 @@ namespace _360o.Server.API.V1.Stores.Controllers
 
             if (store == null)
             {
-                return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.ItemNotFound.ToString());
+                return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
             }
 
             var items = await _storesService.ListItemsAsync(storeId);
@@ -183,9 +183,14 @@ namespace _360o.Server.API.V1.Stores.Controllers
         {
             var item = await _storesService.GetItembyIdAsync(itemId);
 
-            if (item == null || item.StoreId != storeId)
+            if (item == null)
             {
-                return Problem(detail: "Item not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.ItemNotFound.ToString());
+                return Problem(detail: "Item not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
+            }
+
+            if (item.StoreId != storeId)
+            {
+                return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
             }
 
             if (User.Identity.Name != item.Store.Organization.UserId)

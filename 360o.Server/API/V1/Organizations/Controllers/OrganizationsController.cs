@@ -57,7 +57,7 @@ namespace _360o.Server.API.V1.Organizations.Controllers
 
             if (organization == null)
             {
-                return Problem(detail: "Organization not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.ItemNotFound.ToString());
+                return Problem(detail: "Organization not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
             }
 
             return _mapper.Map<OrganizationDTO>(organization);
@@ -73,7 +73,7 @@ namespace _360o.Server.API.V1.Organizations.Controllers
 
             if (organization == null)
             {
-                return Problem(detail: "Organization not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.ItemNotFound.ToString());
+                return Problem(detail: "Organization not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
             }
 
             if (User.Identity.Name != organization.UserId)

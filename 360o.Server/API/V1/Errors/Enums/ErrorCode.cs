@@ -4,7 +4,7 @@
     {
         GeneralException,
         InvalidRequest,
-        ItemNotFound,
-        NameAlreadyExists
+        NotFound,
+        AlreadyExists
     }
 }
