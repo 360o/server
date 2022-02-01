@@ -15,7 +15,9 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
     public class StoresHelper
     {
         public static string StoresRoute => "/api/v1/Stores";
+        public static string StoreRoute(Guid storeId) => $"{StoresRoute}/{storeId}";
         public static string ItemsRoute(Guid storeId) => $"{StoresRoute}/{storeId}/items";
+        public static string ItemRoute(Guid storeId, Guid itemId) => $"{ItemsRoute(storeId)}/{itemId}";
 
         private readonly IAuthHelper _authHelper;
 
@@ -41,7 +43,7 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
             var store = await Utils.DeserializeAsync<StoreDTO>(response);
 
             Assert.IsTrue(Guid.TryParse(store.Id.ToString(), out var _));
-            Assert.AreEqual($"{StoresRoute}/{store.Id}", response.Headers.Location.AbsolutePath);
+            Assert.AreEqual(StoreRoute(store.Id), response.Headers.Location.AbsolutePath);
 
             return store;
         }
@@ -55,7 +57,7 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
 
         public async Task<HttpResponseMessage> GetStoreByIdAsync(Guid id)
         {
-            return await ProgramTest.NewClient().GetAsync($"{StoresRoute}/{id}");
+            return await ProgramTest.NewClient().GetAsync(StoreRoute(id));
         }
 
         public async Task<StoreDTO> GetStoreByIdAndDeserializeAsync(Guid id)
@@ -114,7 +116,7 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
 
         public async Task<HttpResponseMessage> DeleteStoreByIdAsync(Guid id)
         {
-            return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).DeleteAsync($"{StoresRoute}/{id}");
+            return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).DeleteAsync(StoreRoute(id));
         }
 
         public async Task<HttpResponseMessage> CreateItemAsync(Guid storeId, CreateItemRequest request)
@@ -135,7 +137,7 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
 
             Assert.IsNotNull(item);
             Assert.IsTrue(Guid.TryParse(item.Id.ToString(), out var _));
-            Assert.AreEqual($"{ItemsRoute(storeId)}/{item.Id}", response.Headers.Location.AbsolutePath);
+            Assert.AreEqual(ItemRoute(storeId, item.Id), response.Headers.Location.AbsolutePath);
 
             return item;
         }
@@ -149,7 +151,7 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
 
         public async Task<HttpResponseMessage> GetItemByIdAsync(Guid storeId, Guid itemId)
         {
-            return await ProgramTest.NewClient().GetAsync($"{ItemsRoute(storeId)}/{itemId}");
+            return await ProgramTest.NewClient().GetAsync(ItemRoute(storeId, itemId));
         }
 
         public async Task<ItemDTO> GetItemByIdAndDeserializeAsync(Guid storeId, Guid itemId)
@@ -173,6 +175,11 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
             return await Utils.DeserializeAsync<IList<ItemDTO>>(response);
+        }
+
+        public async Task<HttpResponseMessage> DeleteItemByIdAsync(Guid storeId, Guid itemId)
+        {
+            return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).DeleteAsync(ItemRoute(storeId, itemId));
         }
     }
 }

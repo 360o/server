@@ -31,7 +31,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
         [TestMethod]
         public async Task GivenNoAccessTokenShouldReturnUnauthorized()
         {
-            var response = await ProgramTest.NewClient().DeleteAsync($"{StoresHelper.StoresRoute}/{Guid.NewGuid()}");
+            var response = await ProgramTest.NewClient().DeleteAsync(StoresHelper.StoreRoute(Guid.NewGuid()));
 
             Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
         }

@@ -29,7 +29,7 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
         [TestMethod]
         public async Task GivenNoAccessTokenShouldReturnUnauthorized()
         {
-            var response = await ProgramTest.NewClient().DeleteAsync($"{OrganizationsHelper.OrganizationsRoute}/{Guid.NewGuid()}");
+            var response = await ProgramTest.NewClient().DeleteAsync(OrganizationsHelper.OrganizationRoute(Guid.NewGuid()));
 
             Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
         }

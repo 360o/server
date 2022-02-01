@@ -1,5 +1,4 @@
-﻿using _360.Server.IntegrationTests.API.V1.Helpers.ApiClient;
-using _360.Server.IntegrationTests.API.V1.Helpers.Generators;
+﻿using _360.Server.IntegrationTests.API.V1.Helpers.Generators;
 using _360o.Server.API.V1.Errors.Enums;
 using _360o.Server.API.V1.Stores.DTOs;
 using _360o.Server.API.V1.Stores.Model;
@@ -10,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 

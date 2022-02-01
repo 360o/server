@@ -11,5 +11,6 @@ namespace _360o.Server.API.V1.Stores.Services
         Task<Item> CreateItemAsync(CreateItemInput input);
         Task<Item?> GetItembyIdAsync(Guid id);
         Task<IList<Item>> ListItemsAsync(Guid storeId);
+        Task DeleteItemByIdAsync(Guid id);
     }
 }

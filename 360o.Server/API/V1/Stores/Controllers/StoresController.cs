@@ -174,6 +174,29 @@ namespace _360o.Server.API.V1.Stores.Controllers
 
             return items.Select(i => _mapper.Map<ItemDTO>(i)).ToList();
         }
+
+        [HttpDelete("{storeId}/items/{itemId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize]
+        public async Task<IActionResult> DeleteItemByIdAsync(Guid storeId, Guid itemId)
+        {
+            var item = await _storesService.GetItembyIdAsync(itemId);
+
+            if (item == null || item.StoreId != storeId)
+            {
+                return Problem(detail: "Item not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.ItemNotFound.ToString());
+            }
+
+            if (User.Identity.Name != item.Store.Organization.UserId)
+            {
+                return Forbid();
+            }
+
+            await _storesService.DeleteItemByIdAsync(itemId);
+
+            return NoContent();
+        }
     }
 }
 

@@ -14,6 +14,7 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
     public class OrganizationsHelper
     {
         public static string OrganizationsRoute => "/api/v1/Organizations";
+        public static string OrganizationRoute(Guid id) => $"{OrganizationsRoute}/{id}";
 
         public static void AssertOrganizationsAreEqual(OrganizationDTO expected, OrganizationDTO actual)
         {
@@ -50,7 +51,7 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
             var organization = await Utils.DeserializeAsync<OrganizationDTO>(response);
 
             Assert.IsTrue(Guid.TryParse(organization.Id.ToString(), out var _));
-            Assert.AreEqual($"{OrganizationsRoute}/{organization.Id}", response.Headers.Location.AbsolutePath);
+            Assert.AreEqual(OrganizationRoute(organization.Id), response.Headers.Location.AbsolutePath);
 
             return organization;
         }
@@ -64,7 +65,7 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
 
         public async Task<HttpResponseMessage> GetOrganizationByIdAsync(Guid id)
         {
-            return await ProgramTest.NewClient().GetAsync($"{OrganizationsRoute}/{id}");
+            return await ProgramTest.NewClient().GetAsync(OrganizationRoute(id));
         }
 
         public async Task<OrganizationDTO> GetOrganizationByIdAndDeserializeAsync(Guid id)
@@ -78,7 +79,7 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
 
         public async Task<HttpResponseMessage> DeleteOrganizationByIdAsync(Guid id)
         {
-            return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).DeleteAsync($"{OrganizationsRoute}/{id}");
+            return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).DeleteAsync(OrganizationRoute(id));
         }
     }
 }

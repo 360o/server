@@ -95,14 +95,33 @@ namespace _360o.Server.API.V1.Stores.Services
 
         public async Task<Item?> GetItembyIdAsync(Guid id)
         {
-            return await _apiContext.Items.FindAsync(id);
+            return await _apiContext.Items
+                .Include(i => i.Store)
+                .Include(i => i.Store.Organization)
+                .Where(i => !i.DeletedAt.HasValue)
+                .SingleOrDefaultAsync(i => i.Id == id);
         }
 
         public async Task<IList<Item>> ListItemsAsync(Guid storeId)
         {
             return await _apiContext.Items
                 .Where(s => s.StoreId == storeId)
+                .Where(s => !s.DeletedAt.HasValue)
                 .ToListAsync();
+        }
+
+        public async Task DeleteItemByIdAsync(Guid id)
+        {
+            var item = await _apiContext.Items.FindAsync(id);
+
+            if (item == null)
+            {
+                throw new KeyNotFoundException("Item not found");
+            }
+
+            item.SetDelete();
+
+            await _apiContext.SaveChangesAsync();
         }
     }
 }
