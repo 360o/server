@@ -18,6 +18,12 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
         public static string StoreRoute(Guid storeId) => $"{StoresRoute}/{storeId}";
         public static string ItemsRoute(Guid storeId) => $"{StoresRoute}/{storeId}/items";
         public static string ItemRoute(Guid storeId, Guid itemId) => $"{ItemsRoute(storeId)}/{itemId}";
+        public static void AssertStoresAreEqual(StoreDTO expected, StoreDTO actual)
+        {
+            Assert.AreEqual(expected.Id, actual.Id);
+            Assert.AreEqual(expected.Place, actual.Place);
+            OrganizationsHelper.AssertOrganizationsAreEqual(expected.Organization, actual.Organization);
+        }
 
         private readonly IAuthHelper _authHelper;
 

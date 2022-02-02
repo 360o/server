@@ -45,6 +45,7 @@ namespace _360o.Server.API.V1.Stores.Services
             var stores = _apiContext.Stores
                 .Where(s => !s.DeletedAt.HasValue)
                 .Include(s => s.Place)
+                .Include(s => s.Organization)
                 .AsQueryable();
 
             if (input.Query != null)

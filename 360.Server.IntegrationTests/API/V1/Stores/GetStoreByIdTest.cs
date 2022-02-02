@@ -1,4 +1,5 @@
-﻿using _360o.Server.API.V1.Errors.Enums;
+﻿using _360.Server.IntegrationTests.API.V1.Helpers.ApiClient;
+using _360o.Server.API.V1.Errors.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -20,7 +21,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             var store = await ProgramTest.ApiClientUser1.Stores.GetStoreByIdAndDeserializeAsync(createdStore.Id);
 
-            Assert.AreEqual(createdStore, store);
+            StoresHelper.AssertStoresAreEqual(createdStore, store);
         }
 
         [TestMethod]

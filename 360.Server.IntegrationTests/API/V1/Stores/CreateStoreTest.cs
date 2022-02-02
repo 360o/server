@@ -29,7 +29,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             Assert.AreEqual(request.Place.GooglePlaceId, store.Place.GooglePlaceId);
             Assert.AreEqual(request.Place.FormattedAddress, store.Place.FormattedAddress);
             Assert.AreEqual(request.Place.Location, store.Place.Location);
-            Assert.AreEqual(request.OrganizationId, store.OrganizationId);
+            Assert.AreEqual(request.OrganizationId, store.Organization.Id);
         }
 
         [TestMethod]

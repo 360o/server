@@ -1,4 +1,5 @@
-﻿using _360.Server.IntegrationTests.API.V1.Helpers.Generators;
+﻿using _360.Server.IntegrationTests.API.V1.Helpers.ApiClient;
+using _360.Server.IntegrationTests.API.V1.Helpers.Generators;
 using _360o.Server.API.V1.Errors.Enums;
 using _360o.Server.API.V1.Stores.DTOs;
 using _360o.Server.API.V1.Stores.Model;
@@ -42,9 +43,9 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             var resultUser1Store1 = result.Find(s => s.Id == user1Store1.Id);
             var resultUser1Store2 = result.Find(s => s.Id == user1Store2.Id);
             var resultUser2Store1 = result.Find(s => s.Id == user2Store1.Id);
-            Assert.AreEqual(user1Store1, resultUser1Store1);
-            Assert.AreEqual(user1Store2, resultUser1Store2);
-            Assert.AreEqual(user2Store1, resultUser2Store1);
+            StoresHelper.AssertStoresAreEqual(user1Store1, resultUser1Store1);
+            StoresHelper.AssertStoresAreEqual(user1Store2, resultUser1Store2);
+            StoresHelper.AssertStoresAreEqual(user2Store1, resultUser2Store1);
         }
 
         [TestMethod]
@@ -57,7 +58,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             var user1OrganizationWithEnglishLongDescriptionRequest = RequestsGenerator.MakeRandomCreateOrganizationRequest();
             var user1OrganizationWithEnglishCategoriesRequest = RequestsGenerator.MakeRandomCreateOrganizationRequest();
             var user1OrganizationWithoutQueryRequest = RequestsGenerator.MakeRandomCreateOrganizationRequest();
-            
+
             var user2OrganizationWithFrenchShortDescriptionRequest = RequestsGenerator.MakeRandomCreateOrganizationRequest();
             var user2OrganizationWithFrenchLongDescriptionRequest = RequestsGenerator.MakeRandomCreateOrganizationRequest();
             var user2OrganizationWithFrenchCategoriesRequest = RequestsGenerator.MakeRandomCreateOrganizationRequest();
@@ -67,7 +68,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             user1OrganizationWithEnglishShortDescriptionRequest = user1OrganizationWithNameRequest with { EnglishShortDescription = $"{user1OrganizationWithEnglishShortDescriptionRequest.EnglishShortDescription} {myQuery}" };
             user1OrganizationWithEnglishLongDescriptionRequest = user1OrganizationWithNameRequest with { EnglishLongDescription = $"{user1OrganizationWithEnglishLongDescriptionRequest.EnglishLongDescription} {myQuery}" };
             user1OrganizationWithEnglishCategoriesRequest.EnglishCategories.Add(myQuery);
-            
+
             user2OrganizationWithFrenchShortDescriptionRequest = user1OrganizationWithNameRequest with { FrenchShortDescription = $"{user2OrganizationWithFrenchShortDescriptionRequest.FrenchShortDescription} {myQuery}" };
             user2OrganizationWithFrenchLongDescriptionRequest = user1OrganizationWithNameRequest with { FrenchLongDescription = $"{user2OrganizationWithFrenchLongDescriptionRequest.FrenchLongDescription} {myQuery}" };
             user2OrganizationWithFrenchCategoriesRequest.FrenchCategories.Add(myQuery);
@@ -77,7 +78,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             var user1OrganizationWithEnglishLongDescription = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(user1OrganizationWithEnglishLongDescriptionRequest);
             var user1OrganizationWithEnglishCategories = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(user1OrganizationWithEnglishCategoriesRequest);
             var user1OrganizationWithoutQuery = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(user1OrganizationWithoutQueryRequest);
-            
+
             var user2OrganizationWithFrenchShortDescription = await ProgramTest.ApiClientUser2.Organizations.CreateOrganizationAndDeserializeAsync(user2OrganizationWithFrenchShortDescriptionRequest);
             var user2OrganizationWithFrenchLongDescription = await ProgramTest.ApiClientUser2.Organizations.CreateOrganizationAndDeserializeAsync(user2OrganizationWithFrenchLongDescriptionRequest);
             var user2OrganizationWithFrenchCategories = await ProgramTest.ApiClientUser2.Organizations.CreateOrganizationAndDeserializeAsync(user2OrganizationWithFrenchCategoriesRequest);
@@ -89,7 +90,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             var user1StoreWithEnglishCategories = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(user1OrganizationWithEnglishCategories.Id);
             var user1StoreWithItemWithEnglishName = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(user1OrganizationWithoutQuery.Id);
             var user1StoreWithItemWithEnglishDescription = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(user1OrganizationWithoutQuery.Id);
-            
+
             var user2StoreWithFrenchShortDescription = await ProgramTest.ApiClientUser2.Stores.CreateRandomStoreAndDeserializeAsync(user2OrganizationWithFrenchShortDescription.Id);
             var user2StoreWithFrenchLongDescription = await ProgramTest.ApiClientUser2.Stores.CreateRandomStoreAndDeserializeAsync(user2OrganizationWithFrenchLongDescription.Id);
             var user2StoreWithFrenchCategories = await ProgramTest.ApiClientUser2.Stores.CreateRandomStoreAndDeserializeAsync(user2OrganizationWithFrenchCategories.Id);
@@ -121,7 +122,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
                 { user1StoreWithEnglishCategories.Id, user1StoreWithEnglishCategories },
                 { user1StoreWithItemWithEnglishName.Id, user1StoreWithItemWithEnglishName },
                 { user1StoreWithItemWithEnglishDescription.Id, user1StoreWithItemWithEnglishDescription },
-                
+
                 { user2StoreWithFrenchShortDescription.Id, user2StoreWithFrenchShortDescription },
                 { user2StoreWithFrenchLongDescription.Id, user2StoreWithFrenchLongDescription },
                 { user2StoreWithFrenchCategories.Id, user2StoreWithFrenchCategories },
@@ -138,7 +139,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             Assert.AreEqual(expectedStores.Count, stores.Count);
             foreach (var store in stores)
             {
-                Assert.AreEqual(expectedStores[store.Id], store);
+                StoresHelper.AssertStoresAreEqual(expectedStores[store.Id], store);
             }
         }
 
@@ -276,7 +277,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             foreach (var store in twoHundredMetersStores)
             {
-                Assert.AreEqual(storesWithinTwoHundredMeters[store.Id], store);
+                StoresHelper.AssertStoresAreEqual(storesWithinTwoHundredMeters[store.Id], store);
             }
 
             var sixHundredMetersStore = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
@@ -291,7 +292,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             foreach (var store in sixHundredMetersStore)
             {
-                Assert.AreEqual(storesWithinSixHundredMeters[store.Id], store);
+                StoresHelper.AssertStoresAreEqual(storesWithinSixHundredMeters[store.Id], store);
             }
 
             var twoKilometersStores = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
@@ -306,7 +307,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             foreach (var store in twoKilometersStores)
             {
-                Assert.AreEqual(storesWithinTwoKilometers[store.Id], store);
+                StoresHelper.AssertStoresAreEqual(storesWithinTwoKilometers[store.Id], store);
             }
 
             var tenKilometersStores = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
@@ -321,7 +322,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             foreach (var store in tenKilometersStores)
             {
-                Assert.AreEqual(storesWithinTenKilometers[store.Id], store);
+                StoresHelper.AssertStoresAreEqual(storesWithinTenKilometers[store.Id], store);
             }
         }
 
@@ -580,7 +581,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             foreach (var store in stores)
             {
-                Assert.AreEqual(expectedStores[store.Id], store);
+                StoresHelper.AssertStoresAreEqual(expectedStores[store.Id], store);
             }
         }
     }
