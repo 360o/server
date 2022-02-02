@@ -48,51 +48,85 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
         }
 
         [TestMethod]
-        public async Task GivenQueryParamShouldReturnStoresWithDisplayNameOrDescriptionsOrCategoriesMatchingTheQuery()
+        public async Task GivenQueryParamShouldReturnStoresNameOrDescriptionsOrCategoriesOrItemsMatchingTheQuery()
         {
             var myQuery = "amigurumi";
 
-            var user1Organization1Request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
-            var user1Organization2Request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
-            var user1Organization3Request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
-            var user1Organization4Request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
-            var user2Organization1Request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
-            var user2Organization2Request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
-            var user2Organization3Request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var user1OrganizationWithNameRequest = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var user1OrganizationWithEnglishShortDescriptionRequest = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var user1OrganizationWithEnglishLongDescriptionRequest = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var user1OrganizationWithEnglishCategoriesRequest = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var user1OrganizationWithoutQueryRequest = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            
+            var user2OrganizationWithFrenchShortDescriptionRequest = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var user2OrganizationWithFrenchLongDescriptionRequest = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var user2OrganizationWithFrenchCategoriesRequest = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var user2OrganizationWithoutQueryRequest = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
-            user1Organization1Request = user1Organization1Request with { Name = $"{user1Organization1Request.Name} {myQuery}" };
-            user1Organization2Request = user1Organization1Request with { EnglishShortDescription = $"{user1Organization2Request.EnglishShortDescription} {myQuery}" };
-            user1Organization3Request = user1Organization1Request with { EnglishLongDescription = $"{user1Organization3Request.EnglishLongDescription} {myQuery}" };
-            user1Organization4Request.EnglishCategories.Add(myQuery);
-            user2Organization1Request = user1Organization1Request with { FrenchShortDescription = $"{user2Organization1Request.FrenchShortDescription} {myQuery}" };
-            user2Organization2Request = user1Organization1Request with { FrenchLongDescription = $"{user2Organization2Request.FrenchLongDescription} {myQuery}" };
-            user2Organization3Request.FrenchCategories.Add(myQuery);
+            user1OrganizationWithNameRequest = user1OrganizationWithNameRequest with { Name = $"{user1OrganizationWithNameRequest.Name} {myQuery}" };
+            user1OrganizationWithEnglishShortDescriptionRequest = user1OrganizationWithNameRequest with { EnglishShortDescription = $"{user1OrganizationWithEnglishShortDescriptionRequest.EnglishShortDescription} {myQuery}" };
+            user1OrganizationWithEnglishLongDescriptionRequest = user1OrganizationWithNameRequest with { EnglishLongDescription = $"{user1OrganizationWithEnglishLongDescriptionRequest.EnglishLongDescription} {myQuery}" };
+            user1OrganizationWithEnglishCategoriesRequest.EnglishCategories.Add(myQuery);
+            
+            user2OrganizationWithFrenchShortDescriptionRequest = user1OrganizationWithNameRequest with { FrenchShortDescription = $"{user2OrganizationWithFrenchShortDescriptionRequest.FrenchShortDescription} {myQuery}" };
+            user2OrganizationWithFrenchLongDescriptionRequest = user1OrganizationWithNameRequest with { FrenchLongDescription = $"{user2OrganizationWithFrenchLongDescriptionRequest.FrenchLongDescription} {myQuery}" };
+            user2OrganizationWithFrenchCategoriesRequest.FrenchCategories.Add(myQuery);
 
-            var user1Organization1 = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(user1Organization1Request);
-            var user1Organization2 = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(user1Organization2Request);
-            var user1Organization3 = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(user1Organization3Request);
-            var user1Organization4 = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(user1Organization4Request);
-            var user2Organization1 = await ProgramTest.ApiClientUser2.Organizations.CreateOrganizationAndDeserializeAsync(user2Organization1Request);
-            var user2Organization2 = await ProgramTest.ApiClientUser2.Organizations.CreateOrganizationAndDeserializeAsync(user2Organization2Request);
-            var user2Organization3 = await ProgramTest.ApiClientUser2.Organizations.CreateOrganizationAndDeserializeAsync(user2Organization3Request);
+            var user1OrganizationWithName = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(user1OrganizationWithNameRequest);
+            var user1OrganizationWithEnglishShortDescription = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(user1OrganizationWithEnglishShortDescriptionRequest);
+            var user1OrganizationWithEnglishLongDescription = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(user1OrganizationWithEnglishLongDescriptionRequest);
+            var user1OrganizationWithEnglishCategories = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(user1OrganizationWithEnglishCategoriesRequest);
+            var user1OrganizationWithoutQuery = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(user1OrganizationWithoutQueryRequest);
+            
+            var user2OrganizationWithFrenchShortDescription = await ProgramTest.ApiClientUser2.Organizations.CreateOrganizationAndDeserializeAsync(user2OrganizationWithFrenchShortDescriptionRequest);
+            var user2OrganizationWithFrenchLongDescription = await ProgramTest.ApiClientUser2.Organizations.CreateOrganizationAndDeserializeAsync(user2OrganizationWithFrenchLongDescriptionRequest);
+            var user2OrganizationWithFrenchCategories = await ProgramTest.ApiClientUser2.Organizations.CreateOrganizationAndDeserializeAsync(user2OrganizationWithFrenchCategoriesRequest);
+            var user2OrganizationWithoutQuery = await ProgramTest.ApiClientUser2.Organizations.CreateOrganizationAndDeserializeAsync(user2OrganizationWithoutQueryRequest);
 
-            var user1Store1 = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(user1Organization1.Id);
-            var user1Store2 = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(user1Organization2.Id);
-            var user1Store3 = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(user1Organization3.Id);
-            var user1Store4 = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(user1Organization4.Id);
-            var user2Store1 = await ProgramTest.ApiClientUser2.Stores.CreateRandomStoreAndDeserializeAsync(user2Organization1.Id);
-            var user2Store2 = await ProgramTest.ApiClientUser2.Stores.CreateRandomStoreAndDeserializeAsync(user2Organization2.Id);
-            var user2Store3 = await ProgramTest.ApiClientUser2.Stores.CreateRandomStoreAndDeserializeAsync(user2Organization3.Id);
+            var user1StoreWithName = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(user1OrganizationWithName.Id);
+            var user1StoreWithEnglishShortDescription = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(user1OrganizationWithEnglishShortDescription.Id);
+            var user1StoreWithEnglishLongDescription = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(user1OrganizationWithEnglishLongDescription.Id);
+            var user1StoreWithEnglishCategories = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(user1OrganizationWithEnglishCategories.Id);
+            var user1StoreWithItemWithEnglishName = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(user1OrganizationWithoutQuery.Id);
+            var user1StoreWithItemWithEnglishDescription = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(user1OrganizationWithoutQuery.Id);
+            
+            var user2StoreWithFrenchShortDescription = await ProgramTest.ApiClientUser2.Stores.CreateRandomStoreAndDeserializeAsync(user2OrganizationWithFrenchShortDescription.Id);
+            var user2StoreWithFrenchLongDescription = await ProgramTest.ApiClientUser2.Stores.CreateRandomStoreAndDeserializeAsync(user2OrganizationWithFrenchLongDescription.Id);
+            var user2StoreWithFrenchCategories = await ProgramTest.ApiClientUser2.Stores.CreateRandomStoreAndDeserializeAsync(user2OrganizationWithFrenchCategories.Id);
+            var user2StoreWithItemWithFrenchName = await ProgramTest.ApiClientUser2.Stores.CreateRandomStoreAndDeserializeAsync(user2OrganizationWithoutQuery.Id);
+            var user2StoreWithItemWithFrenchDescription = await ProgramTest.ApiClientUser2.Stores.CreateRandomStoreAndDeserializeAsync(user2OrganizationWithoutQuery.Id);
+
+            var user1ItemWithEnglishNameRequest = RequestsGenerator.MakeRandomCreateItemRequest();
+            user1ItemWithEnglishNameRequest = user1ItemWithEnglishNameRequest with { EnglishName = $"{user1ItemWithEnglishNameRequest.EnglishName} {myQuery}" };
+
+            var user1ItemWithEnglishDescriptionRequest = RequestsGenerator.MakeRandomCreateItemRequest();
+            user1ItemWithEnglishDescriptionRequest = user1ItemWithEnglishDescriptionRequest with { EnglishDescription = $"{user1ItemWithEnglishDescriptionRequest.EnglishDescription} {myQuery}" };
+
+            var user2ItemWithFrenchNameRequest = RequestsGenerator.MakeRandomCreateItemRequest();
+            user2ItemWithFrenchNameRequest = user2ItemWithFrenchNameRequest with { FrenchName = $"{user2ItemWithFrenchNameRequest.FrenchName} {myQuery}" };
+
+            var user2ItemWithFrenchDescriptionRequest = RequestsGenerator.MakeRandomCreateItemRequest();
+            user2ItemWithFrenchDescriptionRequest = user2ItemWithFrenchDescriptionRequest with { FrenchDescription = $"{user2ItemWithFrenchDescriptionRequest.FrenchDescription} {myQuery}" };
+
+            await ProgramTest.ApiClientUser1.Stores.CreateItemAsync(user1StoreWithItemWithEnglishName.Id, user1ItemWithEnglishNameRequest);
+            await ProgramTest.ApiClientUser1.Stores.CreateItemAsync(user1StoreWithItemWithEnglishDescription.Id, user1ItemWithEnglishDescriptionRequest);
+            await ProgramTest.ApiClientUser2.Stores.CreateItemAsync(user2StoreWithItemWithFrenchName.Id, user2ItemWithFrenchNameRequest);
+            await ProgramTest.ApiClientUser2.Stores.CreateItemAsync(user2StoreWithItemWithFrenchDescription.Id, user2ItemWithFrenchDescriptionRequest);
 
             var expectedStores = new Dictionary<Guid, StoreDTO>()
             {
-                { user1Store1.Id, user1Store1 },
-                { user1Store2.Id, user1Store2 },
-                { user1Store3.Id, user1Store3 },
-                { user1Store4.Id, user1Store4 },
-                { user2Store1.Id, user2Store1 },
-                { user2Store2.Id, user2Store2 },
-                { user2Store3.Id, user2Store3 }
+                { user1StoreWithName.Id, user1StoreWithName },
+                { user1StoreWithEnglishShortDescription.Id, user1StoreWithEnglishShortDescription },
+                { user1StoreWithEnglishLongDescription.Id, user1StoreWithEnglishLongDescription },
+                { user1StoreWithEnglishCategories.Id, user1StoreWithEnglishCategories },
+                { user1StoreWithItemWithEnglishName.Id, user1StoreWithItemWithEnglishName },
+                { user1StoreWithItemWithEnglishDescription.Id, user1StoreWithItemWithEnglishDescription },
+                
+                { user2StoreWithFrenchShortDescription.Id, user2StoreWithFrenchShortDescription },
+                { user2StoreWithFrenchLongDescription.Id, user2StoreWithFrenchLongDescription },
+                { user2StoreWithFrenchCategories.Id, user2StoreWithFrenchCategories },
+                { user2StoreWithItemWithFrenchName.Id, user2StoreWithItemWithFrenchName },
+                { user2StoreWithItemWithFrenchDescription.Id, user2StoreWithItemWithFrenchDescription }
             };
 
             var stores = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest

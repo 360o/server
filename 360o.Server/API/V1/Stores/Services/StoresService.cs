@@ -49,7 +49,13 @@ namespace _360o.Server.API.V1.Stores.Services
 
             if (input.Query != null)
             {
-                stores = stores.Where(s => s.Organization.EnglishSearchVector.Matches(EF.Functions.WebSearchToTsQuery("english", input.Query)) || s.Organization.FrenchSearchVector.Matches(EF.Functions.WebSearchToTsQuery("french", input.Query)));
+                stores = stores.Where(s =>
+                s.Organization.EnglishSearchVector.Matches(EF.Functions.WebSearchToTsQuery("english", input.Query)) ||
+                s.Organization.FrenchSearchVector.Matches(EF.Functions.WebSearchToTsQuery("french", input.Query)) ||
+                s.Items.Any(
+                    i => i.EnglishSearchVector.Matches(EF.Functions.WebSearchToTsQuery("english", input.Query)) ||
+                    i.FrenchSearchVector.Matches(EF.Functions.WebSearchToTsQuery("french", input.Query)))
+                );
             }
 
             if (input.Latitude.HasValue && input.Longitude.HasValue && input.Radius.HasValue)
@@ -80,8 +86,9 @@ namespace _360o.Server.API.V1.Stores.Services
         {
             var item = new Item(
                 input.StoreId,
-                input.Name,
+                input.EnglishName,
                 input.EnglishDescription,
+                input.FrenchName,
                 input.FrenchDescription,
                 input.Price
                 );

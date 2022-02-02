@@ -131,7 +131,13 @@ namespace _360o.Server.API.V1.Stores.Controllers
                 return Forbid();
             }
 
-            var item = await _storesService.CreateItemAsync(new CreateItemInput(storeId, request.Name, request.EnglishDescription, request.FrenchDescription, request.Price));
+            var item = await _storesService.CreateItemAsync(new CreateItemInput(
+                storeId, 
+                request.EnglishName,
+                request.EnglishDescription, 
+                request.FrenchName, 
+                request.FrenchDescription, 
+                request.Price));
 
             return CreatedAtAction(nameof(GetItemByIdAsync), new { storeId = storeId, itemId = item.Id }, _mapper.Map<ItemDTO>(item));
         }

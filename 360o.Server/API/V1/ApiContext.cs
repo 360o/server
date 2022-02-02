@@ -45,7 +45,17 @@ namespace _360o.Server.API.V1.Stores.Model
             modelBuilder.Entity<OfferItem>().HasOne(e => e.Offer).WithMany(e => e.OfferItems);
             modelBuilder.Entity<OfferItem>().HasOne(e => e.Item).WithMany(e => e.OfferItems);
 
-            modelBuilder.Entity<Item>().Property(e => e.Name).IsRequired();
+            modelBuilder.Entity<Item>().Property(e => e.EnglishName).IsRequired();
+            modelBuilder
+                .Entity<Item>()
+                .HasGeneratedTsVectorColumn(e => e.EnglishSearchVector, "english", e => new { e.EnglishName, e.EnglishDescription })
+                .HasIndex(e => e.EnglishSearchVector)
+                .HasMethod("GIN");
+            modelBuilder
+                .Entity<Item>()
+                .HasGeneratedTsVectorColumn(e => e.FrenchSearchVector, "french", e => new { e.FrenchName, e.FrenchDescription })
+                .HasIndex(e => e.FrenchSearchVector)
+                .HasMethod("GIN");
             modelBuilder.Entity<Item>().Property(e => e.Price).HasColumnType("jsonb");
             modelBuilder.Entity<Item>().HasOne(e => e.Store).WithMany(e => e.Items);
         }

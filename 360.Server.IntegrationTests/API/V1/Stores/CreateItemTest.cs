@@ -26,11 +26,81 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             var item = await ProgramTest.ApiClientUser1.Stores.CreateItemAndDeserializeAsync(store.Id, request);
 
-            Assert.AreEqual(request.Name, item.Name);
+            Assert.AreEqual(request.EnglishName, item.EnglishName);
             Assert.AreEqual(request.EnglishDescription, item.EnglishDescription);
+            Assert.AreEqual(request.FrenchName, item.FrenchName);
             Assert.AreEqual(request.FrenchDescription, item.FrenchDescription);
             Assert.AreEqual(request.Price, item.Price);
             Assert.AreEqual(store.Id, item.StoreId);
+        }
+
+        [DataTestMethod]
+        [DataRow(null)]
+        [DataRow("")]
+        [DataRow(" ")]
+        public async Task GivenEnglishNameIsNullOrWhitespaceShouldReturnCreated(string englishName)
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+
+            var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
+
+            var request = RequestsGenerator.MakeRandomCreateItemRequest();
+
+            request = request with { EnglishName = englishName };
+
+            var item = await ProgramTest.ApiClientUser1.Stores.CreateItemAndDeserializeAsync(store.Id, request);
+
+            Assert.AreEqual(string.Empty, item.EnglishName);
+        }
+
+        [DataTestMethod]
+        [DataRow(null)]
+        [DataRow("")]
+        [DataRow(" ")]
+        public async Task GivenFrenchNameIsNullOrWhitespaceShouldReturnCreated(string frenchName)
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+
+            var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
+
+            var request = RequestsGenerator.MakeRandomCreateItemRequest();
+
+            request = request with { FrenchName = frenchName };
+
+            var item = await ProgramTest.ApiClientUser1.Stores.CreateItemAndDeserializeAsync(store.Id, request);
+
+            Assert.AreEqual(string.Empty, item.FrenchName);
+        }
+
+        [TestMethod]
+        public async Task GivenAllNamesAreNullShouldReturnBadRequest()
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+
+            var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
+
+            var request = RequestsGenerator.MakeRandomCreateItemRequest();
+
+            request = request with
+            {
+                EnglishName = null,
+                FrenchName = null,
+            };
+
+            var response = await ProgramTest.ApiClientUser1.Stores.CreateItemAsync(store.Id, request);
+
+            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Detail);
+            Assert.IsNotNull(result.Status);
+            Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
+            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
+            Assert.IsTrue(result.Detail.Contains("At least one of Name must be defined"));
         }
 
         [TestMethod]

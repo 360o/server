@@ -49,8 +49,9 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.Generators
 
             return new CreateItemRequest
             {
-                Name = englishFaker.Commerce.ProductName(),
+                EnglishName = englishFaker.Commerce.ProductName(),
                 EnglishDescription = englishFaker.Commerce.ProductDescription(),
+                FrenchName = frenchFaker.Commerce.ProductName(),
                 FrenchDescription = frenchFaker.Commerce.ProductDescription(),
                 Price = new MoneyValue
                 {

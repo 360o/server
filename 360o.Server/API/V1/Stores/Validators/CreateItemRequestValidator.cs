@@ -7,7 +7,9 @@ namespace _360o.Server.API.V1.Stores.Validators
     {
         public CreateItemRequestValidator()
         {
-            RuleFor(r => r.Name).NotEmpty();
+            RuleFor(r => new { r.EnglishName, r.FrenchName })
+                .Must(r => r.EnglishName != null || r.FrenchName != null)
+                .WithMessage("At least one of Name must be defined");
         }
     }
 }
