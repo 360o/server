@@ -147,15 +147,36 @@ namespace _360o.Server.Migrations
                         .HasColumnType("text")
                         .HasColumnName("english_description");
 
+                    b.Property<string>("EnglishName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("english_name");
+
+                    b.Property<NpgsqlTsVector>("EnglishSearchVector")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("tsvector")
+                        .HasColumnName("english_search_vector")
+                        .HasAnnotation("Npgsql:TsVectorConfig", "english")
+                        .HasAnnotation("Npgsql:TsVectorProperties", new[] { "EnglishName", "EnglishDescription" });
+
                     b.Property<string>("FrenchDescription")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("french_description");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("FrenchName")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("name");
+                        .HasColumnName("french_name");
+
+                    b.Property<NpgsqlTsVector>("FrenchSearchVector")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("tsvector")
+                        .HasColumnName("french_search_vector")
+                        .HasAnnotation("Npgsql:TsVectorConfig", "french")
+                        .HasAnnotation("Npgsql:TsVectorProperties", new[] { "FrenchName", "FrenchDescription" });
 
                     b.Property<MoneyValue?>("Price")
                         .HasColumnType("jsonb")
@@ -171,6 +192,16 @@ namespace _360o.Server.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_items");
+
+                    b.HasIndex("EnglishSearchVector")
+                        .HasDatabaseName("ix_items_english_search_vector");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("EnglishSearchVector"), "GIN");
+
+                    b.HasIndex("FrenchSearchVector")
+                        .HasDatabaseName("ix_items_french_search_vector");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("FrenchSearchVector"), "GIN");
 
                     b.HasIndex("StoreId")
                         .HasDatabaseName("ix_items_store_id");

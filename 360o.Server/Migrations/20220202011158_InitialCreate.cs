@@ -72,9 +72,16 @@ namespace _360o.Server.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    name = table.Column<string>(type: "text", nullable: false),
+                    english_name = table.Column<string>(type: "text", nullable: false),
                     english_description = table.Column<string>(type: "text", nullable: false),
+                    english_search_vector = table.Column<NpgsqlTsVector>(type: "tsvector", nullable: false)
+                        .Annotation("Npgsql:TsVectorConfig", "english")
+                        .Annotation("Npgsql:TsVectorProperties", new[] { "english_name", "english_description" }),
+                    french_name = table.Column<string>(type: "text", nullable: false),
                     french_description = table.Column<string>(type: "text", nullable: false),
+                    french_search_vector = table.Column<NpgsqlTsVector>(type: "tsvector", nullable: false)
+                        .Annotation("Npgsql:TsVectorConfig", "french")
+                        .Annotation("Npgsql:TsVectorProperties", new[] { "french_name", "french_description" }),
                     price = table.Column<MoneyValue>(type: "jsonb", nullable: true),
                     store_id = table.Column<Guid>(type: "uuid", nullable: false),
                     created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
@@ -167,6 +174,18 @@ namespace _360o.Server.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "ix_items_english_search_vector",
+                table: "items",
+                column: "english_search_vector")
+                .Annotation("Npgsql:IndexMethod", "GIN");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_items_french_search_vector",
+                table: "items",
+                column: "french_search_vector")
+                .Annotation("Npgsql:IndexMethod", "GIN");
 
             migrationBuilder.CreateIndex(
                 name: "ix_items_store_id",
