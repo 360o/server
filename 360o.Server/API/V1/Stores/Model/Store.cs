@@ -22,6 +22,11 @@ namespace _360o.Server.API.V1.Stores.Model
         public List<Item> Items { get; private set; } = new List<Item>();
         public List<Offer> Offers { get; private set; } = new List<Offer>();
 
+        public void SetPlace(Place place)
+        {
+            Place = place;
+        }
+
         public void AddOffer(Offer offer)
         {
             if (!Offers.Any(o => o.Id == offer.Id))

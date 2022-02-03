@@ -167,7 +167,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             // 200m
             user1Store1Request = user1Store1Request with
             {
-                Place = new CreateStoreRequestPlace
+                Place = new PlaceDTO
                 {
                     GooglePlaceId = "ChIJmwaUgluXuEwRWZsk59TJKnY",
                     FormattedAddress = "249 Rue Saint-Jean, Québec, QC G1R 1N8, Canada",
@@ -177,7 +177,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             user1Store2Request = user1Store2Request with
             {
-                Place = new CreateStoreRequestPlace
+                Place = new PlaceDTO
                 {
                     GooglePlaceId = "ChIJmTMHIHqWuEwRPXPWy5zuZNI",
                     FormattedAddress = "165 Rue Saint-Jean, Québec, QC G1R 1N4",
@@ -188,7 +188,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             // 600m
             user2Store1Request = user2Store1Request with
             {
-                Place = new CreateStoreRequestPlace
+                Place = new PlaceDTO
                 {
                     GooglePlaceId = "ChIJVTZiSnmWuEwRiMC1PoeqRFY",
                     FormattedAddress = "85 Boulevard René-Lévesque O, Québec, QC G1R 2A3, Canada",
@@ -198,7 +198,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             user1Store3Request = user1Store3Request with
             {
-                Place = new CreateStoreRequestPlace
+                Place = new PlaceDTO
                 {
                     GooglePlaceId = "ChIJf4k1oo-WuEwRO-iB-_Asl5Q",
                     FormattedAddress = "269 Bd René-Lévesque E, Québec, QC G1R 2B3, Canada",
@@ -209,7 +209,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             // 2km
             user2Store2Request = user2Store2Request with
             {
-                Place = new CreateStoreRequestPlace
+                Place = new PlaceDTO
                 {
                     GooglePlaceId = "ChIJO_wtXNqVuEwRBoNhbzRrcZg",
                     FormattedAddress = "1 Côte de la Citadelle, Québec, QC G1R 3R2, Canada",
@@ -220,7 +220,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             // 10km
             user1Store4Request = user1Store4Request with
             {
-                Place = new CreateStoreRequestPlace
+                Place = new PlaceDTO
                 {
                     GooglePlaceId = "ChIJTWbEbimRuEwRT_YQIJcyOl8",
                     FormattedAddress = "3121 Bd Hochelaga, Québec, QC G1W 2P9, Canada",
@@ -230,7 +230,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             user2Store3Request = user2Store3Request with
             {
-                Place = new CreateStoreRequestPlace
+                Place = new PlaceDTO
                 {
                     GooglePlaceId = "ChIJp8qY5EaWuEwR_Su2geare9E",
                     FormattedAddress = "552 Bd Wilfrid-Hamel, Québec, QC G1M 3E5, Canada",
@@ -514,7 +514,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             user1Store1Request = user1Store1Request with
             {
-                Place = new CreateStoreRequestPlace
+                Place = new PlaceDTO
                 {
                     GooglePlaceId = "ChIJ_RYTY4nNHkcRl6fA-1FcRRE",
                     FormattedAddress = "Chmielna 106, 00-801 Warszawa, Poland",
@@ -524,7 +524,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             user1Store2Request = user1Store2Request with
             {
-                Place = new CreateStoreRequestPlace
+                Place = new PlaceDTO
                 {
                     GooglePlaceId = "ChIJSYbSBiXNHkcRPVTeBjMEWBE",
                     FormattedAddress = "al. Jana Pawła II 12, 00-001 Warszawa, Poland",
@@ -534,7 +534,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             user2Store1Request = user2Store1Request with
             {
-                Place = new CreateStoreRequestPlace
+                Place = new PlaceDTO
                 {
                     GooglePlaceId = "ChIJkb3oh_TMHkcRvwTuCI-g9us",
                     FormattedAddress = "Świętokrzyska 30, 00-116 Warszawa, Poland",
@@ -545,7 +545,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             user2Store2Request = user2Store2Request with
             {
-                Place = new CreateStoreRequestPlace
+                Place = new PlaceDTO
                 {
                     GooglePlaceId = "ChIJAWdPJtEyGUcRFfnT7IcNGFg",
                     FormattedAddress = "Domaniewska 22A, 02-672 Warszawa, Poland",

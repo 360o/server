@@ -81,6 +81,29 @@ namespace _360o.Server.API.V1.Stores.Controllers
             return stores.Select(s => _mapper.Map<StoreDTO>(s)).ToList();
         }
 
+        [HttpPatch("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(StoreDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize]
+        public async Task<ActionResult<StoreDTO>> UpdateStoreAsync(Guid id, UpdateStoreRequest request)
+        {
+            var store = await _storesService.GetStoreByIdByAsync(id);
+
+            if (store == null)
+            {
+                return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
+            }
+
+            if (User.Identity.Name != store.Organization.UserId)
+            {
+                return Forbid();
+            }
+
+            store = await _storesService.UpdateStoreAsync(_mapper.Map<UpdateStoreInput>(request) with { StoreId = id });
+
+            return _mapper.Map<StoreDTO>(store);
+        }
+
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

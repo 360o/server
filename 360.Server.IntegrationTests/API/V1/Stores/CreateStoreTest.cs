@@ -87,7 +87,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             request = request with
             {
-                Place = new CreateStoreRequestPlace
+                Place = new PlaceDTO
                 {
                     GooglePlaceId = googlePlaceId,
                     FormattedAddress = request.Place.FormattedAddress,
@@ -121,7 +121,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             request = request with
             {
-                Place = new CreateStoreRequestPlace
+                Place = new PlaceDTO
                 {
                     GooglePlaceId = request.Place.GooglePlaceId,
                     FormattedAddress = formattedAddress,
@@ -154,7 +154,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             request = request with
             {
-                Place = new CreateStoreRequestPlace
+                Place = new PlaceDTO
                 {
                     GooglePlaceId = request.Place.GooglePlaceId,
                     FormattedAddress = request.Place.FormattedAddress,
@@ -187,7 +187,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             request = request with
             {
-                Place = new CreateStoreRequestPlace
+                Place = new PlaceDTO
                 {
                     GooglePlaceId = request.Place.GooglePlaceId,
                     FormattedAddress = request.Place.FormattedAddress,

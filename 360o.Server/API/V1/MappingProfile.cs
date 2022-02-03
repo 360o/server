@@ -14,16 +14,14 @@ namespace _360o.Server.API.V1
         {
             AllowNullCollections = true;
 
-            CreateMap<CreateStoreRequestPlace, CreateStoreInputPlace>();
+            CreateMap<Item, ItemDTO>().ReverseMap();
+            CreateMap<Place, PlaceDTO>().ReverseMap();
+            CreateMap<Store, StoreDTO>().ReverseMap();
+            CreateMap<Organization, OrganizationDTO>().ReverseMap();
             CreateMap<CreateStoreRequest, CreateStoreInput>();
-            CreateMap<Place, PlaceDTO>();
-            CreateMap<Store, StoreDTO>();
+            CreateMap<UpdateStoreRequest, UpdateStoreInput>();
             CreateMap<ListStoresRequest, ListStoresInput>();
-
             CreateMap<UpdateOrganizationRequest, UpdateOrganizationInput>();
-            CreateMap<Organization, OrganizationDTO>();
-
-            CreateMap<Item, ItemDTO>();
         }
     }
 }

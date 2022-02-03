@@ -42,11 +42,11 @@ namespace _360o.Server.API.V1.Organizations.Services
             return organization;
         }
 
-        public async Task<Organization?> GetOrganizationByIdAsync(Guid id)
+        public async Task<Organization?> GetOrganizationByIdAsync(Guid organizationId)
         {
             return await _apiContext.Organizations
                 .Where(o => !o.DeletedAt.HasValue)
-                .SingleOrDefaultAsync(o => o.Id == id);
+                .SingleOrDefaultAsync(o => o.Id == organizationId);
         }
 
         public async Task<Organization> UpdateOrganizationAsync(UpdateOrganizationInput input)
@@ -96,11 +96,11 @@ namespace _360o.Server.API.V1.Organizations.Services
             await _apiContext.SaveChangesAsync();
 
             return organization;
-         }
+        }
 
-        public async Task DeleteOrganizationByIdAsync(Guid id)
+        public async Task DeleteOrganizationByIdAsync(Guid organizationId)
         {
-            var organization = await _apiContext.Organizations.FindAsync(id);
+            var organization = await _apiContext.Organizations.FindAsync(organizationId);
 
             if (organization == null)
             {

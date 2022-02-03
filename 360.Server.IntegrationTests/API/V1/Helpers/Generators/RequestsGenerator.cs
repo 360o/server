@@ -33,7 +33,7 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.Generators
             return new CreateStoreRequest
             {
                 OrganizationId = organizationId,
-                Place = new CreateStoreRequestPlace
+                Place = new PlaceDTO
                 {
                     GooglePlaceId = faker.Random.Uuid().ToString(),
                     FormattedAddress = faker.Address.FullAddress(),

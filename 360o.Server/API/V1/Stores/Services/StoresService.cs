@@ -32,13 +32,13 @@ namespace _360o.Server.API.V1.Stores.Services
             return store;
         }
 
-        public async Task<Store?> GetStoreByIdByAsync(Guid id)
+        public async Task<Store?> GetStoreByIdByAsync(Guid storeId)
         {
             return await _apiContext.Stores
                 .Where(s => !s.DeletedAt.HasValue)
                 .Include(s => s.Place)
                 .Include(s => s.Organization)
-                .SingleOrDefaultAsync(s => s.Id == id);
+                .SingleOrDefaultAsync(s => s.Id == storeId);
         }
 
         public async Task<IList<Store>> ListStoresAsync(ListStoresInput input)
@@ -70,9 +70,28 @@ namespace _360o.Server.API.V1.Stores.Services
 
         }
 
-        public async Task DeleteStoreByIdAsync(Guid id)
+        public async Task<Store> UpdateStoreAsync(UpdateStoreInput input)
         {
-            var store = await _apiContext.Stores.FindAsync(id);
+            var store = await _apiContext.Stores.FindAsync(input.StoreId);
+
+            if (store == null)
+            {
+                throw new KeyNotFoundException("Store not found");
+            }
+
+            if (input.Place != null)
+            {
+                store.SetPlace(input.Place);
+            }
+
+            await _apiContext.SaveChangesAsync();
+
+            return store;
+        }
+
+        public async Task DeleteStoreByIdAsync(Guid storeId)
+        {
+            var store = await _apiContext.Stores.FindAsync(storeId);
 
             if (store == null)
             {
@@ -102,13 +121,13 @@ namespace _360o.Server.API.V1.Stores.Services
             return item;
         }
 
-        public async Task<Item?> GetItembyIdAsync(Guid id)
+        public async Task<Item?> GetItembyIdAsync(Guid storeId)
         {
             return await _apiContext.Items
                 .Include(i => i.Store)
                 .Include(i => i.Store.Organization)
                 .Where(i => !i.DeletedAt.HasValue)
-                .SingleOrDefaultAsync(i => i.Id == id);
+                .SingleOrDefaultAsync(i => i.Id == storeId);
         }
 
         public async Task<IList<Item>> ListItemsAsync(Guid storeId)
@@ -119,9 +138,9 @@ namespace _360o.Server.API.V1.Stores.Services
                 .ToListAsync();
         }
 
-        public async Task DeleteItemByIdAsync(Guid id)
+        public async Task DeleteItemByIdAsync(Guid storeId)
         {
-            var item = await _apiContext.Items.FindAsync(id);
+            var item = await _apiContext.Items.FindAsync(storeId);
 
             if (item == null)
             {
