@@ -1,4 +1,5 @@
-﻿using _360.Server.IntegrationTests.API.V1.Helpers.ApiClient;
+﻿using _360.Server.IntegrationTests.API.V1.Helpers;
+using _360.Server.IntegrationTests.API.V1.Helpers.ApiClient;
 using _360o.Server.API.V1.Stores.DTOs;
 using _360o.Server.API.V1.Stores.Model;
 using Bogus;
@@ -57,7 +58,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
         }
 
         [TestMethod]
-        public async Task GivenOrganizationDoesNotBelongToUserShouldReturnForbidden()
+        public async Task GivenStoreDoesNotBelongToUserShouldReturnForbidden()
         {
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
 
@@ -68,6 +69,16 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             var response = await ProgramTest.ApiClientUser2.Stores.UpdateStoreAsync(store.Id, request);
 
             Assert.AreEqual(HttpStatusCode.Forbidden, response.StatusCode);
+        }
+
+        [TestMethod]
+        public async Task GivenStoreDoesNotExistShouldReturnNotFound()
+        {
+            var request = new UpdateStoreRequest();
+
+            var response = await ProgramTest.ApiClientUser1.Stores.UpdateStoreAsync(Guid.NewGuid(), request);
+
+            await ProblemDetailAssertions.AssertNotFoundAsync(response, "Store not found");
         }
     }
 }

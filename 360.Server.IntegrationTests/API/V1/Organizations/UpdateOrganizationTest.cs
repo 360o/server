@@ -1,4 +1,5 @@
-﻿using _360.Server.IntegrationTests.API.V1.Helpers.ApiClient;
+﻿using _360.Server.IntegrationTests.API.V1.Helpers;
+using _360.Server.IntegrationTests.API.V1.Helpers.ApiClient;
 using _360o.Server.API.V1.Organizations.DTOs;
 using Bogus;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -163,6 +164,16 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
             var response = await ProgramTest.ApiClientUser2.Organizations.UpdateOrganizationAsync(organization.Id, request);
 
             Assert.AreEqual(HttpStatusCode.Forbidden, response.StatusCode);
+        }
+
+        [TestMethod]
+        public async Task GivenOrganizationDoesNotExistShouldReturnNotFound()
+        {
+            var request = new UpdateOrganizationRequest();
+
+            var response = await ProgramTest.ApiClientUser1.Organizations.UpdateOrganizationAsync(Guid.NewGuid(), request);
+
+            await ProblemDetailAssertions.AssertNotFoundAsync(response, "Organization not found");
         }
     }
 }
