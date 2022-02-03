@@ -5,16 +5,16 @@ namespace _360o.Server.API.V1.Stores.Model
 {
     public class ApiContext : DbContext
     {
+        public ApiContext(DbContextOptions<ApiContext> options) : base(options)
+        {
+        }
+
         public DbSet<Organization> Organizations { get; set; }
         public DbSet<Store> Stores { get; set; }
         public DbSet<Place> Places { get; set; }
         public DbSet<Offer> Offers { get; set; }
         public DbSet<OfferItem> OfferItems { get; set; }
         public DbSet<Item> Items { get; set; }
-
-        public ApiContext(DbContextOptions<ApiContext> options) : base(options)
-        {
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -61,4 +61,3 @@ namespace _360o.Server.API.V1.Stores.Model
         }
     }
 }
-

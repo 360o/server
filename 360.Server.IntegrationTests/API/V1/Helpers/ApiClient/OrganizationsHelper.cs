@@ -13,7 +13,15 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
 {
     public class OrganizationsHelper
     {
+        private readonly IAuthHelper _authHelper;
+
+        public OrganizationsHelper(IAuthHelper authService)
+        {
+            _authHelper = authService;
+        }
+
         public static string OrganizationsRoute => "/api/v1/Organizations";
+
         public static string OrganizationRoute(Guid id) => $"{OrganizationsRoute}/{id}";
 
         public static void AssertOrganizationsAreEqual(OrganizationDTO expected, OrganizationDTO actual)
@@ -25,13 +33,6 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
             Assert.AreEqual(expected.FrenchShortDescription, actual.FrenchShortDescription);
             Assert.AreEqual(expected.FrenchLongDescription, actual.FrenchLongDescription);
             CollectionAssert.AreEquivalent(expected.FrenchCategories.ToList(), actual.FrenchCategories.ToList());
-        }
-
-        private readonly IAuthHelper _authHelper;
-
-        public OrganizationsHelper(IAuthHelper authService)
-        {
-            _authHelper = authService;
         }
 
         public async Task<HttpResponseMessage> CreateOrganizationAsync(CreateOrganizationRequest request)

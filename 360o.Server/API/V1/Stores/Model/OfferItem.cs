@@ -2,15 +2,15 @@
 {
     public class OfferItem : BaseEntity
     {
-        private OfferItem()
-        {
-        }
-
         public OfferItem(Guid offerId, Guid itemId, int quantity = 1)
         {
             OfferId = offerId;
             ItemId = itemId;
             Quantity = quantity;
+        }
+
+        private OfferItem()
+        {
         }
 
         public int Quantity { get; private set; } = 1;

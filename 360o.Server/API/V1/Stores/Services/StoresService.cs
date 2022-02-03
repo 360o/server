@@ -67,7 +67,6 @@ namespace _360o.Server.API.V1.Stores.Services
             }
 
             return await stores.ToListAsync();
-
         }
 
         public async Task<Store> UpdateStoreAsync(UpdateStoreInput input)

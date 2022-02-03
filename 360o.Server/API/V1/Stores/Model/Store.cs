@@ -4,14 +4,14 @@ namespace _360o.Server.API.V1.Stores.Model
 {
     public class Store : BaseEntity
     {
-        private Store()
-        {
-        }
-
         public Store(Guid organizationId, Place place)
         {
             OrganizationId = organizationId;
             Place = place;
+        }
+
+        private Store()
+        {
         }
 
         public Guid OrganizationId { get; private set; }
@@ -52,4 +52,3 @@ namespace _360o.Server.API.V1.Stores.Model
         }
     }
 }
-

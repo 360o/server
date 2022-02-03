@@ -5,10 +5,6 @@ namespace _360o.Server.API.V1.Organizations.Model
 {
     public class Organization : BaseEntity
     {
-        private Organization()
-        {
-        }
-
         public Organization(string userId, string name, string? englishShortDescription, string? englishLongDescription, string? frenchShortDescription, string? frenchLongDescription)
         {
             UserId = userId;
@@ -17,6 +13,10 @@ namespace _360o.Server.API.V1.Organizations.Model
             EnglishLongDescription = englishLongDescription == null ? string.Empty : englishLongDescription.Trim();
             FrenchShortDescription = frenchShortDescription == null ? string.Empty : frenchShortDescription.Trim();
             FrenchLongDescription = frenchLongDescription == null ? string.Empty : frenchLongDescription.Trim();
+        }
+
+        private Organization()
+        {
         }
 
         public string UserId { get; private set; }

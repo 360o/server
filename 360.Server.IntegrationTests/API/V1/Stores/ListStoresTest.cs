@@ -135,7 +135,6 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             StoresHelper.AssertStoresAreEqual(user2StoreWithFrenchCategories, storesDict[user2StoreWithFrenchCategories.Id]);
             StoresHelper.AssertStoresAreEqual(user2StoreWithItemWithFrenchName, storesDict[user2StoreWithItemWithFrenchName.Id]);
             StoresHelper.AssertStoresAreEqual(user2StoreWithItemWithFrenchDescription, storesDict[user2StoreWithItemWithFrenchDescription.Id]);
-
         }
 
         [TestMethod]
@@ -541,7 +540,6 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
                     Location = new Location(52.2349257, 21.0032608)
                 }
             };
-
 
             user2Store2Request = user2Store2Request with
             {

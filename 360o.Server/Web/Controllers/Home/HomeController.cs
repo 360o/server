@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace _360o.Server.Web.Controllers.Home
 {
@@ -14,4 +13,3 @@ namespace _360o.Server.Web.Controllers.Home
         }
     }
 }
-

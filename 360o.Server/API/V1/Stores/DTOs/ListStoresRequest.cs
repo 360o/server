@@ -8,4 +8,3 @@
         public double? Radius { get; set; }
     }
 }
-

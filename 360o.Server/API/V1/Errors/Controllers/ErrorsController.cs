@@ -25,7 +25,6 @@ namespace _360o.Server.API.V1.Errors
             {
                 return Problem();
             }
-
         }
     }
 }

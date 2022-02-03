@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace _360.Server.IntegrationTests.API.V1.Helpers
 {
-    static class ProblemDetailAssertions
+    internal static class ProblemDetailAssertions
     {
         public static async Task AssertNotFoundAsync(HttpResponseMessage response, string detailMessage)
         {

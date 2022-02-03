@@ -4,20 +4,24 @@
     {
         private readonly List<OfferItem> _offerItems = new List<OfferItem>();
 
-        private Offer()
-        {
-        }
-
         public Offer(Guid storeId, string name)
         {
             StoreId = storeId;
             Name = name;
         }
 
+        private Offer()
+        {
+        }
+
         public string Name { get; private set; }
         public IReadOnlyList<OfferItem> OfferItems => _offerItems;
 
         public MoneyValue Discount { get; private set; }
+
+        public Guid StoreId { get; private set; }
+
+        public Store Store { get; private set; }
 
         public void AddItem(OfferItem offerItem)
         {
@@ -47,8 +51,5 @@
         {
             Discount = discount;
         }
-
-        public Guid StoreId { get; private set; }
-        public Store Store { get; private set; }
     }
 }

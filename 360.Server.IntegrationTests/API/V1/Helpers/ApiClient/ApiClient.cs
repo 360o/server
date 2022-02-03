@@ -1,7 +1,4 @@
-﻿using System;
-using System.Net.Http;
-
-namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
+﻿namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
 {
     public class ApiClient
     {

@@ -4,10 +4,6 @@ namespace _360o.Server.API.V1.Stores.Model
 {
     public class Item : BaseEntity
     {
-        private Item()
-        {
-        }
-
         public Item(Guid storeId, string? englishName, string? englishDescription, string? frenchName, string? frenchDescription, MoneyValue? price)
         {
             if (englishName == null && frenchName == null)
@@ -29,6 +25,10 @@ namespace _360o.Server.API.V1.Stores.Model
             FrenchDescription = frenchDescription == null ? string.Empty : frenchDescription.Trim();
             FrenchName = frenchName == null ? string.Empty : frenchName.Trim();
             Price = price;
+        }
+
+        private Item()
+        {
         }
 
         public string EnglishName { get; private set; }

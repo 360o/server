@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
 {
-    static class Utils
+    internal static class Utils
     {
         public static async Task<T?> DeserializeAsync<T>(HttpResponseMessage httpResponseMessage)
         {

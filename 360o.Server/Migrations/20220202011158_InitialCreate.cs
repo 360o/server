@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using _360o.Server.API.V1.Stores.Model;
 using Microsoft.EntityFrameworkCore.Migrations;
 using NetTopologySuite.Geometries;
 using NpgsqlTypes;
-using _360o.Server.API.V1.Stores.Model;
 
 #nullable disable
 

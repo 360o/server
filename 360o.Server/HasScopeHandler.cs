@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 
 namespace _360o.Server
 {
@@ -22,4 +21,3 @@ namespace _360o.Server
         }
     }
 }
-

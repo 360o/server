@@ -10,8 +10,5 @@ namespace _360o.Server.API.V1.Stores.Validators
             RuleFor(r => r.OrganizationId).NotEmpty();
             RuleFor(r => r.Place).SetValidator(new CreateStorePlaceValidator());
         }
-
-
     }
 }
-
