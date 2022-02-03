@@ -2,6 +2,7 @@
 using _360o.Server.API.V1.Organizations.Services;
 using _360o.Server.API.V1.Stores.DTOs;
 using _360o.Server.API.V1.Stores.Services;
+using _360o.Server.API.V1.Stores.Services.Inputs;
 using _360o.Server.API.V1.Stores.Validators;
 using AutoMapper;
 using FluentValidation;

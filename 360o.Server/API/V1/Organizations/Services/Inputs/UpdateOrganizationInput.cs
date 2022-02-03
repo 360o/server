@@ -1,8 +1,8 @@
-﻿namespace _360o.Server.API.V1.Organizations.Services
+﻿namespace _360o.Server.API.V1.Organizations.Services.Inputs
 {
-    public readonly record struct CreateOrganizationInput(
-        string UserId,
-        string Name,
+    public readonly record struct UpdateOrganizationInput(
+        Guid OrganizationId,
+        string? Name,
         string? EnglishShortDescription,
         string? EnglishLongDescription,
         ISet<string>? EnglishCategories,

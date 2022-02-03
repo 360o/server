@@ -1,4 +1,5 @@
 ﻿using _360o.Server.API.V1.Organizations.Model;
+using _360o.Server.API.V1.Organizations.Services.Inputs;
 using _360o.Server.API.V1.Stores.Model;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,18 +27,12 @@ namespace _360o.Server.API.V1.Organizations.Services
 
             if (input.EnglishCategories != null)
             {
-                foreach (var category in input.EnglishCategories)
-                {
-                    organization.AddEnglishCategory(category);
-                }
+                organization.SetEnglishCategories(input.EnglishCategories);
             }
 
             if (input.FrenchCategories != null)
             {
-                foreach (var category in input.FrenchCategories)
-                {
-                    organization.AddFrenchCategory(category);
-                }
+                organization.SetFrenchCategories(input.FrenchCategories);
             }
 
             _apiContext.Add(organization);
@@ -53,6 +48,55 @@ namespace _360o.Server.API.V1.Organizations.Services
                 .Where(o => !o.DeletedAt.HasValue)
                 .SingleOrDefaultAsync(o => o.Id == id);
         }
+
+        public async Task<Organization> UpdateOrganizationAsync(UpdateOrganizationInput input)
+        {
+            var organization = await _apiContext.Organizations.FindAsync(input.OrganizationId);
+
+            if (organization == null)
+            {
+                throw new KeyNotFoundException("Organization not found");
+            }
+
+            if (input.Name != null)
+            {
+                organization.SetName(input.Name);
+            }
+
+            if (input.EnglishShortDescription != null)
+            {
+                organization.SetEnglishShortDescription(input.EnglishShortDescription);
+            }
+
+            if (input.EnglishLongDescription != null)
+            {
+                organization.SetEnglishLongDescription(input.EnglishLongDescription);
+            }
+
+            if (input.EnglishCategories != null)
+            {
+                organization.SetEnglishCategories(input.EnglishCategories);
+            }
+
+            if (input.FrenchShortDescription != null)
+            {
+                organization.SetFrenchShortDescription(input.FrenchShortDescription);
+            }
+
+            if (input.FrenchLongDescription != null)
+            {
+                organization.SetFrenchLongDescription(input.FrenchLongDescription);
+            }
+
+            if (input.FrenchCategories != null)
+            {
+                organization.SetFrenchCategories(input.FrenchCategories);
+            }
+
+            await _apiContext.SaveChangesAsync();
+
+            return organization;
+         }
 
         public async Task DeleteOrganizationByIdAsync(Guid id)
         {

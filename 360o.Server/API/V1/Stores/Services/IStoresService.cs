@@ -1,4 +1,5 @@
 ﻿using _360o.Server.API.V1.Stores.Model;
+using _360o.Server.API.V1.Stores.Services.Inputs;
 
 namespace _360o.Server.API.V1.Stores.Services
 {

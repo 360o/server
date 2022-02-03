@@ -1,6 +1,7 @@
 ﻿using _360o.Server.API.V1.Errors.Enums;
 using _360o.Server.API.V1.Organizations.DTOs;
 using _360o.Server.API.V1.Organizations.Services;
+using _360o.Server.API.V1.Organizations.Services.Inputs;
 using _360o.Server.API.V1.Organizations.Validators;
 using AutoMapper;
 using FluentValidation;
@@ -59,6 +60,26 @@ namespace _360o.Server.API.V1.Organizations.Controllers
             {
                 return Problem(detail: "Organization not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
             }
+
+            return _mapper.Map<OrganizationDTO>(organization);
+        }
+
+        [HttpPatch("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OrganizationDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<OrganizationDTO>> UpdateOrganizationAsync(Guid id, [FromBody] UpdateOrganizationRequest request)
+        {
+            var organization = await _organizationsService.GetOrganizationByIdAsync(id);
+
+            if (organization == null)
+            {
+                return Problem(detail: "Organization not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
+            }
+
+            organization = await _organizationsService.UpdateOrganizationAsync(
+                _mapper.Map<UpdateOrganizationInput>(request) with { 
+                    OrganizationId = organization.Id 
+                });
 
             return _mapper.Map<OrganizationDTO>(organization);
         }

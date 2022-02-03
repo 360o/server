@@ -37,22 +37,41 @@ namespace _360o.Server.API.V1.Organizations.Model
 
         public List<Store> Stores { get; private set; }
 
-        public void AddEnglishCategory(string category)
+        public void SetName(string name)
         {
-            if (!EnglishCategories.Contains(category))
-            {
-                EnglishCategories.Add(category);
-                EnglishCategoriesJoined = JoinCategories(EnglishCategories);
-            }
+            Name = name;
         }
 
-        public void AddFrenchCategory(string category)
+        public void SetEnglishShortDescription(string englishShortDescription)
         {
-            if (!FrenchCategories.Contains(category))
-            {
-                FrenchCategories.Add(category);
-                FrenchCategoriesJoined = JoinCategories(FrenchCategories);
-            }
+            EnglishShortDescription = englishShortDescription;
+        }
+
+        public void SetEnglishLongDescription(string englishLongDescription)
+        {
+            EnglishLongDescription = englishLongDescription;
+        }
+
+        public void SetEnglishCategories(ISet<string> categories)
+        {
+            EnglishCategories = categories.ToList();
+            EnglishCategoriesJoined = JoinCategories(EnglishCategories);
+        }
+
+        public void SetFrenchShortDescription(string frenchShortDescription)
+        {
+            FrenchShortDescription = frenchShortDescription;
+        }
+
+        public void SetFrenchLongDescription(string frenchLongDescription)
+        {
+            FrenchLongDescription = frenchLongDescription;
+        }
+
+        public void SetFrenchCategories(ISet<string> categories)
+        {
+            FrenchCategories = categories.ToList();
+            FrenchCategoriesJoined = JoinCategories(FrenchCategories);
         }
 
         private string JoinCategories(IReadOnlyList<string> categories) => string.Join(" ", categories);

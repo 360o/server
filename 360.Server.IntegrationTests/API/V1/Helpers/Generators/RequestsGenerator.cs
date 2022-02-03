@@ -12,7 +12,7 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.Generators
         public static CreateOrganizationRequest MakeRandomCreateOrganizationRequest()
         {
             var englishFaker = new Faker();
-            var frenchFaker = new Faker(locale: "fr");
+            var frenchFaker = new Faker("fr");
 
             return new CreateOrganizationRequest
             {
@@ -45,7 +45,7 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.Generators
         public static CreateItemRequest MakeRandomCreateItemRequest()
         {
             var englishFaker = new Faker();
-            var frenchFaker = new Faker(locale: "fr");
+            var frenchFaker = new Faker("fr");
 
             return new CreateItemRequest
             {

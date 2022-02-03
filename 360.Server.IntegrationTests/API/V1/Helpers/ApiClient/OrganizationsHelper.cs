@@ -77,6 +77,22 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
             return await Utils.DeserializeAsync<OrganizationDTO>(response);
         }
 
+        public async Task<HttpResponseMessage> UpdateOrganizationAsync(Guid organizationId, UpdateOrganizationRequest request)
+        {
+            var requestContent = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+
+            return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).PatchAsync(OrganizationRoute(organizationId), requestContent);
+        }
+
+        public async Task<OrganizationDTO> UpdateOrganizationAndDeserializeAsync(Guid organizationId, UpdateOrganizationRequest request)
+        {
+            var response = await UpdateOrganizationAsync(organizationId, request);
+
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+
+            return await Utils.DeserializeAsync<OrganizationDTO>(response);
+        }
+
         public async Task<HttpResponseMessage> DeleteOrganizationByIdAsync(Guid id)
         {
             return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).DeleteAsync(OrganizationRoute(id));

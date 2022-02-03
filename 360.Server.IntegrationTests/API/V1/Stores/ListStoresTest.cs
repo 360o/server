@@ -114,33 +114,28 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             await ProgramTest.ApiClientUser2.Stores.CreateItemAsync(user2StoreWithItemWithFrenchName.Id, user2ItemWithFrenchNameRequest);
             await ProgramTest.ApiClientUser2.Stores.CreateItemAsync(user2StoreWithItemWithFrenchDescription.Id, user2ItemWithFrenchDescriptionRequest);
 
-            var expectedStores = new Dictionary<Guid, StoreDTO>()
-            {
-                { user1StoreWithName.Id, user1StoreWithName },
-                { user1StoreWithEnglishShortDescription.Id, user1StoreWithEnglishShortDescription },
-                { user1StoreWithEnglishLongDescription.Id, user1StoreWithEnglishLongDescription },
-                { user1StoreWithEnglishCategories.Id, user1StoreWithEnglishCategories },
-                { user1StoreWithItemWithEnglishName.Id, user1StoreWithItemWithEnglishName },
-                { user1StoreWithItemWithEnglishDescription.Id, user1StoreWithItemWithEnglishDescription },
-
-                { user2StoreWithFrenchShortDescription.Id, user2StoreWithFrenchShortDescription },
-                { user2StoreWithFrenchLongDescription.Id, user2StoreWithFrenchLongDescription },
-                { user2StoreWithFrenchCategories.Id, user2StoreWithFrenchCategories },
-                { user2StoreWithItemWithFrenchName.Id, user2StoreWithItemWithFrenchName },
-                { user2StoreWithItemWithFrenchDescription.Id, user2StoreWithItemWithFrenchDescription }
-            };
-
             var stores = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
             {
                 Query = myQuery
             });
 
+            var storesDict = stores.ToDictionary(s => s.Id, s => s);
+
             Assert.IsNotNull(stores);
-            Assert.AreEqual(expectedStores.Count, stores.Count);
-            foreach (var store in stores)
-            {
-                StoresHelper.AssertStoresAreEqual(expectedStores[store.Id], store);
-            }
+
+            StoresHelper.AssertStoresAreEqual(user1StoreWithName, storesDict[user1StoreWithName.Id]);
+            StoresHelper.AssertStoresAreEqual(user1StoreWithEnglishShortDescription, storesDict[user1StoreWithEnglishShortDescription.Id]);
+            StoresHelper.AssertStoresAreEqual(user1StoreWithEnglishLongDescription, storesDict[user1StoreWithEnglishLongDescription.Id]);
+            StoresHelper.AssertStoresAreEqual(user1StoreWithEnglishCategories, storesDict[user1StoreWithEnglishCategories.Id]);
+            StoresHelper.AssertStoresAreEqual(user1StoreWithItemWithEnglishName, storesDict[user1StoreWithItemWithEnglishName.Id]);
+            StoresHelper.AssertStoresAreEqual(user1StoreWithItemWithEnglishDescription, storesDict[user1StoreWithItemWithEnglishDescription.Id]);
+
+            StoresHelper.AssertStoresAreEqual(user2StoreWithFrenchShortDescription, storesDict[user2StoreWithFrenchShortDescription.Id]);
+            StoresHelper.AssertStoresAreEqual(user2StoreWithFrenchLongDescription, storesDict[user2StoreWithFrenchLongDescription.Id]);
+            StoresHelper.AssertStoresAreEqual(user2StoreWithFrenchCategories, storesDict[user2StoreWithFrenchCategories.Id]);
+            StoresHelper.AssertStoresAreEqual(user2StoreWithItemWithFrenchName, storesDict[user2StoreWithItemWithFrenchName.Id]);
+            StoresHelper.AssertStoresAreEqual(user2StoreWithItemWithFrenchDescription, storesDict[user2StoreWithItemWithFrenchDescription.Id]);
+
         }
 
         [TestMethod]
