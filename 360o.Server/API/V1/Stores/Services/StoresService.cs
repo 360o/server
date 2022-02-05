@@ -137,6 +137,45 @@ namespace _360o.Server.API.V1.Stores.Services
                 .ToListAsync();
         }
 
+        public async Task<Item> UpdateItemAsync(UpdateItemInput input)
+        {
+            var item = await _apiContext.Items.FindAsync(input.ItemId);
+
+            if (item == null)
+            {
+                throw new KeyNotFoundException("Item not found");
+            }
+
+            if (input.EnglishName != null)
+            {
+                item.SetEnglishName(input.EnglishName);
+            }
+
+            if (input.EnglishDescription != null)
+            {
+                item.SetEnglishDescription(input.EnglishDescription);
+            }
+
+            if (input.FrenchName != null)
+            {
+                item.SetFrenchName(input.FrenchName);
+            }
+
+            if (input.FrenchDescription != null)
+            {
+                item.SetFrenchDescription(input.FrenchDescription);
+            }
+
+            if (input.Price.HasValue)
+            {
+                item.SetPrice(input.Price.Value);
+            }
+
+            await _apiContext.SaveChangesAsync();
+
+            return item;
+        }
+
         public async Task DeleteItemByIdAsync(Guid storeId)
         {
             var item = await _apiContext.Items.FindAsync(storeId);

@@ -1,9 +1,13 @@
-﻿using NpgsqlTypes;
+﻿using _360o.Server.API.V1.Stores.Validators;
+using FluentValidation;
+using NpgsqlTypes;
 
 namespace _360o.Server.API.V1.Stores.Model
 {
     public class Item : BaseEntity
     {
+        private MoneyValueValidator _moneyValueValidator = new MoneyValueValidator();
+
         public Item(Guid storeId, string? englishName, string? englishDescription, string? frenchName, string? frenchDescription, MoneyValue? price)
         {
             if (englishName == null && frenchName == null)
@@ -13,10 +17,7 @@ namespace _360o.Server.API.V1.Stores.Model
 
             if (price.HasValue)
             {
-                if (price.Value.Amount < 0)
-                {
-                    throw new ArgumentException($"Amount must be greater or equal to 0", nameof(price));
-                }
+                AssertValidPrice(price.Value);
             }
 
             StoreId = storeId;
@@ -43,5 +44,39 @@ namespace _360o.Server.API.V1.Stores.Model
         public Store Store { get; private set; }
 
         public List<OfferItem> OfferItems { get; private set; }
+
+        public void SetEnglishName(string englishName)
+        {
+            EnglishName = englishName;
+        }
+
+        public void SetEnglishDescription(string englishDescription)
+        {
+            EnglishDescription = englishDescription;
+        }
+
+        public void SetFrenchName(string frenchName)
+        {
+            FrenchName = frenchName;
+        }
+
+        public void SetFrenchDescription(string frenchDescription)
+        {
+            FrenchDescription = frenchDescription;
+        }
+
+        public void SetPrice(MoneyValue price)
+        {
+            AssertValidPrice(price);
+
+            Price = price;
+        }
+
+        private void AssertValidPrice(MoneyValue price)
+        {
+            _moneyValueValidator.ValidateAndThrow(price);
+
+            Price = price;
+        }
     }
 }

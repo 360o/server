@@ -99,7 +99,7 @@ namespace _360o.Server.API.V1.Stores.Controllers
                 return Forbid();
             }
 
-            store = await _storesService.UpdateStoreAsync(_mapper.Map<UpdateStoreInput>(request) with { StoreId = id });
+            store = await _storesService.UpdateStoreAsync(_mapper.Map<UpdateStoreInput>(request) with { StoreId = store.Id });
 
             return _mapper.Map<StoreDTO>(store);
         }
@@ -155,13 +155,7 @@ namespace _360o.Server.API.V1.Stores.Controllers
                 return Forbid();
             }
 
-            var item = await _storesService.CreateItemAsync(new CreateItemInput(
-                storeId,
-                request.EnglishName,
-                request.EnglishDescription,
-                request.FrenchName,
-                request.FrenchDescription,
-                request.Price));
+            var item = await _storesService.CreateItemAsync(_mapper.Map<CreateItemInput>(request) with { StoreId = storeId });
 
             return CreatedAtAction(nameof(GetItemByIdAsync), new { storeId = storeId, itemId = item.Id }, _mapper.Map<ItemDTO>(item));
         }
@@ -203,6 +197,34 @@ namespace _360o.Server.API.V1.Stores.Controllers
             var items = await _storesService.ListItemsAsync(storeId);
 
             return items.Select(i => _mapper.Map<ItemDTO>(i)).ToList();
+        }
+
+        [HttpPatch("{storeId}/items/{itemId}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ItemDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize]
+        public async Task<ActionResult<ItemDTO>> UpdateItemAsync(Guid storeId, Guid itemId, [FromBody] UpdateItemRequest request)
+        {
+            var item = await _storesService.GetItembyIdAsync(itemId);
+
+            if (item == null)
+            {
+                return Problem(detail: "Item not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
+            }
+
+            if (item.StoreId != storeId)
+            {
+                return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
+            }
+
+            if (User.Identity.Name != item.Store.Organization.UserId)
+            {
+                return Forbid();
+            }
+
+            item = await _storesService.UpdateItemAsync(_mapper.Map<UpdateItemInput>(request) with { ItemId = item.Id });
+
+            return _mapper.Map<ItemDTO>(item);
         }
 
         [HttpDelete("{storeId}/items/{itemId}")]

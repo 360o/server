@@ -203,6 +203,22 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
             return await Utils.DeserializeAsync<IList<ItemDTO>>(response);
         }
 
+        public async Task<HttpResponseMessage> UpdateItemAsync(Guid storeId, Guid itemId, UpdateItemRequest request)
+        {
+            var requestContent = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+
+            return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).PatchAsync(ItemRoute(storeId, itemId), requestContent);
+        }
+
+        public async Task<ItemDTO> UpdateItemAndDeserializeAsync(Guid storeId, Guid itemId, UpdateItemRequest request)
+        {
+            var response = await UpdateItemAsync(storeId, itemId, request);
+
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+
+            return await Utils.DeserializeAsync<ItemDTO>(response);
+        }
+
         public async Task<HttpResponseMessage> DeleteItemByIdAsync(Guid storeId, Guid itemId)
         {
             return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).DeleteAsync(ItemRoute(storeId, itemId));

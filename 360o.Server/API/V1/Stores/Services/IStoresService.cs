@@ -21,6 +21,8 @@ namespace _360o.Server.API.V1.Stores.Services
 
         Task<IList<Item>> ListItemsAsync(Guid storeId);
 
+        Task<Item> UpdateItemAsync(UpdateItemInput input);
+
         Task DeleteItemByIdAsync(Guid itemId);
     }
 }

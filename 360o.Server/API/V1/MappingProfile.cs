@@ -18,6 +18,8 @@ namespace _360o.Server.API.V1
             CreateMap<Place, PlaceDTO>().ReverseMap();
             CreateMap<Store, StoreDTO>().ReverseMap();
             CreateMap<Organization, OrganizationDTO>().ReverseMap();
+            CreateMap<CreateItemRequest, CreateItemInput>();
+            CreateMap<UpdateItemRequest, UpdateItemInput>();
             CreateMap<CreateStoreRequest, CreateStoreInput>();
             CreateMap<UpdateStoreRequest, UpdateStoreInput>();
             CreateMap<ListStoresRequest, ListStoresInput>();
