@@ -29,10 +29,10 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
             Assert.AreEqual(expected.Id, actual.Id);
             Assert.AreEqual(expected.EnglishShortDescription, actual.EnglishShortDescription);
             Assert.AreEqual(expected.EnglishLongDescription, actual.EnglishLongDescription);
-            CollectionAssert.AreEquivalent(expected.EnglishCategories.Select(c => c.Trim().ToLower()).ToList(), actual.EnglishCategories.ToList());
+            CollectionAssert.AreEquivalent(expected.EnglishCategories.ToList(), actual.EnglishCategories.ToList());
             Assert.AreEqual(expected.FrenchShortDescription, actual.FrenchShortDescription);
             Assert.AreEqual(expected.FrenchLongDescription, actual.FrenchLongDescription);
-            CollectionAssert.AreEquivalent(expected.FrenchCategories.Select(c => c.Trim().ToLower()).ToList(), actual.FrenchCategories.ToList());
+            CollectionAssert.AreEquivalent(expected.FrenchCategories.ToList(), actual.FrenchCategories.ToList());
         }
 
         public async Task<HttpResponseMessage> CreateOrganizationAsync(CreateOrganizationRequest request)

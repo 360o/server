@@ -51,7 +51,7 @@ namespace _360o.Server.Api.V1.Organizations.Model
 
         public void SetEnglishCategories(ISet<string> categories)
         {
-            EnglishCategories = categories.Select(c => c.Trim().ToLower()).ToList();
+            EnglishCategories = categories.Select(c => c.Trim()).ToList();
             EnglishCategoriesJoined = JoinCategories(EnglishCategories);
         }
 
@@ -67,7 +67,7 @@ namespace _360o.Server.Api.V1.Organizations.Model
 
         public void SetFrenchCategories(ISet<string> categories)
         {
-            FrenchCategories = categories.Select(c => c.Trim().ToLower()).ToList();
+            FrenchCategories = categories.Select(c => c.Trim()).ToList();
             FrenchCategoriesJoined = JoinCategories(FrenchCategories);
         }
 

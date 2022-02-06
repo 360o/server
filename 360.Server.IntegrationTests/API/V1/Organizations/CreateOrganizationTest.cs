@@ -26,10 +26,10 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
             Assert.AreEqual(request.Name, organization.Name);
             Assert.AreEqual(request.EnglishShortDescription, organization.EnglishShortDescription);
             Assert.AreEqual(request.EnglishLongDescription, organization.EnglishLongDescription);
-            CollectionAssert.AreEquivalent(request.EnglishCategories.Select(c => c.Trim().ToLower()).ToList(), organization.EnglishCategories.ToList());
+            CollectionAssert.AreEquivalent(request.EnglishCategories.ToList(), organization.EnglishCategories.ToList());
             Assert.AreEqual(request.FrenchShortDescription, organization.FrenchShortDescription);
             Assert.AreEqual(request.FrenchLongDescription, organization.FrenchLongDescription);
-            CollectionAssert.AreEquivalent(request.FrenchCategories.Select(c => c.Trim().ToLower()).ToList(), organization.FrenchCategories.ToList());
+            CollectionAssert.AreEquivalent(request.FrenchCategories.ToList(), organization.FrenchCategories.ToList());
         }
 
         [TestMethod]

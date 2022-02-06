@@ -84,7 +84,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
 
             var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.UpdateOrganizationAndDeserializeAsync(organization.Id, request);
 
-            CollectionAssert.AreEquivalent(request.EnglishCategories.Select(c => c.Trim().ToLower()).ToList(), updatedOrganization.EnglishCategories.ToList());
+            CollectionAssert.AreEquivalent(request.EnglishCategories.ToList(), updatedOrganization.EnglishCategories.ToList());
             OrganizationsHelper.AssertOrganizationsAreEqual(organization, updatedOrganization with { EnglishCategories = organization.EnglishCategories });
         }
 
@@ -138,7 +138,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
 
             var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.UpdateOrganizationAndDeserializeAsync(organization.Id, request);
 
-            CollectionAssert.AreEquivalent(request.FrenchCategories.Select(c => c.Trim().ToLower()).ToList(), updatedOrganization.FrenchCategories.ToList());
+            CollectionAssert.AreEquivalent(request.FrenchCategories.ToList(), updatedOrganization.FrenchCategories.ToList());
             OrganizationsHelper.AssertOrganizationsAreEqual(organization, updatedOrganization with { FrenchCategories = organization.FrenchCategories });
         }
 

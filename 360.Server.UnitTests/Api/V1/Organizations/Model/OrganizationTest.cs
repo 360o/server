@@ -126,8 +126,8 @@ namespace _360.Server.UnitTests.Api.V1.Organizations.Model
 
             organization.SetEnglishCategories(categories);
 
-            CollectionAssert.AreEquivalent(categories.Select(c => c.Trim().ToLower()).ToList(), organization.EnglishCategories);
-            Assert.AreEqual(joinedCategories.ToLower(), organization.EnglishCategoriesJoined);
+            CollectionAssert.AreEquivalent(categories.ToList(), organization.EnglishCategories);
+            Assert.AreEqual(joinedCategories, organization.EnglishCategoriesJoined);
         }
 
         [TestMethod]
@@ -186,8 +186,8 @@ namespace _360.Server.UnitTests.Api.V1.Organizations.Model
 
             organization.SetFrenchCategories(categories);
 
-            CollectionAssert.AreEquivalent(categories.Select(c => c.Trim().ToLower()).ToList(), organization.FrenchCategories);
-            Assert.AreEqual(joinedCategories.ToLower(), organization.FrenchCategoriesJoined);
+            CollectionAssert.AreEquivalent(categories.ToList(), organization.FrenchCategories);
+            Assert.AreEqual(joinedCategories, organization.FrenchCategoriesJoined);
         }
 
         private Organization MakeRandomOrganization()
