@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
+namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
 {
     internal class Auth0UsernamePasswordAuthHelper : IAuthHelper
     {

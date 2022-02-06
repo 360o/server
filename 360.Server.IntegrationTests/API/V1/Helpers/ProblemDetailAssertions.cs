@@ -1,4 +1,4 @@
-﻿using _360o.Server.API.V1.Errors.Enums;
+﻿using _360o.Server.Api.V1.Errors.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Net;
@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace _360.Server.IntegrationTests.API.V1.Helpers
+namespace _360.Server.IntegrationTests.Api.V1.Helpers
 {
     internal static class ProblemDetailAssertions
     {

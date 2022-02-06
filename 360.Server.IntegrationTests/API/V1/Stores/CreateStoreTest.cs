@@ -1,8 +1,8 @@
-﻿using _360.Server.IntegrationTests.API.V1.Helpers.ApiClient;
-using _360.Server.IntegrationTests.API.V1.Helpers.Generators;
-using _360o.Server.API.V1.Errors.Enums;
-using _360o.Server.API.V1.Stores.DTOs;
-using _360o.Server.API.V1.Stores.Model;
+﻿using _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient;
+using _360.Server.IntegrationTests.Api.V1.Helpers.Generators;
+using _360o.Server.Api.V1.Errors.Enums;
+using _360o.Server.Api.V1.Stores.DTOs;
+using _360o.Server.Api.V1.Stores.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -12,7 +12,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace _360.Server.IntegrationTests.API.V1.Stores
+namespace _360.Server.IntegrationTests.Api.V1.Stores
 {
     [TestClass]
     public class CreateStoreTest
@@ -29,7 +29,6 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             Assert.AreEqual(request.Place.GooglePlaceId, store.Place.GooglePlaceId);
             Assert.AreEqual(request.Place.FormattedAddress, store.Place.FormattedAddress);
             Assert.AreEqual(request.Place.Location, store.Place.Location);
-            Assert.AreEqual(request.OrganizationId, store.Organization.Id);
         }
 
         [TestMethod]

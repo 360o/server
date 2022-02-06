@@ -1,6 +1,6 @@
-﻿using _360o.Server.API.V1.Stores.Model;
+﻿using _360o.Server.Api.V1.Stores.Model;
 
-namespace _360o.Server.API.V1.Stores.DTOs
+namespace _360o.Server.Api.V1.Stores.DTOs
 {
     public readonly record struct ItemDTO(
         Guid Id,
@@ -8,8 +8,7 @@ namespace _360o.Server.API.V1.Stores.DTOs
         string? EnglishDescription,
         string? FrenchName,
         string? FrenchDescription,
-        MoneyValue? Price,
-        Guid StoreId
+        MoneyValue? Price
         )
     {
     }

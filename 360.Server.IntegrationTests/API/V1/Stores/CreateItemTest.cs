@@ -1,6 +1,6 @@
-﻿using _360.Server.IntegrationTests.API.V1.Helpers.ApiClient;
-using _360.Server.IntegrationTests.API.V1.Helpers.Generators;
-using _360o.Server.API.V1.Errors.Enums;
+﻿using _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient;
+using _360.Server.IntegrationTests.Api.V1.Helpers.Generators;
+using _360o.Server.Api.V1.Errors.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -10,7 +10,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace _360.Server.IntegrationTests.API.V1.Stores
+namespace _360.Server.IntegrationTests.Api.V1.Stores
 {
     [TestClass]
     public class CreateItemTest
@@ -31,7 +31,6 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             Assert.AreEqual(request.FrenchName, item.FrenchName);
             Assert.AreEqual(request.FrenchDescription, item.FrenchDescription);
             Assert.AreEqual(request.Price, item.Price);
-            Assert.AreEqual(store.Id, item.StoreId);
         }
 
         [DataTestMethod]

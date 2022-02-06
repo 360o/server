@@ -1,7 +1,7 @@
-﻿using _360o.Server.API.V1.Stores.Model;
-using _360o.Server.API.V1.Stores.Services.Inputs;
+﻿using _360o.Server.Api.V1.Stores.Model;
+using _360o.Server.Api.V1.Stores.Services.Inputs;
 
-namespace _360o.Server.API.V1.Stores.Services
+namespace _360o.Server.Api.V1.Stores.Services
 {
     public interface IStoresService
     {
@@ -24,5 +24,9 @@ namespace _360o.Server.API.V1.Stores.Services
         Task<Item> UpdateItemAsync(UpdateItemInput input);
 
         Task DeleteItemByIdAsync(Guid itemId);
+
+        Task<Offer> CreateOfferAsync(CreateOfferInput input);
+
+        Task<Offer?> GetOfferByIdAsync(Guid offerId);
     }
 }

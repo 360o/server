@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Ardalis.GuardClauses" Version="4.0.0" />
     <PackageReference Include="FluentValidation" Version="10.3.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.1">
       <PrivateAssets>all</PrivateAssets>
@@ -26,8 +27,8 @@
   <ItemGroup>
     <None Remove="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <None Remove="Merchants\" />
-    <None Remove="API\V1\Stores\DTOs\" />
-    <None Remove="API\V1\Stores\Commands\" />
+    <None Remove="Api\V1\Stores\DTOs\" />
+    <None Remove="Api\V1\Stores\Commands\" />
     <None Remove="Web\" />
     <None Remove="Web\Controllers\" />
     <None Remove="Web\Controllers\Home\" />
@@ -39,7 +40,7 @@
     <None Remove="EFCore.NamingConventions" />
     <None Remove="AutoMapper.Extensions.Microsoft.DependencyInjection" />
     <None Remove="FluentValidation.AspNetCore" />
-    <None Remove="API\V1\Stores\Controllers\DTOs\" />
+    <None Remove="Api\V1\Stores\Controllers\DTOs\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Web\" />

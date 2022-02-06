@@ -1,21 +1,23 @@
-﻿namespace _360o.Server.API.V1.Stores.Model
+﻿using Ardalis.GuardClauses;
+
+namespace _360o.Server.Api.V1.Stores.Model
 {
     public class Offer : BaseEntity
     {
-        private readonly List<OfferItem> _offerItems = new List<OfferItem>();
+        private List<OfferItem> _offerItems = new List<OfferItem>();
 
-        public Offer(Guid storeId, string name)
+        public Offer(Guid storeId)
         {
             StoreId = storeId;
-            Name = name;
         }
 
         private Offer()
         {
         }
 
-        public string Name { get; private set; }
-        public IReadOnlyList<OfferItem> OfferItems => _offerItems;
+        public string EnglishName { get; private set; } = string.Empty;
+
+        public string FrenchName { get; private set; } = string.Empty;
 
         public MoneyValue Discount { get; private set; }
 
@@ -23,32 +25,28 @@
 
         public Store Store { get; private set; }
 
-        public void AddItem(OfferItem offerItem)
-        {
-            if (!_offerItems.Any(i => i.Id == offerItem.Id))
-            {
-                _offerItems.Add(offerItem);
-                return;
-            }
+        public IReadOnlyList<OfferItem> OfferItems => _offerItems.AsReadOnly();
 
-            var existingOfferItem = OfferItems.First(i => i.Id == offerItem.Id);
-            _offerItems.Remove(existingOfferItem);
-            _offerItems.Add(offerItem);
+        public void SetEnglishName(string englishName)
+        {
+            EnglishName = Guard.Against.Null(englishName, nameof(englishName));
         }
 
-        public void RemoveItem(OfferItem item)
+        public void SetFrenchName(string frenchName)
         {
-            if (!_offerItems.Any(i => i.Id == item.Id))
-            {
-                return;
-            }
-
-            var existingOfferItem = OfferItems.First(i => i.Id == item.Id);
-            _offerItems.Remove(existingOfferItem);
+            FrenchName = Guard.Against.Null(frenchName, nameof(frenchName));
         }
 
-        public void AddDiscount(MoneyValue discount)
+        public void SetOfferItems(ISet<OfferItem> offerItems)
         {
+            _offerItems = offerItems.ToList();
+        }
+
+        public void SetDiscount(MoneyValue discount)
+        {
+            Guard.Against.NegativeOrZero(discount.Amount, nameof(discount.Amount));
+            Guard.Against.EnumOutOfRange(discount.CurrencyCode, nameof(discount.CurrencyCode));
+
             Discount = discount;
         }
     }

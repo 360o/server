@@ -1,9 +1,9 @@
-﻿using _360o.Server.API.V1.Organizations.Model;
-using _360o.Server.API.V1.Organizations.Services.Inputs;
-using _360o.Server.API.V1.Stores.Model;
+﻿using _360o.Server.Api.V1.Organizations.Model;
+using _360o.Server.Api.V1.Organizations.Services.Inputs;
+using _360o.Server.Api.V1.Stores.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace _360o.Server.API.V1.Organizations.Services
+namespace _360o.Server.Api.V1.Organizations.Services
 {
     public class OrganizationsService : IOrganizationsService
     {
@@ -18,16 +18,32 @@ namespace _360o.Server.API.V1.Organizations.Services
         {
             var organization = new Organization(
                 input.UserId,
-                input.Name,
-                input.EnglishShortDescription,
-                input.EnglishLongDescription,
-                input.FrenchShortDescription,
-                input.FrenchLongDescription
+                input.Name
                 );
+
+            if (input.EnglishShortDescription != null)
+            {
+                organization.SetEnglishShortDescription(input.EnglishShortDescription);
+            }
+
+            if (input.EnglishLongDescription != null)
+            {
+                organization.SetEnglishLongDescription(input.EnglishLongDescription);
+            }
 
             if (input.EnglishCategories != null)
             {
                 organization.SetEnglishCategories(input.EnglishCategories);
+            }
+
+            if (input.FrenchShortDescription != null)
+            {
+                organization.SetFrenchShortDescription(input.FrenchShortDescription);
+            }
+
+            if (input.FrenchLongDescription != null)
+            {
+                organization.SetFrenchLongDescription(input.FrenchLongDescription);
             }
 
             if (input.FrenchCategories != null)

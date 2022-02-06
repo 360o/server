@@ -1,4 +1,4 @@
-﻿using _360.Server.IntegrationTests.API.V1.Helpers.ApiClient;
+﻿using _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetTopologySuite.Geometries;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
-using _360o.Server.API.V1.Stores.Model;
+using _360o.Server.Api.V1.Stores.Model;
 
 #nullable disable
 

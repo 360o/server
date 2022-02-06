@@ -1,4 +1,4 @@
-﻿namespace _360o.Server.API.V1
+﻿namespace _360o.Server.Api.V1
 {
     public abstract class BaseEntity
     {

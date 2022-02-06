@@ -1,4 +1,4 @@
-﻿namespace _360o.Server.API.V1.Organizations.Services.Inputs
+﻿namespace _360o.Server.Api.V1.Organizations.Services.Inputs
 {
     public readonly record struct UpdateOrganizationInput(
         Guid OrganizationId,

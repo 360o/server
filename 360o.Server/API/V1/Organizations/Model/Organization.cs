@@ -1,18 +1,15 @@
-﻿using _360o.Server.API.V1.Stores.Model;
+﻿using _360o.Server.Api.V1.Stores.Model;
+using Ardalis.GuardClauses;
 using NpgsqlTypes;
 
-namespace _360o.Server.API.V1.Organizations.Model
+namespace _360o.Server.Api.V1.Organizations.Model
 {
     public class Organization : BaseEntity
     {
-        public Organization(string userId, string name, string? englishShortDescription, string? englishLongDescription, string? frenchShortDescription, string? frenchLongDescription)
+        public Organization(string userId, string name)
         {
-            UserId = userId;
-            Name = name;
-            EnglishShortDescription = englishShortDescription == null ? string.Empty : englishShortDescription.Trim();
-            EnglishLongDescription = englishLongDescription == null ? string.Empty : englishLongDescription.Trim();
-            FrenchShortDescription = frenchShortDescription == null ? string.Empty : frenchShortDescription.Trim();
-            FrenchLongDescription = frenchLongDescription == null ? string.Empty : frenchLongDescription.Trim();
+            UserId = Guard.Against.NullOrWhiteSpace(userId, nameof(userId));
+            Name = Guard.Against.NullOrWhiteSpace(name, nameof(name));
         }
 
         private Organization()
@@ -23,14 +20,14 @@ namespace _360o.Server.API.V1.Organizations.Model
 
         public string Name { get; private set; }
 
-        public string EnglishShortDescription { get; private set; }
-        public string EnglishLongDescription { get; private set; }
+        public string EnglishShortDescription { get; private set; } = string.Empty;
+        public string EnglishLongDescription { get; private set; } = string.Empty;
         public List<string> EnglishCategories { get; private set; } = new List<string>();
         public string EnglishCategoriesJoined { get; private set; } = string.Empty;
         public NpgsqlTsVector EnglishSearchVector { get; private set; }
 
-        public string FrenchShortDescription { get; private set; }
-        public string FrenchLongDescription { get; private set; }
+        public string FrenchShortDescription { get; private set; } = string.Empty;
+        public string FrenchLongDescription { get; private set; } = string.Empty;
         public List<string> FrenchCategories { get; private set; } = new List<string>();
         public string FrenchCategoriesJoined { get; private set; } = string.Empty;
         public NpgsqlTsVector FrenchSearchVector { get; private set; }
@@ -39,38 +36,38 @@ namespace _360o.Server.API.V1.Organizations.Model
 
         public void SetName(string name)
         {
-            Name = name;
+            Name = Guard.Against.NullOrWhiteSpace(name, nameof(name));
         }
 
         public void SetEnglishShortDescription(string englishShortDescription)
         {
-            EnglishShortDescription = englishShortDescription;
+            EnglishShortDescription = Guard.Against.Null(englishShortDescription, nameof(englishShortDescription)).Trim();
         }
 
         public void SetEnglishLongDescription(string englishLongDescription)
         {
-            EnglishLongDescription = englishLongDescription;
+            EnglishLongDescription = Guard.Against.Null(englishLongDescription, nameof(englishLongDescription)).Trim();
         }
 
         public void SetEnglishCategories(ISet<string> categories)
         {
-            EnglishCategories = categories.ToList();
+            EnglishCategories = categories.Select(c => c.Trim().ToLower()).ToList();
             EnglishCategoriesJoined = JoinCategories(EnglishCategories);
         }
 
         public void SetFrenchShortDescription(string frenchShortDescription)
         {
-            FrenchShortDescription = frenchShortDescription;
+            FrenchShortDescription = Guard.Against.Null(frenchShortDescription, nameof(frenchShortDescription)).Trim();
         }
 
         public void SetFrenchLongDescription(string frenchLongDescription)
         {
-            FrenchLongDescription = frenchLongDescription;
+            FrenchLongDescription = Guard.Against.Null(frenchLongDescription, nameof(frenchLongDescription)).Trim();
         }
 
         public void SetFrenchCategories(ISet<string> categories)
         {
-            FrenchCategories = categories.ToList();
+            FrenchCategories = categories.Select(c => c.Trim().ToLower()).ToList();
             FrenchCategoriesJoined = JoinCategories(FrenchCategories);
         }
 

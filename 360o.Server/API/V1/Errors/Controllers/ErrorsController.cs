@@ -1,10 +1,10 @@
-﻿using _360o.Server.API.V1.Errors.Enums;
+﻿using _360o.Server.Api.V1.Errors.Enums;
 using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace _360o.Server.API.V1.Errors
+namespace _360o.Server.Api.V1.Errors
 {
     [Route("api/v1/[controller]")]
     [ApiController]

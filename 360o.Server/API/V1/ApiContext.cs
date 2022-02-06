@@ -1,7 +1,7 @@
-﻿using _360o.Server.API.V1.Organizations.Model;
+﻿using _360o.Server.Api.V1.Organizations.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace _360o.Server.API.V1.Stores.Model
+namespace _360o.Server.Api.V1.Stores.Model
 {
     public class ApiContext : DbContext
     {
@@ -38,10 +38,11 @@ namespace _360o.Server.API.V1.Stores.Model
             modelBuilder.Entity<Place>().Property(e => e.Point).HasColumnType("geography (point)");
             modelBuilder.Entity<Place>().HasOne(e => e.Store).WithOne(e => e.Place);
 
-            modelBuilder.Entity<Offer>().Property(e => e.Name).IsRequired();
+            modelBuilder.Entity<Offer>().Property(e => e.EnglishName).IsRequired();
             modelBuilder.Entity<Offer>().Property(e => e.Discount).HasColumnType("jsonb");
             modelBuilder.Entity<Offer>().HasOne(e => e.Store).WithMany(e => e.Offers);
 
+            modelBuilder.Entity<OfferItem>().Property(e => e.Quantity).IsRequired();
             modelBuilder.Entity<OfferItem>().HasOne(e => e.Offer).WithMany(e => e.OfferItems);
             modelBuilder.Entity<OfferItem>().HasOne(e => e.Item).WithMany(e => e.OfferItems);
 

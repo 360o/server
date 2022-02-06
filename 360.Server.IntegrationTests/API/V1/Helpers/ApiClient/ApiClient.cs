@@ -1,4 +1,4 @@
-﻿namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
+﻿namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
 {
     public class ApiClient
     {

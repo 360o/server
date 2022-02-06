@@ -1,11 +1,11 @@
-﻿using _360o.Server.API.V1.Organizations.DTOs;
-using _360o.Server.API.V1.Stores.DTOs;
-using _360o.Server.API.V1.Stores.Model;
+﻿using _360o.Server.Api.V1.Organizations.DTOs;
+using _360o.Server.Api.V1.Stores.DTOs;
+using _360o.Server.Api.V1.Stores.Model;
 using Bogus;
 using System;
 using System.Linq;
 
-namespace _360.Server.IntegrationTests.API.V1.Helpers.Generators
+namespace _360.Server.IntegrationTests.Api.V1.Helpers.Generators
 {
     internal static class RequestsGenerator
     {

@@ -1,13 +1,13 @@
-﻿using _360o.Server.API.V1.Organizations.Model;
+﻿using _360o.Server.Api.V1.Organizations.Model;
+using Ardalis.GuardClauses;
 
-namespace _360o.Server.API.V1.Stores.Model
+namespace _360o.Server.Api.V1.Stores.Model
 {
     public class Store : BaseEntity
     {
-        public Store(Guid organizationId, Place place)
+        public Store(Guid organizationId)
         {
-            OrganizationId = organizationId;
-            Place = place;
+            OrganizationId = Guard.Against.NullOrEmpty(organizationId, nameof(organizationId));
         }
 
         private Store()
@@ -24,31 +24,13 @@ namespace _360o.Server.API.V1.Stores.Model
 
         public void SetPlace(Place place)
         {
+            Guard.Against.NullOrWhiteSpace(place.GooglePlaceId, nameof(place.GooglePlaceId));
+            Guard.Against.NullOrWhiteSpace(place.FormattedAddress, nameof(place.FormattedAddress));
+            // See https://docs.mapbox.com/help/glossary/lat-lon/#:~:text=Latitude%20and%20longitude%20are%20a,180%20to%20180%20for%20longitude
+            Guard.Against.OutOfRange(place.Location.Latitude, nameof(place.Location.Latitude), -90, 90);
+            Guard.Against.OutOfRange(place.Location.Longitude, nameof(place.Location.Longitude), -180, 180);
+
             Place = place;
-        }
-
-        public void AddOffer(Offer offer)
-        {
-            if (!Offers.Any(o => o.Id == offer.Id))
-            {
-                Offers.Add(offer);
-                return;
-            }
-
-            var existingOffer = Offers.First(o => o.Id == offer.Id);
-            Offers.Remove(existingOffer);
-            Offers.Add(offer);
-        }
-
-        public void RemoveOffer(Guid offerId)
-        {
-            if (!Offers.Any(i => i.Id == offerId))
-            {
-                return;
-            }
-
-            var existingOffer = Offers.First(i => i.Id == offerId);
-            Offers.Remove(existingOffer);
         }
     }
 }

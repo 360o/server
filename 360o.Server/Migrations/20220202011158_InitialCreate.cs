@@ -1,4 +1,4 @@
-﻿using _360o.Server.API.V1.Stores.Model;
+﻿using _360o.Server.Api.V1.Stores.Model;
 using Microsoft.EntityFrameworkCore.Migrations;
 using NetTopologySuite.Geometries;
 using NpgsqlTypes;

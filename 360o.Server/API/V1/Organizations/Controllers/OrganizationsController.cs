@@ -1,15 +1,15 @@
-﻿using _360o.Server.API.V1.Errors.Enums;
-using _360o.Server.API.V1.Organizations.DTOs;
-using _360o.Server.API.V1.Organizations.Services;
-using _360o.Server.API.V1.Organizations.Services.Inputs;
-using _360o.Server.API.V1.Organizations.Validators;
+﻿using _360o.Server.Api.V1.Errors.Enums;
+using _360o.Server.Api.V1.Organizations.DTOs;
+using _360o.Server.Api.V1.Organizations.Services;
+using _360o.Server.Api.V1.Organizations.Services.Inputs;
+using _360o.Server.Api.V1.Organizations.Validators;
 using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace _360o.Server.API.V1.Organizations.Controllers
+namespace _360o.Server.Api.V1.Organizations.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]

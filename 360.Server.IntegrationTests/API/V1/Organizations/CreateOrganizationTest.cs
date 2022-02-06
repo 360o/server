@@ -1,6 +1,6 @@
-﻿using _360.Server.IntegrationTests.API.V1.Helpers.ApiClient;
-using _360.Server.IntegrationTests.API.V1.Helpers.Generators;
-using _360o.Server.API.V1.Errors.Enums;
+﻿using _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient;
+using _360.Server.IntegrationTests.Api.V1.Helpers.Generators;
+using _360o.Server.Api.V1.Errors.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace _360.Server.IntegrationTests.API.V1.Organizations
+namespace _360.Server.IntegrationTests.Api.V1.Organizations
 {
     [TestClass]
     public class CreateOrganizationTest
@@ -26,10 +26,10 @@ namespace _360.Server.IntegrationTests.API.V1.Organizations
             Assert.AreEqual(request.Name, organization.Name);
             Assert.AreEqual(request.EnglishShortDescription, organization.EnglishShortDescription);
             Assert.AreEqual(request.EnglishLongDescription, organization.EnglishLongDescription);
-            CollectionAssert.AreEquivalent(request.EnglishCategories?.ToList(), organization.EnglishCategories.ToList());
+            CollectionAssert.AreEquivalent(request.EnglishCategories.Select(c => c.Trim().ToLower()).ToList(), organization.EnglishCategories.ToList());
             Assert.AreEqual(request.FrenchShortDescription, organization.FrenchShortDescription);
             Assert.AreEqual(request.FrenchLongDescription, organization.FrenchLongDescription);
-            CollectionAssert.AreEquivalent(request.FrenchCategories?.ToList(), organization.FrenchCategories.ToList());
+            CollectionAssert.AreEquivalent(request.FrenchCategories.Select(c => c.Trim().ToLower()).ToList(), organization.FrenchCategories.ToList());
         }
 
         [TestMethod]

@@ -1,5 +1,5 @@
-﻿using _360.Server.IntegrationTests.API.V1.Helpers.ApiClient;
-using _360o.Server.API.V1.Errors.Enums;
+﻿using _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient;
+using _360o.Server.Api.V1.Errors.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -7,7 +7,7 @@ using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace _360.Server.IntegrationTests.API.V1.Stores
+namespace _360.Server.IntegrationTests.Api.V1.Stores
 {
     [TestClass]
     public class DeleteItemByIdTest

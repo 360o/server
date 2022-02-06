@@ -1,16 +1,16 @@
-﻿using _360o.Server.API.V1.Errors.Enums;
-using _360o.Server.API.V1.Organizations.Services;
-using _360o.Server.API.V1.Stores.DTOs;
-using _360o.Server.API.V1.Stores.Services;
-using _360o.Server.API.V1.Stores.Services.Inputs;
-using _360o.Server.API.V1.Stores.Validators;
+﻿using _360o.Server.Api.V1.Errors.Enums;
+using _360o.Server.Api.V1.Organizations.Services;
+using _360o.Server.Api.V1.Stores.DTOs;
+using _360o.Server.Api.V1.Stores.Services;
+using _360o.Server.Api.V1.Stores.Services.Inputs;
+using _360o.Server.Api.V1.Stores.Validators;
 using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace _360o.Server.API.V1.Stores.Controllers
+namespace _360o.Server.Api.V1.Stores.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
@@ -205,6 +205,10 @@ namespace _360o.Server.API.V1.Stores.Controllers
         [Authorize]
         public async Task<ActionResult<ItemDTO>> UpdateItemAsync(Guid storeId, Guid itemId, [FromBody] UpdateItemRequest request)
         {
+            var validator = new UpdateItemRequestValidator();
+
+            validator.ValidateAndThrow(request);
+
             var item = await _storesService.GetItembyIdAsync(itemId);
 
             if (item == null)
@@ -253,6 +257,54 @@ namespace _360o.Server.API.V1.Stores.Controllers
             await _storesService.DeleteItemByIdAsync(itemId);
 
             return NoContent();
+        }
+
+        [HttpPost("{storeId}/offers")]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OfferDTO))]
+        [Authorize]
+        public async Task<ActionResult<OfferDTO>> CreateOfferAsync(Guid storeId, [FromBody] CreateOfferRequest request)
+        {
+            var validator = new CreateOfferRequestValidator();
+
+            validator.ValidateAndThrow(request);
+
+            var store = await _storesService.GetStoreByIdByAsync(storeId);
+
+            if (store == null)
+            {
+                return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
+            }
+
+            if (User.Identity.Name != store.Organization.UserId)
+            {
+                return Forbid();
+            }
+
+            var offer = await _storesService.CreateOfferAsync(_mapper.Map<CreateOfferInput>(request) with { StoreId = store.Id });
+
+            return CreatedAtAction(nameof(GetOfferByIdAsync), new { storeId = store.Id, offerId = offer.Id }, _mapper.Map<OfferDTO>(offer));
+        }
+
+        [HttpGet("{storeId}/offers/{offerId}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ItemDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<ItemDTO>> GetOfferByIdAsync(Guid storeId, Guid offerId)
+        {
+            var store = await _storesService.GetStoreByIdByAsync(storeId);
+
+            if (store == null)
+            {
+                return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
+            }
+
+            var item = await _storesService.GetItembyIdAsync(offerId);
+
+            if (item == null)
+            {
+                return Problem(detail: "Item not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
+            }
+
+            return _mapper.Map<ItemDTO>(item);
         }
     }
 }

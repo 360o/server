@@ -1,4 +1,4 @@
-﻿namespace _360o.Server.API.V1.Errors.Enums
+﻿namespace _360o.Server.Api.V1.Errors.Enums
 {
     public enum ErrorCode
     {

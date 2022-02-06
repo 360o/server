@@ -1,7 +1,7 @@
-﻿using _360o.Server.API.V1.Organizations.Model;
-using _360o.Server.API.V1.Organizations.Services.Inputs;
+﻿using _360o.Server.Api.V1.Organizations.Model;
+using _360o.Server.Api.V1.Organizations.Services.Inputs;
 
-namespace _360o.Server.API.V1.Organizations.Services
+namespace _360o.Server.Api.V1.Organizations.Services
 {
     public interface IOrganizationsService
     {

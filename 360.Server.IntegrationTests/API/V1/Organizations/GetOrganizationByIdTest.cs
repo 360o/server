@@ -1,10 +1,10 @@
-﻿using _360.Server.IntegrationTests.API.V1.Helpers.ApiClient;
+﻿using _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace _360.Server.IntegrationTests.API.V1.Organizations
+namespace _360.Server.IntegrationTests.Api.V1.Organizations
 {
     [TestClass]
     public class GetOrganizationByIdTest

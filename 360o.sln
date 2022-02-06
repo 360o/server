@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "360o.Server", "360o.Server\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "360.Server.IntegrationTests", "360.Server.IntegrationTests\360.Server.IntegrationTests.csproj", "{A887AB31-A263-4AC0-80A4-757CF2604206}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "360.Server.UnitTests", "360.Server.UnitTests\360.Server.UnitTests.csproj", "{1D9D8884-6B38-47E5-9DC5-9B7921F97FE1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{A887AB31-A263-4AC0-80A4-757CF2604206}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A887AB31-A263-4AC0-80A4-757CF2604206}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A887AB31-A263-4AC0-80A4-757CF2604206}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D9D8884-6B38-47E5-9DC5-9B7921F97FE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D9D8884-6B38-47E5-9DC5-9B7921F97FE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D9D8884-6B38-47E5-9DC5-9B7921F97FE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D9D8884-6B38-47E5-9DC5-9B7921F97FE1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

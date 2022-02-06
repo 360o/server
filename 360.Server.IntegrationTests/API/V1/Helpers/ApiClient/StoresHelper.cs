@@ -1,5 +1,5 @@
-﻿using _360.Server.IntegrationTests.API.V1.Helpers.Generators;
-using _360o.Server.API.V1.Stores.DTOs;
+﻿using _360.Server.IntegrationTests.Api.V1.Helpers.Generators;
+using _360o.Server.Api.V1.Stores.DTOs;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
+namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
 {
     public class StoresHelper
     {
@@ -31,9 +31,7 @@ namespace _360.Server.IntegrationTests.API.V1.Helpers.ApiClient
 
         public static void AssertStoresAreEqual(StoreDTO expected, StoreDTO actual)
         {
-            Assert.AreEqual(expected.Id, actual.Id);
-            Assert.AreEqual(expected.Place, actual.Place);
-            OrganizationsHelper.AssertOrganizationsAreEqual(expected.Organization, actual.Organization);
+            Assert.AreEqual(expected, actual);
         }
 
         public async Task<HttpResponseMessage> CreateStoreAsync(CreateStoreRequest request)

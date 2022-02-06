@@ -1,42 +1,27 @@
-﻿using _360o.Server.API.V1.Stores.Validators;
+﻿using Ardalis.GuardClauses;
 using FluentValidation;
 using NpgsqlTypes;
 
-namespace _360o.Server.API.V1.Stores.Model
+namespace _360o.Server.Api.V1.Stores.Model
 {
     public class Item : BaseEntity
     {
-        private MoneyValueValidator _moneyValueValidator = new MoneyValueValidator();
-
-        public Item(Guid storeId, string? englishName, string? englishDescription, string? frenchName, string? frenchDescription, MoneyValue? price)
+        public Item(Guid storeId)
         {
-            if (englishName == null && frenchName == null)
-            {
-                throw new ArgumentNullException("At least one of Name must be defined");
-            }
-
-            if (price.HasValue)
-            {
-                AssertValidPrice(price.Value);
-            }
+            Guard.Against.NullOrEmpty(storeId, nameof(storeId));
 
             StoreId = storeId;
-            EnglishName = englishName == null ? string.Empty : englishName.Trim();
-            EnglishDescription = englishDescription == null ? string.Empty : englishDescription.Trim();
-            FrenchDescription = frenchDescription == null ? string.Empty : frenchDescription.Trim();
-            FrenchName = frenchName == null ? string.Empty : frenchName.Trim();
-            Price = price;
         }
 
         private Item()
         {
         }
 
-        public string EnglishName { get; private set; }
-        public string EnglishDescription { get; private set; }
+        public string EnglishName { get; private set; } = string.Empty;
+        public string EnglishDescription { get; private set; } = string.Empty;
         public NpgsqlTsVector EnglishSearchVector { get; private set; }
-        public string FrenchName { get; private set; }
-        public string FrenchDescription { get; private set; }
+        public string FrenchName { get; private set; } = string.Empty;
+        public string FrenchDescription { get; private set; } = string.Empty;
         public NpgsqlTsVector FrenchSearchVector { get; private set; }
         public MoneyValue? Price { get; private set; }
 
@@ -47,34 +32,28 @@ namespace _360o.Server.API.V1.Stores.Model
 
         public void SetEnglishName(string englishName)
         {
-            EnglishName = englishName;
+            EnglishName = Guard.Against.Null(englishName, nameof(englishName)).Trim();
         }
 
         public void SetEnglishDescription(string englishDescription)
         {
-            EnglishDescription = englishDescription;
+            EnglishDescription = Guard.Against.Null(englishDescription, nameof(englishDescription)).Trim();
         }
 
         public void SetFrenchName(string frenchName)
         {
-            FrenchName = frenchName;
+            FrenchName = Guard.Against.Null(frenchName, nameof(frenchName)).Trim();
         }
 
         public void SetFrenchDescription(string frenchDescription)
         {
-            FrenchDescription = frenchDescription;
+            FrenchDescription = Guard.Against.Null(frenchDescription, nameof(frenchDescription)).Trim();
         }
 
         public void SetPrice(MoneyValue price)
         {
-            AssertValidPrice(price);
-
-            Price = price;
-        }
-
-        private void AssertValidPrice(MoneyValue price)
-        {
-            _moneyValueValidator.ValidateAndThrow(price);
+            Guard.Against.NegativeOrZero(price.Amount, nameof(price.Amount));
+            Guard.Against.EnumOutOfRange(price.CurrencyCode, nameof(price.CurrencyCode));
 
             Price = price;
         }

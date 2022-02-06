@@ -1,6 +1,6 @@
 ﻿using NetTopologySuite.Geometries;
 
-namespace _360o.Server.API.V1.Stores.Model
+namespace _360o.Server.Api.V1.Stores.Model
 {
     public class Place : BaseEntity
     {

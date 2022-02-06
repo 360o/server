@@ -1,8 +1,8 @@
 ﻿using _360o.Server;
-using _360o.Server.API.V1;
-using _360o.Server.API.V1.Organizations.Services;
-using _360o.Server.API.V1.Stores.Model;
-using _360o.Server.API.V1.Stores.Services;
+using _360o.Server.Api.V1;
+using _360o.Server.Api.V1.Organizations.Services;
+using _360o.Server.Api.V1.Stores.Model;
+using _360o.Server.Api.V1.Stores.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
