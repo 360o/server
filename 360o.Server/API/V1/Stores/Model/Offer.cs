@@ -19,7 +19,7 @@ namespace _360o.Server.Api.V1.Stores.Model
 
         public string FrenchName { get; private set; } = string.Empty;
 
-        public MoneyValue Discount { get; private set; }
+        public MoneyValue? Discount { get; private set; }
 
         public Guid StoreId { get; private set; }
 

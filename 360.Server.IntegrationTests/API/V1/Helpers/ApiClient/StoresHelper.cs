@@ -1,5 +1,6 @@
 ﻿using _360.Server.IntegrationTests.Api.V1.Helpers.Generators;
 using _360o.Server.Api.V1.Stores.DTOs;
+using _360o.Server.Api.V1.Stores.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,10 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
 
         public static string ItemRoute(Guid storeId, Guid itemId) => $"{ItemsRoute(storeId)}/{itemId}";
 
+        public static string OffersRoute(Guid storeId) => $"{StoreRoute(storeId)}/offers";
+
+        public static string OfferRoute(Guid storeId, Guid offerId) => $"{OffersRoute(storeId)}/{offerId}";
+
         public static void AssertStoresAreEqual(StoreDTO expected, StoreDTO actual)
         {
             Assert.AreEqual(expected, actual);
@@ -36,7 +41,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
 
         public async Task<HttpResponseMessage> CreateStoreAsync(CreateStoreRequest request)
         {
-            var requestContent = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+            var requestContent = JsonUtils.MakeJsonRequestContent(request);
 
             return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).PostAsync(StoresRoute, requestContent);
         }
@@ -48,7 +53,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
             Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
             Assert.IsNotNull(response.Headers.Location);
 
-            var store = await Utils.DeserializeAsync<StoreDTO>(response);
+            var store = await JsonUtils.DeserializeAsync<StoreDTO>(response);
 
             Assert.IsTrue(Guid.TryParse(store.Id.ToString(), out var _));
             Assert.AreEqual(StoreRoute(store.Id), response.Headers.Location.AbsolutePath);
@@ -74,7 +79,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-            return await Utils.DeserializeAsync<StoreDTO>(response);
+            return await JsonUtils.DeserializeAsync<StoreDTO>(response);
         }
 
         public async Task<HttpResponseMessage> ListStoresAsync(ListStoresRequest request)
@@ -119,12 +124,12 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-            return await Utils.DeserializeAsync<List<StoreDTO>>(response);
+            return await JsonUtils.DeserializeAsync<List<StoreDTO>>(response);
         }
 
         public async Task<HttpResponseMessage> UpdateStoreAsync(Guid storeId, UpdateStoreRequest request)
         {
-            var requestContent = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+            var requestContent = JsonUtils.MakeJsonRequestContent(request);
 
             return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).PatchAsync(StoreRoute(storeId), requestContent);
         }
@@ -135,7 +140,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-            return await Utils.DeserializeAsync<StoreDTO>(response);
+            return await JsonUtils.DeserializeAsync<StoreDTO>(response);
         }
 
         public async Task<HttpResponseMessage> DeleteStoreByIdAsync(Guid id)
@@ -145,7 +150,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
 
         public async Task<HttpResponseMessage> CreateItemAsync(Guid storeId, CreateItemRequest request)
         {
-            var requestContent = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+            var requestContent = JsonUtils.MakeJsonRequestContent(request);
 
             return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).PostAsync(ItemsRoute(storeId), requestContent);
         }
@@ -157,7 +162,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
             Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
             Assert.IsNotNull(response.Headers.Location);
 
-            var item = await Utils.DeserializeAsync<ItemDTO>(response);
+            var item = await JsonUtils.DeserializeAsync<ItemDTO>(response);
 
             Assert.IsNotNull(item);
             Assert.IsTrue(Guid.TryParse(item.Id.ToString(), out var _));
@@ -184,7 +189,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-            return await Utils.DeserializeAsync<ItemDTO>(response);
+            return await JsonUtils.DeserializeAsync<ItemDTO>(response);
         }
 
         public async Task<HttpResponseMessage> ListItemsAsync(Guid storeId)
@@ -198,12 +203,12 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-            return await Utils.DeserializeAsync<IList<ItemDTO>>(response);
+            return await JsonUtils.DeserializeAsync<IList<ItemDTO>>(response);
         }
 
         public async Task<HttpResponseMessage> UpdateItemAsync(Guid storeId, Guid itemId, UpdateItemRequest request)
         {
-            var requestContent = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+            var requestContent = JsonUtils.MakeJsonRequestContent(request);
 
             return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).PatchAsync(ItemRoute(storeId, itemId), requestContent);
         }
@@ -214,12 +219,37 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-            return await Utils.DeserializeAsync<ItemDTO>(response);
+            return await JsonUtils.DeserializeAsync<ItemDTO>(response);
         }
 
         public async Task<HttpResponseMessage> DeleteItemByIdAsync(Guid storeId, Guid itemId)
         {
             return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).DeleteAsync(ItemRoute(storeId, itemId));
+        }
+
+        public async Task<HttpResponseMessage> CreateOfferAsync(Guid storeId, CreateOfferRequest request)
+        {
+            var requestContent = JsonUtils.MakeJsonRequestContent(request);
+
+            return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).PostAsync(OffersRoute(storeId), requestContent);
+        }
+
+        public async Task<OfferDTO> CreateRandomOfferAndDeserializeAsync(Guid storeId, ISet<CreateOfferRequestItem> offerItems, MoneyValue? discount)
+        {
+            var request = RequestsGenerator.MakeRandomCreateOfferRequest(offerItems, discount);
+
+            var response = await CreateOfferAsync(storeId, request);
+
+            Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+            Assert.IsNotNull(response.Headers.Location);
+
+            var offer = await JsonUtils.DeserializeAsync<OfferDTO>(response);
+
+            Assert.IsNotNull(offer);
+            Assert.IsTrue(Guid.TryParse(offer.Id.ToString(), out var _));
+            Assert.AreEqual(OfferRoute(storeId, offer.Id), response.Headers.Location.AbsolutePath);
+
+            return offer;
         }
     }
 }

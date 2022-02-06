@@ -26,7 +26,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers
             Assert.AreEqual(detailMessage, result.Detail);
         }
 
-        public static async Task AssertBadRequestAsync(HttpResponseMessage response, string detailMessage)
+        public static async Task AssertBadRequestAsync(HttpResponseMessage response, string containsDetailMessage)
         {
             Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
@@ -39,7 +39,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers
             Assert.IsNotNull(result.Status);
             Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
             Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
-            Assert.IsTrue(result.Detail.Contains(detailMessage));
+            Assert.IsTrue(result.Detail.Contains(containsDetailMessage));
         }
     }
 }

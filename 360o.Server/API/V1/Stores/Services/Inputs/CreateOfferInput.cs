@@ -6,14 +6,14 @@ namespace _360o.Server.Api.V1.Stores.Services.Inputs
         Guid StoreId,
         string? EnglishName,
         string? FrenchName,
-        IReadOnlyCollection<CreateOfferInputItems> Items,
+        ISet<CreateOfferInputItem> OfferItems,
         MoneyValue? Discount
         )
     {
     }
 
-    public readonly record struct CreateOfferInputItems(
-        Guid itemId,
+    public readonly record struct CreateOfferInputItem(
+        Guid ItemId,
         int Quantity
         );
 }

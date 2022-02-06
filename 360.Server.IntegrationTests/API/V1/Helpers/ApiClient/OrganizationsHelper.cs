@@ -37,7 +37,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
 
         public async Task<HttpResponseMessage> CreateOrganizationAsync(CreateOrganizationRequest request)
         {
-            var requestContent = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+            var requestContent = JsonUtils.MakeJsonRequestContent(request);
 
             return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).PostAsync(OrganizationsRoute, requestContent);
         }
@@ -49,7 +49,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
             Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
             Assert.IsNotNull(response.Headers.Location);
 
-            var organization = await Utils.DeserializeAsync<OrganizationDTO>(response);
+            var organization = await JsonUtils.DeserializeAsync<OrganizationDTO>(response);
 
             Assert.IsTrue(Guid.TryParse(organization.Id.ToString(), out var _));
             Assert.AreEqual(OrganizationRoute(organization.Id), response.Headers.Location.AbsolutePath);
@@ -75,12 +75,12 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-            return await Utils.DeserializeAsync<OrganizationDTO>(response);
+            return await JsonUtils.DeserializeAsync<OrganizationDTO>(response);
         }
 
         public async Task<HttpResponseMessage> UpdateOrganizationAsync(Guid organizationId, UpdateOrganizationRequest request)
         {
-            var requestContent = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+            var requestContent = JsonUtils.MakeJsonRequestContent(request);
 
             return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).PatchAsync(OrganizationRoute(organizationId), requestContent);
         }
@@ -91,7 +91,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-            return await Utils.DeserializeAsync<OrganizationDTO>(response);
+            return await JsonUtils.DeserializeAsync<OrganizationDTO>(response);
         }
 
         public async Task<HttpResponseMessage> DeleteOrganizationByIdAsync(Guid id)

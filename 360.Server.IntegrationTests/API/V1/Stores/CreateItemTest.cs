@@ -99,7 +99,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
             Assert.IsNotNull(result.Status);
             Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
             Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
-            Assert.IsTrue(result.Detail.Contains("At least one of Name must be defined"));
+            Assert.IsTrue(result.Detail.Contains("At least one Name must be defined"));
         }
 
         [TestMethod]

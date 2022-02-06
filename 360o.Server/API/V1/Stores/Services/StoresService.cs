@@ -230,13 +230,13 @@ namespace _360o.Server.Api.V1.Stores.Services
 
             var offerItems = new HashSet<OfferItem>();
 
-            foreach (var inputItem in input.Items)
+            foreach (var inputItem in input.OfferItems)
             {
-                var item = await GetItembyIdAsync(inputItem.itemId);
+                var item = await GetItembyIdAsync(inputItem.ItemId);
 
                 if (item == null)
                 {
-                    throw new KeyNotFoundException($"Item {inputItem.itemId} not found");
+                    throw new KeyNotFoundException($"Item {inputItem.ItemId} not found");
                 }
 
                 var offerItem = new OfferItem(item.Id);

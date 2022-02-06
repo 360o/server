@@ -3,61 +3,68 @@ using _360o.Server.Api.V1.Stores.DTOs;
 using _360o.Server.Api.V1.Stores.Model;
 using Bogus;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace _360.Server.IntegrationTests.Api.V1.Helpers.Generators
 {
     internal static class RequestsGenerator
     {
+        private static Faker EnglishFaker => new Faker();
+        private static Faker FrenchFaker => new Faker("fr");
+
         public static CreateOrganizationRequest MakeRandomCreateOrganizationRequest()
         {
-            var englishFaker = new Faker();
-            var frenchFaker = new Faker("fr");
-
             return new CreateOrganizationRequest
             {
-                Name = englishFaker.Company.CompanyName(),
-                EnglishShortDescription = englishFaker.Company.CatchPhrase(),
-                EnglishLongDescription = englishFaker.Commerce.ProductDescription(),
-                EnglishCategories = englishFaker.Commerce.Categories(englishFaker.Random.Int(0, 5)).ToHashSet(),
-                FrenchShortDescription = frenchFaker.Company.CatchPhrase(),
-                FrenchLongDescription = frenchFaker.Commerce.ProductDescription(),
-                FrenchCategories = frenchFaker.Commerce.Categories(frenchFaker.Random.Int(0, 5)).ToHashSet(),
+                Name = EnglishFaker.Company.CompanyName(),
+                EnglishShortDescription = EnglishFaker.Company.CatchPhrase(),
+                EnglishLongDescription = EnglishFaker.Commerce.ProductDescription(),
+                EnglishCategories = EnglishFaker.Commerce.Categories(EnglishFaker.Random.Int(0, 5)).ToHashSet(),
+                FrenchShortDescription = FrenchFaker.Company.CatchPhrase(),
+                FrenchLongDescription = FrenchFaker.Commerce.ProductDescription(),
+                FrenchCategories = FrenchFaker.Commerce.Categories(FrenchFaker.Random.Int(0, 5)).ToHashSet(),
             };
         }
 
         public static CreateStoreRequest MakeRandomCreateStoreRequest(Guid organizationId)
         {
-            var faker = new Faker();
-
             return new CreateStoreRequest
             {
                 OrganizationId = organizationId,
                 Place = new PlaceDTO
                 {
-                    GooglePlaceId = faker.Random.Uuid().ToString(),
-                    FormattedAddress = faker.Address.FullAddress(),
-                    Location = new Location(faker.Address.Latitude(), faker.Address.Longitude())
+                    GooglePlaceId = EnglishFaker.Random.Uuid().ToString(),
+                    FormattedAddress = EnglishFaker.Address.FullAddress(),
+                    Location = new Location(EnglishFaker.Address.Latitude(), EnglishFaker.Address.Longitude())
                 },
             };
         }
 
         public static CreateItemRequest MakeRandomCreateItemRequest()
         {
-            var englishFaker = new Faker();
-            var frenchFaker = new Faker("fr");
-
             return new CreateItemRequest
             {
-                EnglishName = englishFaker.Commerce.ProductName(),
-                EnglishDescription = englishFaker.Commerce.ProductDescription(),
-                FrenchName = frenchFaker.Commerce.ProductName(),
-                FrenchDescription = frenchFaker.Commerce.ProductDescription(),
+                EnglishName = EnglishFaker.Commerce.ProductName(),
+                EnglishDescription = EnglishFaker.Commerce.ProductDescription(),
+                FrenchName = FrenchFaker.Commerce.ProductName(),
+                FrenchDescription = FrenchFaker.Commerce.ProductDescription(),
                 Price = new MoneyValue
                 {
-                    Amount = englishFaker.Random.Decimal(0, 100),
-                    CurrencyCode = englishFaker.PickRandom<Iso4217CurrencyCode>()
+                    Amount = EnglishFaker.Random.Decimal(0, 100),
+                    CurrencyCode = EnglishFaker.PickRandom<Iso4217CurrencyCode>()
                 }
+            };
+        }
+
+        public static CreateOfferRequest MakeRandomCreateOfferRequest(ISet<CreateOfferRequestItem> offerItems, MoneyValue? discount)
+        {
+            return new CreateOfferRequest
+            {
+                EnglishName = EnglishFaker.Commerce.ProductAdjective(),
+                FrenchName = FrenchFaker.Commerce.ProductAdjective(),
+                OfferItems = offerItems,
+                Discount = discount
             };
         }
     }

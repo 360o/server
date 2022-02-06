@@ -93,13 +93,15 @@ namespace _360.Server.UnitTests.Api.V1.Stores.Model
             Assert.AreEqual(discount, offer.Discount);
         }
 
-        [TestMethod]
+        [DataTestMethod]
+        [DataRow(0)]
+        [DataRow(-1)]
         [ExpectedException(typeof(ArgumentException), "Required input Amount cannot be zero or negative. (Parameter 'Amount')")]
-        public void GivenInvalidAmountSetDiscountShouldThrow()
+        public void GivenNegativeOrZeroAmountSetDiscountShouldThrow(int amount)
         {
             var offer = MakeRandomOffer();
 
-            var discount = MakeRandomDiscount() with { Amount = -1 };
+            var discount = MakeRandomDiscount() with { Amount = amount };
 
             offer.SetDiscount(discount);
         }

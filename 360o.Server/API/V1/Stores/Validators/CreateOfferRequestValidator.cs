@@ -8,10 +8,10 @@ namespace _360o.Server.Api.V1.Stores.Validators
         public CreateOfferRequestValidator()
         {
             RuleFor(r => new { r.EnglishName, r.FrenchName })
-                .Must(r => r.EnglishName != null || r.FrenchName != null)
+                .Must(r => !string.IsNullOrWhiteSpace(r.EnglishName) || !string.IsNullOrWhiteSpace(r.FrenchName))
                 .WithMessage("At least one Name must be defined");
 
-            RuleFor(r => r.Items).NotEmpty();
+            RuleFor(r => r.OfferItems).NotEmpty();
 
             When(r => r.Discount.HasValue, () =>
             {
