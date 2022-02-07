@@ -28,5 +28,7 @@ namespace _360o.Server.Api.V1.Stores.Services
         Task<Offer> CreateOfferAsync(CreateOfferInput input);
 
         Task<Offer?> GetOfferByIdAsync(Guid offerId);
+
+        Task<IList<Offer>> ListOffersAsync(Guid storeId);
     }
 }

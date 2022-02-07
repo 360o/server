@@ -306,5 +306,22 @@ namespace _360o.Server.Api.V1.Stores.Controllers
 
             return _mapper.Map<OfferDTO>(offer);
         }
+
+        [HttpGet("{storeId}/offers")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IList<OfferDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IList<OfferDTO>>> ListOffersAsync(Guid storeId)
+        {
+            var store = await _storesService.GetStoreByIdByAsync(storeId);
+
+            if (store == null)
+            {
+                return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
+            }
+
+            var offers = await _storesService.ListOffersAsync(storeId);
+
+            return offers.Select(o => _mapper.Map<OfferDTO>(o)).ToList();
+        }
     }
 }

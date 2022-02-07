@@ -1,12 +1,9 @@
-﻿using _360o.Server.Api.V1.Errors.Enums;
+﻿using _360.Server.IntegrationTests.Api.V1.Helpers;
 using _360o.Server.Api.V1.Stores.DTOs;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace _360.Server.IntegrationTests.Api.V1.Stores
@@ -62,18 +59,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
         {
             var response = await ProgramTest.ApiClientUser1.Stores.ListItemsAsync(Guid.NewGuid());
 
-            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
-
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.Detail);
-            Assert.IsNotNull(result.Status);
-            Assert.AreEqual(ErrorCode.NotFound.ToString(), result.Title);
-            Assert.AreEqual((int)HttpStatusCode.NotFound, result.Status.Value);
-            Assert.AreEqual("Store not found", result.Detail);
+            await ProblemDetailAssertions.AssertNotFoundAsync(response, "Store not found");
         }
     }
 }

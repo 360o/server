@@ -1,6 +1,7 @@
 ﻿using _360o.Server.Api.V1.Errors.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
@@ -40,6 +41,14 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers
             Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
             Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
             Assert.IsTrue(result.Detail.Contains(containsDetailMessage));
+        }
+
+        public static async Task AssertBadRequestAsync(HttpResponseMessage response, ISet<string> containsDetailMessages)
+        {
+            foreach (var message in containsDetailMessages)
+            {
+                await AssertBadRequestAsync(response, message);
+            }
         }
     }
 }

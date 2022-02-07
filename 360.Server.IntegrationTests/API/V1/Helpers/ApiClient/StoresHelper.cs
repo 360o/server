@@ -272,5 +272,19 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
 
             return await JsonUtils.DeserializeAsync<OfferDTO>(response);
         }
+
+        public async Task<HttpResponseMessage> ListOffersAsync(Guid storeId)
+        {
+            return await ProgramTest.NewClient().GetAsync(OffersRoute(storeId));
+        }
+
+        public async Task<IList<OfferDTO>> ListOffersAndDeserializeAsync(Guid storeId)
+        {
+            var response = await ListOffersAsync(storeId);
+
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+
+            return await JsonUtils.DeserializeAsync<IList<OfferDTO>>(response);
+        }
     }
 }

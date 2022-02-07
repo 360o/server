@@ -264,7 +264,17 @@ namespace _360o.Server.Api.V1.Stores.Services
         {
             return await _apiContext.Offers
                 .Include(o => o.OfferItems)
+                .Where(o => !o.DeletedAt.HasValue)
                 .SingleOrDefaultAsync(o => o.Id == offerId);
+        }
+
+        public async Task<IList<Offer>> ListOffersAsync(Guid storeId)
+        {
+            return await _apiContext.Offers
+                .Include(o => o.OfferItems)
+                .Where(o => o.StoreId == storeId)
+                .Where(o => !o.DeletedAt.HasValue)
+                .ToListAsync();
         }
     }
 }
