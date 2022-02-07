@@ -21,13 +21,13 @@ namespace _360o.Server.Api.V1
             CreateMap<Store, StoreDTO>().ReverseMap();
             CreateMap<Organization, OrganizationDTO>().ReverseMap();
             CreateMap<CreateItemRequest, CreateItemInput>();
-            CreateMap<UpdateItemRequest, UpdateItemInput>();
-            CreateMap<CreateOfferRequestItem, CreateOfferInputItem>();
-            CreateMap<CreateOfferRequest, CreateOfferInput>();
+            CreateMap<PatchItemRequest, PatchItemInput>();
+            CreateMap<CreateOfferRequestItem, CreateOrUpdateOfferInputItem>();
+            CreateMap<CreateOfferRequest, CreateOrUpdateOfferInput>();
             CreateMap<CreateStoreRequest, CreateStoreInput>();
-            CreateMap<UpdateStoreRequest, UpdateStoreInput>();
+            CreateMap<PatchStoreRequest, PatchStoreInput>();
             CreateMap<ListStoresRequest, ListStoresInput>();
-            CreateMap<UpdateOrganizationRequest, UpdateOrganizationInput>();
+            CreateMap<PatchOrganizationRequest, PatchOrganizationInput>();
         }
     }
 }

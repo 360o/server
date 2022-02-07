@@ -1,6 +1,6 @@
 ﻿namespace _360o.Server.Api.V1.Organizations.DTOs
 {
-    public readonly record struct UpdateOrganizationRequest(
+    public readonly record struct PatchOrganizationRequest(
         string? Name,
         string? EnglishShortDescription,
         string? EnglishLongDescription,

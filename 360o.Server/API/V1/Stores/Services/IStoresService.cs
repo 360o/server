@@ -9,7 +9,7 @@ namespace _360o.Server.Api.V1.Stores.Services
 
         Task<Store?> GetStoreByIdByAsync(Guid storeId);
 
-        Task<Store> UpdateStoreAsync(UpdateStoreInput input);
+        Task<Store> PatchStoreAsync(PatchStoreInput input);
 
         Task<IList<Store>> ListStoresAsync(ListStoresInput input);
 
@@ -21,14 +21,16 @@ namespace _360o.Server.Api.V1.Stores.Services
 
         Task<IList<Item>> ListItemsAsync(Guid storeId);
 
-        Task<Item> UpdateItemAsync(UpdateItemInput input);
+        Task<Item> PatchItemAsync(PatchItemInput input);
 
         Task DeleteItemByIdAsync(Guid itemId);
 
-        Task<Offer> CreateOfferAsync(CreateOfferInput input);
+        Task<Offer> CreateOfferAsync(Guid storeId, CreateOrUpdateOfferInput input);
 
         Task<Offer?> GetOfferByIdAsync(Guid offerId);
 
         Task<IList<Offer>> ListOffersAsync(Guid storeId);
+
+        Task<Offer> UpdateOfferAsync(Guid offerId, CreateOrUpdateOfferInput input);
     }
 }

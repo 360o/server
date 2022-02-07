@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace _360.Server.IntegrationTests.Api.V1.Stores
 {
     [TestClass]
-    public class UpdateStoreTest
+    public class PatchStoreTest
     {
         [TestMethod]
         public async Task GivenPlaceIsNotNullShouldReturnOK()
@@ -25,7 +25,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var faker = new Faker();
 
-            var request = new UpdateStoreRequest
+            var request = new PatchStoreRequest
             {
                 Place = new PlaceDTO
                 {
@@ -39,7 +39,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
                 }
             };
 
-            var updatedStore = await ProgramTest.ApiClientUser1.Stores.UpdateStoreAndDeserializeAsync(store.Id, request);
+            var updatedStore = await ProgramTest.ApiClientUser1.Stores.PatchStoreAndDeserializeAsync(store.Id, request);
 
             Assert.AreEqual(request.Place, updatedStore.Place);
             StoresHelper.AssertStoresAreEqual(store, updatedStore with { Place = store.Place });
@@ -48,7 +48,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
         [TestMethod]
         public async Task GivenNoAccessTokenShouldReturnUnauthorized()
         {
-            var request = new UpdateStoreRequest();
+            var request = new PatchStoreRequest();
 
             var requestContent = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
 
@@ -64,9 +64,9 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
 
-            var request = new UpdateStoreRequest();
+            var request = new PatchStoreRequest();
 
-            var response = await ProgramTest.ApiClientUser2.Stores.UpdateStoreAsync(store.Id, request);
+            var response = await ProgramTest.ApiClientUser2.Stores.PatchStoreAsync(store.Id, request);
 
             Assert.AreEqual(HttpStatusCode.Forbidden, response.StatusCode);
         }
@@ -74,9 +74,9 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
         [TestMethod]
         public async Task GivenStoreDoesNotExistShouldReturnNotFound()
         {
-            var request = new UpdateStoreRequest();
+            var request = new PatchStoreRequest();
 
-            var response = await ProgramTest.ApiClientUser1.Stores.UpdateStoreAsync(Guid.NewGuid(), request);
+            var response = await ProgramTest.ApiClientUser1.Stores.PatchStoreAsync(Guid.NewGuid(), request);
 
             await ProblemDetailAssertions.AssertNotFoundAsync(response, "Store not found");
         }

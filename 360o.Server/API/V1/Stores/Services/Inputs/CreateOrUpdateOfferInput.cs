@@ -2,17 +2,16 @@
 
 namespace _360o.Server.Api.V1.Stores.Services.Inputs
 {
-    public readonly record struct CreateOfferInput(
-        Guid StoreId,
+    public readonly record struct CreateOrUpdateOfferInput(
         string? EnglishName,
         string? FrenchName,
-        ISet<CreateOfferInputItem> OfferItems,
+        ISet<CreateOrUpdateOfferInputItem> OfferItems,
         MoneyValue? Discount
         )
     {
     }
 
-    public readonly record struct CreateOfferInputItem(
+    public readonly record struct CreateOrUpdateOfferInputItem(
         Guid ItemId,
         int Quantity
         );

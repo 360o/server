@@ -85,7 +85,7 @@ namespace _360o.Server.Api.V1.Stores.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(StoreDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize]
-        public async Task<ActionResult<StoreDTO>> UpdateStoreAsync(Guid id, UpdateStoreRequest request)
+        public async Task<ActionResult<StoreDTO>> UpdateStoreAsync(Guid id, PatchStoreRequest request)
         {
             var store = await _storesService.GetStoreByIdByAsync(id);
 
@@ -99,7 +99,7 @@ namespace _360o.Server.Api.V1.Stores.Controllers
                 return Forbid();
             }
 
-            store = await _storesService.UpdateStoreAsync(_mapper.Map<UpdateStoreInput>(request) with { StoreId = store.Id });
+            store = await _storesService.PatchStoreAsync(_mapper.Map<PatchStoreInput>(request) with { StoreId = store.Id });
 
             return _mapper.Map<StoreDTO>(store);
         }
@@ -203,9 +203,9 @@ namespace _360o.Server.Api.V1.Stores.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ItemDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize]
-        public async Task<ActionResult<ItemDTO>> UpdateItemAsync(Guid storeId, Guid itemId, [FromBody] UpdateItemRequest request)
+        public async Task<ActionResult<ItemDTO>> UpdateItemAsync(Guid storeId, Guid itemId, [FromBody] PatchItemRequest request)
         {
-            var validator = new UpdateItemRequestValidator();
+            var validator = new PatchItemRequestValidator();
 
             validator.ValidateAndThrow(request);
 
@@ -226,7 +226,7 @@ namespace _360o.Server.Api.V1.Stores.Controllers
                 return Forbid();
             }
 
-            item = await _storesService.UpdateItemAsync(_mapper.Map<UpdateItemInput>(request) with { ItemId = item.Id });
+            item = await _storesService.PatchItemAsync(_mapper.Map<PatchItemInput>(request) with { ItemId = item.Id });
 
             return _mapper.Map<ItemDTO>(item);
         }
@@ -280,7 +280,7 @@ namespace _360o.Server.Api.V1.Stores.Controllers
                 return Forbid();
             }
 
-            var offer = await _storesService.CreateOfferAsync(_mapper.Map<CreateOfferInput>(request) with { StoreId = store.Id });
+            var offer = await _storesService.CreateOfferAsync(store.Id, _mapper.Map<CreateOrUpdateOfferInput>(request));
 
             return CreatedAtAction(nameof(GetOfferByIdAsync), new { storeId = store.Id, offerId = offer.Id }, _mapper.Map<OfferDTO>(offer));
         }

@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace _360.Server.IntegrationTests.Api.V1.Stores
 {
     [TestClass]
-    public class UpdateItemTest
+    public class PatchItemTest
     {
         [TestMethod]
         public async Task GivenEnglishNameIsNotNullShouldReturnOK()
@@ -27,12 +27,12 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var faker = new Faker();
 
-            var request = new UpdateItemRequest
+            var request = new PatchItemRequest
             {
                 EnglishName = faker.Commerce.ProductName()
             };
 
-            var updatedItem = await ProgramTest.ApiClientUser1.Stores.UpdateItemAndDeserializeAsync(store.Id, item.Id, request);
+            var updatedItem = await ProgramTest.ApiClientUser1.Stores.PatchItemAndDeserializeAsync(store.Id, item.Id, request);
 
             Assert.AreEqual(request.EnglishName, updatedItem.EnglishName);
             Assert.AreEqual(item, updatedItem with { EnglishName = item.EnglishName });
@@ -49,12 +49,12 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var faker = new Faker();
 
-            var request = new UpdateItemRequest
+            var request = new PatchItemRequest
             {
                 EnglishDescription = faker.Commerce.ProductDescription()
             };
 
-            var updatedItem = await ProgramTest.ApiClientUser1.Stores.UpdateItemAndDeserializeAsync(store.Id, item.Id, request);
+            var updatedItem = await ProgramTest.ApiClientUser1.Stores.PatchItemAndDeserializeAsync(store.Id, item.Id, request);
 
             Assert.AreEqual(request.EnglishDescription, updatedItem.EnglishDescription);
             Assert.AreEqual(item, updatedItem with { EnglishDescription = item.EnglishDescription });
@@ -71,12 +71,12 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var faker = new Faker("fr");
 
-            var request = new UpdateItemRequest
+            var request = new PatchItemRequest
             {
                 FrenchName = faker.Commerce.ProductName()
             };
 
-            var updatedItem = await ProgramTest.ApiClientUser1.Stores.UpdateItemAndDeserializeAsync(store.Id, item.Id, request);
+            var updatedItem = await ProgramTest.ApiClientUser1.Stores.PatchItemAndDeserializeAsync(store.Id, item.Id, request);
 
             Assert.AreEqual(request.FrenchName, updatedItem.FrenchName);
             Assert.AreEqual(item, updatedItem with { FrenchName = item.FrenchName });
@@ -93,12 +93,12 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var faker = new Faker("fr");
 
-            var request = new UpdateItemRequest
+            var request = new PatchItemRequest
             {
                 FrenchDescription = faker.Commerce.ProductDescription()
             };
 
-            var updatedItem = await ProgramTest.ApiClientUser1.Stores.UpdateItemAndDeserializeAsync(store.Id, item.Id, request);
+            var updatedItem = await ProgramTest.ApiClientUser1.Stores.PatchItemAndDeserializeAsync(store.Id, item.Id, request);
 
             Assert.AreEqual(request.FrenchDescription, updatedItem.FrenchDescription);
             Assert.AreEqual(item, updatedItem with { FrenchDescription = item.FrenchDescription });
@@ -115,7 +115,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var faker = new Faker();
 
-            var request = new UpdateItemRequest
+            var request = new PatchItemRequest
             {
                 Price = new MoneyValue
                 {
@@ -124,7 +124,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
                 }
             };
 
-            var updatedItem = await ProgramTest.ApiClientUser1.Stores.UpdateItemAndDeserializeAsync(store.Id, item.Id, request);
+            var updatedItem = await ProgramTest.ApiClientUser1.Stores.PatchItemAndDeserializeAsync(store.Id, item.Id, request);
 
             Assert.AreEqual(request.Price, updatedItem.Price);
             Assert.AreEqual(item, updatedItem with { Price = item.Price });
@@ -133,7 +133,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
         [TestMethod]
         public async Task GivenNoAccessTokenShouldReturnUnauthorized()
         {
-            var request = new UpdateStoreRequest();
+            var request = new PatchStoreRequest();
 
             var requestContent = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
 
@@ -151,9 +151,9 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var item = await ProgramTest.ApiClientUser1.Stores.CreateRandomItemAndDeserializeAsync(store.Id);
 
-            var request = new UpdateItemRequest();
+            var request = new PatchItemRequest();
 
-            var response = await ProgramTest.ApiClientUser2.Stores.UpdateItemAsync(store.Id, item.Id, request);
+            var response = await ProgramTest.ApiClientUser2.Stores.PatchItemAsync(store.Id, item.Id, request);
 
             Assert.AreEqual(HttpStatusCode.Forbidden, response.StatusCode);
         }
@@ -165,9 +165,9 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
 
-            var request = new UpdateItemRequest();
+            var request = new PatchItemRequest();
 
-            var response = await ProgramTest.ApiClientUser1.Stores.UpdateItemAsync(store.Id, Guid.NewGuid(), request);
+            var response = await ProgramTest.ApiClientUser1.Stores.PatchItemAsync(store.Id, Guid.NewGuid(), request);
 
             await ProblemDetailAssertions.AssertNotFoundAsync(response, "Item not found");
         }
@@ -183,7 +183,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var faker = new Faker();
 
-            var request = new UpdateItemRequest
+            var request = new PatchItemRequest
             {
                 Price = new MoneyValue
                 {
@@ -192,7 +192,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
                 }
             };
 
-            var response = await ProgramTest.ApiClientUser1.Stores.UpdateItemAsync(store.Id, item.Id, request);
+            var response = await ProgramTest.ApiClientUser1.Stores.PatchItemAsync(store.Id, item.Id, request);
 
             await ProblemDetailAssertions.AssertBadRequestAsync(response, "Amount");
         }

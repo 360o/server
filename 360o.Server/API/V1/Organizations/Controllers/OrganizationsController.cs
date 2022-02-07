@@ -68,7 +68,7 @@ namespace _360o.Server.Api.V1.Organizations.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OrganizationDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize]
-        public async Task<ActionResult<OrganizationDTO>> UpdateOrganizationAsync(Guid id, [FromBody] UpdateOrganizationRequest request)
+        public async Task<ActionResult<OrganizationDTO>> UpdateOrganizationAsync(Guid id, [FromBody] PatchOrganizationRequest request)
         {
             var organization = await _organizationsService.GetOrganizationByIdAsync(id);
 
@@ -82,8 +82,8 @@ namespace _360o.Server.Api.V1.Organizations.Controllers
                 return Forbid();
             }
 
-            organization = await _organizationsService.UpdateOrganizationAsync(
-                _mapper.Map<UpdateOrganizationInput>(request) with
+            organization = await _organizationsService.PatchOrganizationAsync(
+                _mapper.Map<PatchOrganizationInput>(request) with
                 {
                     OrganizationId = organization.Id
                 });

@@ -134,16 +134,16 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
             return await JsonUtils.DeserializeAsync<List<StoreDTO>>(response);
         }
 
-        public async Task<HttpResponseMessage> UpdateStoreAsync(Guid storeId, UpdateStoreRequest request)
+        public async Task<HttpResponseMessage> PatchStoreAsync(Guid storeId, PatchStoreRequest request)
         {
             var requestContent = JsonUtils.MakeJsonRequestContent(request);
 
             return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).PatchAsync(StoreRoute(storeId), requestContent);
         }
 
-        public async Task<StoreDTO> UpdateStoreAndDeserializeAsync(Guid storeId, UpdateStoreRequest request)
+        public async Task<StoreDTO> PatchStoreAndDeserializeAsync(Guid storeId, PatchStoreRequest request)
         {
-            var response = await UpdateStoreAsync(storeId, request);
+            var response = await PatchStoreAsync(storeId, request);
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
@@ -213,16 +213,16 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
             return await JsonUtils.DeserializeAsync<IList<ItemDTO>>(response);
         }
 
-        public async Task<HttpResponseMessage> UpdateItemAsync(Guid storeId, Guid itemId, UpdateItemRequest request)
+        public async Task<HttpResponseMessage> PatchItemAsync(Guid storeId, Guid itemId, PatchItemRequest request)
         {
             var requestContent = JsonUtils.MakeJsonRequestContent(request);
 
             return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).PatchAsync(ItemRoute(storeId, itemId), requestContent);
         }
 
-        public async Task<ItemDTO> UpdateItemAndDeserializeAsync(Guid storeId, Guid itemId, UpdateItemRequest request)
+        public async Task<ItemDTO> PatchItemAndDeserializeAsync(Guid storeId, Guid itemId, PatchItemRequest request)
         {
-            var response = await UpdateItemAsync(storeId, itemId, request);
+            var response = await PatchItemAsync(storeId, itemId, request);
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 

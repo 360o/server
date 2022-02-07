@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace _360o.Server.Api.V1.Stores.Validators
 {
-    public class UpdateItemRequestValidator : AbstractValidator<UpdateItemRequest>
+    public class PatchItemRequestValidator : AbstractValidator<PatchItemRequest>
     {
-        public UpdateItemRequestValidator()
+        public PatchItemRequestValidator()
         {
             When(r => r.Price.HasValue, () =>
             {

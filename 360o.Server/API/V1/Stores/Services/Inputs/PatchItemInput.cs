@@ -2,7 +2,7 @@
 
 namespace _360o.Server.Api.V1.Stores.Services.Inputs
 {
-    public readonly record struct UpdateItemInput(
+    public readonly record struct PatchItemInput(
         Guid ItemId,
         string? EnglishName,
         string? EnglishDescription,

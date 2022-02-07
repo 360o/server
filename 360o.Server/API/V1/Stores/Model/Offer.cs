@@ -42,10 +42,13 @@ namespace _360o.Server.Api.V1.Stores.Model
             _offerItems = offerItems.ToList();
         }
 
-        public void SetDiscount(MoneyValue discount)
+        public void SetDiscount(MoneyValue? discount)
         {
-            Guard.Against.NegativeOrZero(discount.Amount, nameof(discount.Amount));
-            Guard.Against.EnumOutOfRange(discount.CurrencyCode, nameof(discount.CurrencyCode));
+            if (discount.HasValue)
+            {
+                Guard.Against.NegativeOrZero(discount.Value.Amount, nameof(discount.Value.Amount));
+                Guard.Against.EnumOutOfRange(discount.Value.CurrencyCode, nameof(discount.Value.CurrencyCode));
+            }
 
             Discount = discount;
         }

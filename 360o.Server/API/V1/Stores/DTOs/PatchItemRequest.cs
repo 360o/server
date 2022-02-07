@@ -2,7 +2,7 @@
 
 namespace _360o.Server.Api.V1.Stores.DTOs
 {
-    public readonly record struct UpdateItemRequest(
+    public readonly record struct PatchItemRequest(
         string? EnglishName,
         string? EnglishDescription,
         string? FrenchName,

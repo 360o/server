@@ -7,6 +7,11 @@
         public DateTimeOffset UpdatedAt { get; protected set; } = DateTimeOffset.UtcNow;
         public DateTimeOffset? DeletedAt { get; private set; }
 
+        public void SetUpdated()
+        {
+            UpdatedAt = DateTimeOffset.UtcNow;
+        }
+
         public void SetDelete()
         {
             DeletedAt = DateTimeOffset.UtcNow;

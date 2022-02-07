@@ -65,7 +65,7 @@ namespace _360o.Server.Api.V1.Organizations.Services
                 .SingleOrDefaultAsync(o => o.Id == organizationId);
         }
 
-        public async Task<Organization> UpdateOrganizationAsync(UpdateOrganizationInput input)
+        public async Task<Organization> PatchOrganizationAsync(PatchOrganizationInput input)
         {
             var organization = await _apiContext.Organizations.FindAsync(input.OrganizationId);
 
@@ -109,7 +109,11 @@ namespace _360o.Server.Api.V1.Organizations.Services
                 organization.SetFrenchCategories(input.FrenchCategories);
             }
 
-            await _apiContext.SaveChangesAsync();
+            if (_apiContext.ChangeTracker.HasChanges())
+            {
+                organization.SetUpdated();
+                await _apiContext.SaveChangesAsync();
+            }
 
             return organization;
         }

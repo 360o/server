@@ -68,7 +68,7 @@ namespace _360o.Server.Api.V1.Stores.Services
             return await stores.ToListAsync();
         }
 
-        public async Task<Store> UpdateStoreAsync(UpdateStoreInput input)
+        public async Task<Store> PatchStoreAsync(PatchStoreInput input)
         {
             var store = await _apiContext.Stores.FindAsync(input.StoreId);
 
@@ -82,7 +82,11 @@ namespace _360o.Server.Api.V1.Stores.Services
                 store.SetPlace(input.Place);
             }
 
-            await _apiContext.SaveChangesAsync();
+            if (_apiContext.ChangeTracker.HasChanges())
+            {
+                store.SetUpdated();
+                await _apiContext.SaveChangesAsync();
+            }
 
             return store;
         }
@@ -154,7 +158,7 @@ namespace _360o.Server.Api.V1.Stores.Services
                 .ToListAsync();
         }
 
-        public async Task<Item> UpdateItemAsync(UpdateItemInput input)
+        public async Task<Item> PatchItemAsync(PatchItemInput input)
         {
             var item = await _apiContext.Items.FindAsync(input.ItemId);
 
@@ -188,7 +192,11 @@ namespace _360o.Server.Api.V1.Stores.Services
                 item.SetPrice(input.Price.Value);
             }
 
-            await _apiContext.SaveChangesAsync();
+            if (_apiContext.ChangeTracker.HasChanges())
+            {
+                item.SetUpdated();
+                await _apiContext.SaveChangesAsync();
+            }
 
             return item;
         }
@@ -207,9 +215,9 @@ namespace _360o.Server.Api.V1.Stores.Services
             await _apiContext.SaveChangesAsync();
         }
 
-        public async Task<Offer> CreateOfferAsync(CreateOfferInput input)
+        public async Task<Offer> CreateOfferAsync(Guid storeId, CreateOrUpdateOfferInput input)
         {
-            var store = await GetStoreByIdByAsync(input.StoreId);
+            var store = await GetStoreByIdByAsync(storeId);
 
             if (store == null)
             {
@@ -228,25 +236,7 @@ namespace _360o.Server.Api.V1.Stores.Services
                 offer.SetFrenchName(input.FrenchName);
             }
 
-            var offerItems = new HashSet<OfferItem>();
-
-            foreach (var inputItem in input.OfferItems)
-            {
-                var item = await GetItembyIdAsync(inputItem.ItemId);
-
-                if (item == null)
-                {
-                    throw new KeyNotFoundException($"Item {inputItem.ItemId} not found");
-                }
-
-                var offerItem = new OfferItem(item.Id);
-
-                offerItem.SetQuantity(inputItem.Quantity);
-
-                offerItems.Add(offerItem);
-            }
-
-            offer.SetOfferItems(offerItems);
+            offer.SetOfferItems(await MakeOfferItemsAsync(input.OfferItems));
 
             if (input.Discount.HasValue)
             {
@@ -275,6 +265,59 @@ namespace _360o.Server.Api.V1.Stores.Services
                 .Where(o => o.StoreId == storeId)
                 .Where(o => !o.DeletedAt.HasValue)
                 .ToListAsync();
+        }
+
+        public async Task<Offer> UpdateOfferAsync(Guid offerId, CreateOrUpdateOfferInput input)
+        {
+            var offer = await _apiContext.Offers.FindAsync(offerId);
+
+            if (offer == null)
+            {
+                throw new KeyNotFoundException("Offer not found");
+            }
+
+            if (input.EnglishName != null)
+            {
+                offer.SetEnglishName(input.EnglishName);
+            }
+
+            if (input.FrenchName != null)
+            {
+                offer.SetFrenchName(input.FrenchName);
+            }
+
+            offer.SetOfferItems(await MakeOfferItemsAsync(input.OfferItems));
+
+            offer.SetDiscount(input.Discount);
+
+            offer.SetUpdated();
+
+            await _apiContext.SaveChangesAsync();
+
+            return offer;
+        }
+
+        private async Task<ISet<OfferItem>> MakeOfferItemsAsync(ISet<CreateOrUpdateOfferInputItem> inputItems)
+        {
+            var offerItems = new HashSet<OfferItem>();
+
+            foreach (var inputItem in inputItems)
+            {
+                var item = await GetItembyIdAsync(inputItem.ItemId);
+
+                if (item == null)
+                {
+                    throw new KeyNotFoundException($"Item {inputItem.ItemId} not found");
+                }
+
+                var offerItem = new OfferItem(item.Id);
+
+                offerItem.SetQuantity(inputItem.Quantity);
+
+                offerItems.Add(offerItem);
+            }
+
+            return offerItems;
         }
     }
 }

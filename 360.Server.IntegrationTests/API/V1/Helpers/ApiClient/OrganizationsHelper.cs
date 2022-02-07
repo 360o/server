@@ -76,16 +76,16 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
             return await JsonUtils.DeserializeAsync<OrganizationDTO>(response);
         }
 
-        public async Task<HttpResponseMessage> UpdateOrganizationAsync(Guid organizationId, UpdateOrganizationRequest request)
+        public async Task<HttpResponseMessage> PatchOrganizationAsync(Guid organizationId, PatchOrganizationRequest request)
         {
             var requestContent = JsonUtils.MakeJsonRequestContent(request);
 
             return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).PatchAsync(OrganizationRoute(organizationId), requestContent);
         }
 
-        public async Task<OrganizationDTO> UpdateOrganizationAndDeserializeAsync(Guid organizationId, UpdateOrganizationRequest request)
+        public async Task<OrganizationDTO> PatchOrganizationAndDeserializeAsync(Guid organizationId, PatchOrganizationRequest request)
         {
-            var response = await UpdateOrganizationAsync(organizationId, request);
+            var response = await PatchOrganizationAsync(organizationId, request);
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
