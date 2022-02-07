@@ -140,6 +140,54 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
             await ProblemDetailAssertions.AssertBadRequestAsync(response, "OfferItems");
         }
 
+        [TestMethod]
+        public async Task GivenOfferItemWithoutIdShouldReturnBadRequest()
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+
+            var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
+
+            var requestItems = new HashSet<CreateOfferRequestItem>
+            {
+                new CreateOfferRequestItem
+                {
+                    ItemId= Guid.Empty,
+                    Quantity= _englishFaker.Random.Int(1, 10)
+                }
+            };
+
+            var request = RequestsGenerator.MakeRandomCreateOfferRequest(requestItems, null);
+
+            var response = await ProgramTest.ApiClientUser1.Stores.CreateOfferAsync(store.Id, request);
+
+            await ProblemDetailAssertions.AssertBadRequestAsync(response, "'Item Id' must not be empty.");
+        }
+
+        [DataTestMethod]
+        [DataRow(-1)]
+        [DataRow(0)]
+        public async Task GivenOfferItemWithZeroOrNegativeQuantityShouldReturnBadRequest(int quantity)
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+
+            var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
+
+            var requestItems = new HashSet<CreateOfferRequestItem>
+            {
+                new CreateOfferRequestItem
+                {
+                    ItemId= Guid.NewGuid(),
+                    Quantity= quantity
+                }
+            };
+
+            var request = RequestsGenerator.MakeRandomCreateOfferRequest(requestItems, null);
+
+            var response = await ProgramTest.ApiClientUser1.Stores.CreateOfferAsync(store.Id, request);
+
+            await ProblemDetailAssertions.AssertBadRequestAsync(response, "'Quantity' must be greater than '0'");
+        }
+
         [DataTestMethod]
         [DataRow(-1)]
         [DataRow(0)]

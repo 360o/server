@@ -262,7 +262,9 @@ namespace _360o.Server.Api.V1.Stores.Services
 
         public async Task<Offer?> GetOfferByIdAsync(Guid offerId)
         {
-            return await _apiContext.Offers.FindAsync(offerId);
+            return await _apiContext.Offers
+                .Include(o => o.OfferItems)
+                .SingleOrDefaultAsync(o => o.Id == offerId);
         }
     }
 }

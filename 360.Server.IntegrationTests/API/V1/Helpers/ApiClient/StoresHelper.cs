@@ -4,10 +4,9 @@ using _360o.Server.Api.V1.Stores.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -37,6 +36,14 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
         public static void AssertStoresAreEqual(StoreDTO expected, StoreDTO actual)
         {
             Assert.AreEqual(expected, actual);
+        }
+
+        public static void AssertOffersAreEqual(OfferDTO expected, OfferDTO actual)
+        {
+            Assert.AreEqual(expected.Id, actual.Id);
+            CollectionAssert.AreEquivalent(expected.OfferItems.ToList(), actual.OfferItems.ToList());
+            Assert.AreEqual(expected.Discount, actual.Discount);
+            Assert.AreEqual(expected.StoreId, actual.StoreId);
         }
 
         public async Task<HttpResponseMessage> CreateStoreAsync(CreateStoreRequest request)
@@ -250,6 +257,20 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
             Assert.AreEqual(OfferRoute(storeId, offer.Id), response.Headers.Location.AbsolutePath);
 
             return offer;
+        }
+
+        public async Task<HttpResponseMessage> GetOfferByIdAsync(Guid storeId, Guid offerId)
+        {
+            return await ProgramTest.NewClient().GetAsync(OfferRoute(storeId, offerId));
+        }
+
+        public async Task<OfferDTO> GetOfferByIdAndDeserializeAsync(Guid storeId, Guid offerId)
+        {
+            var response = await GetOfferByIdAsync(storeId, offerId);
+
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+
+            return await JsonUtils.DeserializeAsync<OfferDTO>(response);
         }
     }
 }

@@ -286,9 +286,9 @@ namespace _360o.Server.Api.V1.Stores.Controllers
         }
 
         [HttpGet("{storeId}/offers/{offerId}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ItemDTO))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OfferDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ItemDTO>> GetOfferByIdAsync(Guid storeId, Guid offerId)
+        public async Task<ActionResult<OfferDTO>> GetOfferByIdAsync(Guid storeId, Guid offerId)
         {
             var store = await _storesService.GetStoreByIdByAsync(storeId);
 
@@ -297,14 +297,14 @@ namespace _360o.Server.Api.V1.Stores.Controllers
                 return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
             }
 
-            var item = await _storesService.GetItembyIdAsync(offerId);
+            var offer = await _storesService.GetOfferByIdAsync(offerId);
 
-            if (item == null)
+            if (offer == null)
             {
-                return Problem(detail: "Item not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
+                return Problem(detail: "Offer not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
             }
 
-            return _mapper.Map<ItemDTO>(item);
+            return _mapper.Map<OfferDTO>(offer);
         }
     }
 }

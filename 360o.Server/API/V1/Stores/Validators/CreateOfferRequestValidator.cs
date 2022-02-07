@@ -13,10 +13,21 @@ namespace _360o.Server.Api.V1.Stores.Validators
 
             RuleFor(r => r.OfferItems).NotEmpty();
 
+            RuleForEach(r => r.OfferItems).SetValidator(new CreateOfferItemValidator());
+
             When(r => r.Discount.HasValue, () =>
             {
                 RuleFor(r => r.Discount!.Value).SetValidator(new MoneyValueValidator());
             });
+        }
+    }
+
+    internal class CreateOfferItemValidator : AbstractValidator<CreateOfferRequestItem>
+    {
+        public CreateOfferItemValidator()
+        {
+            RuleFor(i => i.ItemId).NotEmpty();
+            RuleFor(i => i.Quantity).GreaterThan(0);
         }
     }
 }
