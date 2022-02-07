@@ -99,7 +99,7 @@ namespace _360o.Server.Api.V1.Stores.Controllers
                 return Forbid();
             }
 
-            store = await _storesService.PatchStoreAsync(_mapper.Map<PatchStoreInput>(request) with { StoreId = store.Id });
+            store = await _storesService.PatchStoreAsync(store.Id, _mapper.Map<PatchStoreInput>(request));
 
             return _mapper.Map<StoreDTO>(store);
         }
@@ -226,7 +226,7 @@ namespace _360o.Server.Api.V1.Stores.Controllers
                 return Forbid();
             }
 
-            item = await _storesService.PatchItemAsync(_mapper.Map<PatchItemInput>(request) with { ItemId = item.Id });
+            item = await _storesService.PatchItemAsync(item.Id, _mapper.Map<PatchItemInput>(request));
 
             return _mapper.Map<ItemDTO>(item);
         }

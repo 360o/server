@@ -82,11 +82,7 @@ namespace _360o.Server.Api.V1.Organizations.Controllers
                 return Forbid();
             }
 
-            organization = await _organizationsService.PatchOrganizationAsync(
-                _mapper.Map<PatchOrganizationInput>(request) with
-                {
-                    OrganizationId = organization.Id
-                });
+            organization = await _organizationsService.PatchOrganizationAsync(organization.Id, _mapper.Map<PatchOrganizationInput>(request));
 
             return _mapper.Map<OrganizationDTO>(organization);
         }

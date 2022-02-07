@@ -9,7 +9,7 @@ namespace _360o.Server.Api.V1.Stores.Services
 
         Task<Store?> GetStoreByIdByAsync(Guid storeId);
 
-        Task<Store> PatchStoreAsync(PatchStoreInput input);
+        Task<Store> PatchStoreAsync(Guid storeId, PatchStoreInput input);
 
         Task<IList<Store>> ListStoresAsync(ListStoresInput input);
 
@@ -21,7 +21,7 @@ namespace _360o.Server.Api.V1.Stores.Services
 
         Task<IList<Item>> ListItemsAsync(Guid storeId);
 
-        Task<Item> PatchItemAsync(PatchItemInput input);
+        Task<Item> PatchItemAsync(Guid itemId, PatchItemInput input);
 
         Task DeleteItemByIdAsync(Guid itemId);
 

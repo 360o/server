@@ -68,9 +68,9 @@ namespace _360o.Server.Api.V1.Stores.Services
             return await stores.ToListAsync();
         }
 
-        public async Task<Store> PatchStoreAsync(PatchStoreInput input)
+        public async Task<Store> PatchStoreAsync(Guid storeId, PatchStoreInput input)
         {
-            var store = await _apiContext.Stores.FindAsync(input.StoreId);
+            var store = await _apiContext.Stores.FindAsync(storeId);
 
             if (store == null)
             {
@@ -158,9 +158,9 @@ namespace _360o.Server.Api.V1.Stores.Services
                 .ToListAsync();
         }
 
-        public async Task<Item> PatchItemAsync(PatchItemInput input)
+        public async Task<Item> PatchItemAsync(Guid itemId, PatchItemInput input)
         {
-            var item = await _apiContext.Items.FindAsync(input.ItemId);
+            var item = await _apiContext.Items.FindAsync(itemId);
 
             if (item == null)
             {

@@ -65,9 +65,9 @@ namespace _360o.Server.Api.V1.Organizations.Services
                 .SingleOrDefaultAsync(o => o.Id == organizationId);
         }
 
-        public async Task<Organization> PatchOrganizationAsync(PatchOrganizationInput input)
+        public async Task<Organization> PatchOrganizationAsync(Guid organizationId, PatchOrganizationInput input)
         {
-            var organization = await _apiContext.Organizations.FindAsync(input.OrganizationId);
+            var organization = await _apiContext.Organizations.FindAsync(organizationId);
 
             if (organization == null)
             {
