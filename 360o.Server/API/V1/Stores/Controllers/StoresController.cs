@@ -54,7 +54,10 @@ namespace _360o.Server.Api.V1.Stores.Controllers
                 Place = new Place(
                     request.Place.GooglePlaceId,
                     request.Place.FormattedAddress,
-                    request.Place.Location)
+                    new Location(
+                        request.Place.Location.Latitude,
+                        request.Place.Location.Longitude
+                        ))
             };
 
             var store = await _storesService.CreateStoreAsync(createStoreInput);
@@ -414,7 +417,10 @@ namespace _360o.Server.Api.V1.Stores.Controllers
             {
                 GooglePlaceId = store.Place.GooglePlaceId,
                 FormattedAddress = store.Place.FormattedAddress,
-                Location = store.Place.Location,
+                Location = new LocationDTO(
+                    store.Place.Location.Latitude,
+                    store.Place.Location.Longitude
+                    )
             };
 
             return new StoreDTO(store.Id, place);

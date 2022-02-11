@@ -166,40 +166,40 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
             // 200m
             user1Store1Request = user1Store1Request with
             {
-                Place = new PlaceDTO("ChIJmwaUgluXuEwRWZsk59TJKnY", "249 Rue Saint-Jean, Québec, QC G1R 1N8, Canada", new Location(46.8074417, -71.2271805))
+                Place = new PlaceDTO("ChIJmwaUgluXuEwRWZsk59TJKnY", "249 Rue Saint-Jean, Québec, QC G1R 1N8, Canada", new LocationDTO(46.8074417, -71.2271805))
             };
 
             user1Store2Request = user1Store2Request with
             {
-                Place = new PlaceDTO("ChIJmTMHIHqWuEwRPXPWy5zuZNI", "165 Rue Saint-Jean, Québec, QC G1R 1N4", new Location(46.807864, -71.2270421))
+                Place = new PlaceDTO("ChIJmTMHIHqWuEwRPXPWy5zuZNI", "165 Rue Saint-Jean, Québec, QC G1R 1N4", new LocationDTO(46.807864, -71.2270421))
             };
 
             // 600m
             user2Store1Request = user2Store1Request with
             {
-                Place = new PlaceDTO("ChIJVTZiSnmWuEwRiMC1PoeqRFY", "85 Boulevard René-Lévesque O, Québec, QC G1R 2A3, Canada", new Location(46.8048075, -71.2256069))
+                Place = new PlaceDTO("ChIJVTZiSnmWuEwRiMC1PoeqRFY", "85 Boulevard René-Lévesque O, Québec, QC G1R 2A3, Canada", new LocationDTO(46.8048075, -71.2256069))
             };
 
             user1Store3Request = user1Store3Request with
             {
-                Place = new PlaceDTO("ChIJf4k1oo-WuEwRO-iB-_Asl5Q", "269 Bd René-Lévesque E, Québec, QC G1R 2B3, Canada", new Location(46.8068828, -71.2245926))
+                Place = new PlaceDTO("ChIJf4k1oo-WuEwRO-iB-_Asl5Q", "269 Bd René-Lévesque E, Québec, QC G1R 2B3, Canada", new LocationDTO(46.8068828, -71.2245926))
             };
 
             // 2km
             user2Store2Request = user2Store2Request with
             {
-                Place = new PlaceDTO("ChIJO_wtXNqVuEwRBoNhbzRrcZg", "1 Côte de la Citadelle, Québec, QC G1R 3R2, Canada", new Location(46.8079412, -71.2189697))
+                Place = new PlaceDTO("ChIJO_wtXNqVuEwRBoNhbzRrcZg", "1 Côte de la Citadelle, Québec, QC G1R 3R2, Canada", new LocationDTO(46.8079412, -71.2189697))
             };
 
             // 10km
             user1Store4Request = user1Store4Request with
             {
-                Place = new PlaceDTO("ChIJTWbEbimRuEwRT_YQIJcyOl8", "3121 Bd Hochelaga, Québec, QC G1W 2P9, Canada", new Location(46.7863078, -71.2841527))
+                Place = new PlaceDTO("ChIJTWbEbimRuEwRT_YQIJcyOl8", "3121 Bd Hochelaga, Québec, QC G1W 2P9, Canada", new LocationDTO(46.7863078, -71.2841527))
             };
 
             user2Store3Request = user2Store3Request with
             {
-                Place = new PlaceDTO("ChIJp8qY5EaWuEwR_Su2geare9E", "552 Bd Wilfrid-Hamel, Québec, QC G1M 3E5, Canada", new Location(46.8180445, -71.2536773))
+                Place = new PlaceDTO("ChIJp8qY5EaWuEwR_Su2geare9E", "552 Bd Wilfrid-Hamel, Québec, QC G1M 3E5, Canada", new LocationDTO(46.8180445, -71.2536773))
             };
 
             var user1Store1 = await ProgramTest.ApiClientUser1.Stores.CreateStoreAndDeserializeAsync(user1Store1Request);
@@ -414,22 +414,22 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             user1Store1Request = user1Store1Request with
             {
-                Place = new PlaceDTO("ChIJ_RYTY4nNHkcRl6fA-1FcRRE", "Chmielna 106, 00-801 Warszawa, Poland", new Location(52.2288783, 20.9963373))
+                Place = new PlaceDTO("ChIJ_RYTY4nNHkcRl6fA-1FcRRE", "Chmielna 106, 00-801 Warszawa, Poland", new LocationDTO(52.2288783, 20.9963373))
             };
 
             user1Store2Request = user1Store2Request with
             {
-                Place = new PlaceDTO("ChIJSYbSBiXNHkcRPVTeBjMEWBE", "al. Jana Pawła II 12, 00-001 Warszawa, Poland", new Location(52.2318464, 20.9998793))
+                Place = new PlaceDTO("ChIJSYbSBiXNHkcRPVTeBjMEWBE", "al. Jana Pawła II 12, 00-001 Warszawa, Poland", new LocationDTO(52.2318464, 20.9998793))
             };
 
             user2Store1Request = user2Store1Request with
             {
-                Place = new PlaceDTO("ChIJkb3oh_TMHkcRvwTuCI-g9us", "Świętokrzyska 30, 00-116 Warszawa, Poland", new Location(52.2349257, 21.0032608))
+                Place = new PlaceDTO("ChIJkb3oh_TMHkcRvwTuCI-g9us", "Świętokrzyska 30, 00-116 Warszawa, Poland", new LocationDTO(52.2349257, 21.0032608))
             };
 
             user2Store2Request = user2Store2Request with
             {
-                Place = new PlaceDTO("ChIJAWdPJtEyGUcRFfnT7IcNGFg", "Domaniewska 22A, 02-672 Warszawa, Poland", new Location(52.1881715, 21.0114313))
+                Place = new PlaceDTO("ChIJAWdPJtEyGUcRFfnT7IcNGFg", "Domaniewska 22A, 02-672 Warszawa, Poland", new LocationDTO(52.1881715, 21.0114313))
             };
 
             var user1Store1 = await ProgramTest.ApiClientUser1.Stores.CreateStoreAndDeserializeAsync(user1Store1Request);

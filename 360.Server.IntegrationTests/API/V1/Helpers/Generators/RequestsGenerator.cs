@@ -29,7 +29,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.Generators
 
         public static CreateStoreRequest MakeRandomCreateStoreRequest(Guid organizationId)
         {
-            var place = new PlaceDTO(EnglishFaker.Random.Uuid().ToString(), EnglishFaker.Address.FullAddress(), new Location(EnglishFaker.Address.Latitude(), EnglishFaker.Address.Longitude()));
+            var place = new PlaceDTO(EnglishFaker.Random.Uuid().ToString(), EnglishFaker.Address.FullAddress(), new LocationDTO(EnglishFaker.Address.Latitude(), EnglishFaker.Address.Longitude()));
             return new CreateStoreRequest(organizationId, place);
         }
 

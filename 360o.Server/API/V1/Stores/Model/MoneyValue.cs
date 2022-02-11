@@ -3,7 +3,5 @@
     public readonly record struct MoneyValue(
         decimal Amount,
         Iso4217CurrencyCode CurrencyCode
-        )
-    {
-    }
+        );
 }

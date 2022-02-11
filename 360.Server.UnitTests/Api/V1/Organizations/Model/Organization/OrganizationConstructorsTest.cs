@@ -1,21 +1,19 @@
-﻿using Bogus;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using OrganizationModel = _360o.Server.Api.V1.Organizations.Model.Organization;
 
 namespace _360.Server.UnitTests.Api.V1.Organizations.Model.Organization
 {
     [TestClass]
-    public class ConstructorTest
+    public class OrganizationConstructorsTest
     {
-        private readonly Faker _faker = new Faker();
-
         [TestMethod]
         public void GivenValidArgumentsShouldReturnOrganization()
         {
-            var userId = _faker.Internet.UserName();
-            var name = _faker.Company.CompanyName();
+            var userId = Fakers.EnglishFaker.Internet.UserName();
+            var name = Fakers.EnglishFaker.Company.CompanyName();
 
-            var organization = new _360o.Server.Api.V1.Organizations.Model.Organization(userId, name);
+            var organization = new OrganizationModel(userId, name);
 
             Assert.AreEqual(userId, organization.UserId);
             Assert.AreEqual(name, organization.Name);
@@ -31,11 +29,11 @@ namespace _360.Server.UnitTests.Api.V1.Organizations.Model.Organization
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void GivenNullUserIdShouldThrowArgumentNullException()
+        public void GivenNullUserIdShouldThrow()
         {
-            var name = _faker.Company.CompanyName();
+            var name = Fakers.EnglishFaker.Company.CompanyName();
 
-            new _360o.Server.Api.V1.Organizations.Model.Organization(null!, name);
+            new OrganizationModel(null!, name);
         }
 
         [DataTestMethod]
@@ -44,18 +42,18 @@ namespace _360.Server.UnitTests.Api.V1.Organizations.Model.Organization
         [ExpectedException(typeof(ArgumentException))]
         public void GivenWhitespaceUserIdShouldThrow(string userId)
         {
-            var name = _faker.Company.CompanyName();
+            var name = Fakers.EnglishFaker.Company.CompanyName();
 
-            new _360o.Server.Api.V1.Organizations.Model.Organization(userId, name);
+            new OrganizationModel(userId, name);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void GivenNullNameShouldThrow()
         {
-            var userId = _faker.Internet.UserName();
+            var userId = Fakers.EnglishFaker.Internet.UserName();
 
-            new _360o.Server.Api.V1.Organizations.Model.Organization(userId, null!);
+            new OrganizationModel(userId, null!);
         }
 
         [DataTestMethod]
@@ -64,9 +62,9 @@ namespace _360.Server.UnitTests.Api.V1.Organizations.Model.Organization
         [ExpectedException(typeof(ArgumentException))]
         public void GivenWhitespaceNameShouldThrow(string name)
         {
-            var userId = _faker.Internet.UserName();
+            var userId = Fakers.EnglishFaker.Internet.UserName();
 
-            new _360o.Server.Api.V1.Organizations.Model.Organization(userId, name);
+            new OrganizationModel(userId, name);
         }
     }
 }

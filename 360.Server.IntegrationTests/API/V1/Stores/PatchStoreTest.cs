@@ -1,7 +1,6 @@
 ﻿using _360.Server.IntegrationTests.Api.V1.Helpers;
 using _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient;
 using _360o.Server.Api.V1.Stores.DTOs;
-using _360o.Server.Api.V1.Stores.Model;
 using Bogus;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -26,11 +25,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
             {
                 GooglePlaceId = _faker.Random.Uuid().ToString(),
                 FormattedAddress = _faker.Address.FullAddress(),
-                Location = new Location
-                {
-                    Latitude = _faker.Address.Latitude(),
-                    Longitude = _faker.Address.Longitude(),
-                }
+                Location = new LocationDTO(_faker.Address.Latitude(), _faker.Address.Longitude())
             };
 
             var patchDoc = new[]
@@ -60,11 +55,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
             {
                 GooglePlaceId = null,
                 FormattedAddress = _faker.Address.FullAddress(),
-                Location = new Location
-                {
-                    Latitude = _faker.Address.Latitude(),
-                    Longitude = _faker.Address.Longitude(),
-                }
+                Location = new LocationDTO(_faker.Address.Latitude(), _faker.Address.Longitude())
             };
 
             var patchDoc = new[]
@@ -79,7 +70,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var response = await ProgramTest.ApiClientUser1.Stores.PatchStoreAsync(store.Id, patchDoc);
 
-            await CustomAssertions.AssertBadRequestAsync(response, "GooglePlaceId");
+            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
         [DataTestMethod]
@@ -95,11 +86,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
             {
                 GooglePlaceId = googlePlaceId,
                 FormattedAddress = _faker.Address.FullAddress(),
-                Location = new Location
-                {
-                    Latitude = _faker.Address.Latitude(),
-                    Longitude = _faker.Address.Longitude(),
-                }
+                Location = new LocationDTO(_faker.Address.Latitude(), _faker.Address.Longitude())
             };
 
             var patchDoc = new[]
@@ -114,7 +101,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var response = await ProgramTest.ApiClientUser1.Stores.PatchStoreAsync(store.Id, patchDoc);
 
-            await CustomAssertions.AssertBadRequestAsync(response, "GooglePlaceId");
+            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
         [TestMethod]
@@ -128,11 +115,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
             {
                 GooglePlaceId = _faker.Random.Uuid().ToString(),
                 FormattedAddress = null,
-                Location = new Location
-                {
-                    Latitude = _faker.Address.Latitude(),
-                    Longitude = _faker.Address.Longitude(),
-                }
+                Location = new LocationDTO(_faker.Address.Latitude(), _faker.Address.Longitude())
             };
 
             var patchDoc = new[]
@@ -147,7 +130,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var response = await ProgramTest.ApiClientUser1.Stores.PatchStoreAsync(store.Id, patchDoc);
 
-            await CustomAssertions.AssertBadRequestAsync(response, "FormattedAddress");
+            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
         [DataTestMethod]
@@ -163,11 +146,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
             {
                 GooglePlaceId = _faker.Random.Uuid().ToString(),
                 FormattedAddress = formattedAddress,
-                Location = new Location
-                {
-                    Latitude = _faker.Address.Latitude(),
-                    Longitude = _faker.Address.Longitude(),
-                }
+                Location = new LocationDTO(_faker.Address.Latitude(), _faker.Address.Longitude())
             };
 
             var patchDoc = new[]
@@ -182,77 +161,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var response = await ProgramTest.ApiClientUser1.Stores.PatchStoreAsync(store.Id, patchDoc);
 
-            await CustomAssertions.AssertBadRequestAsync(response, "FormattedAddress");
-        }
-
-        [DataTestMethod]
-        [DataRow(-91)]
-        [DataRow(91)]
-        public async Task GivenInvalidLatitudeShouldReturnBadRequest(double latitude)
-        {
-            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
-
-            var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
-
-            var place = new PlaceDTO
-            {
-                GooglePlaceId = _faker.Random.Uuid().ToString(),
-                FormattedAddress = _faker.Address.FullAddress(),
-                Location = new Location
-                {
-                    Latitude = latitude,
-                    Longitude = _faker.Address.Longitude()
-                }
-            };
-
-            var patchDoc = new[]
-            {
-                new
-                {
-                    op = "replace",
-                    path = "/Place",
-                    value = place
-                }
-            };
-
-            var response = await ProgramTest.ApiClientUser1.Stores.PatchStoreAsync(store.Id, patchDoc);
-
-            await CustomAssertions.AssertBadRequestAsync(response, "Latitude");
-        }
-
-        [DataTestMethod]
-        [DataRow(-181)]
-        [DataRow(181)]
-        public async Task GivenInvalidLongitudeShouldReturnBadRequest(double longitude)
-        {
-            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
-
-            var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
-
-            var place = new PlaceDTO
-            {
-                GooglePlaceId = _faker.Random.Uuid().ToString(),
-                FormattedAddress = _faker.Address.FullAddress(),
-                Location = new Location
-                {
-                    Latitude = _faker.Address.Latitude(),
-                    Longitude = longitude
-                }
-            };
-
-            var patchDoc = new[]
-            {
-                new
-                {
-                    op = "replace",
-                    path = "/Place",
-                    value = place
-                }
-            };
-
-            var response = await ProgramTest.ApiClientUser1.Stores.PatchStoreAsync(store.Id, patchDoc);
-
-            await CustomAssertions.AssertBadRequestAsync(response, "Longitude");
+            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
         [TestMethod]

@@ -3,7 +3,6 @@ using _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient;
 using _360.Server.IntegrationTests.Api.V1.Helpers.Generators;
 using _360o.Server.Api.V1.Errors.Enums;
 using _360o.Server.Api.V1.Stores.DTOs;
-using _360o.Server.Api.V1.Stores.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -114,15 +113,15 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
         }
 
         [DataTestMethod]
-        [DataRow(-90 - double.MinValue)]
-        [DataRow(90 + double.MinValue)]
-        public async Task GivenLatitudeOutOfRangeShouldReturnBadRequest(double latitude)
+        [DataRow(-91)]
+        [DataRow(91)]
+        public async Task GivenInvalidLatitudeShouldReturnBadRequest(double latitude)
         {
             var request = RequestsGenerator.MakeRandomCreateStoreRequest(Guid.NewGuid());
 
             request = request with
             {
-                Place = new PlaceDTO(request.Place.GooglePlaceId, request.Place.FormattedAddress, new Location(latitude, request.Place.Location.Longitude))
+                Place = new PlaceDTO(request.Place.GooglePlaceId, request.Place.FormattedAddress, new LocationDTO(latitude, request.Place.Location.Longitude))
             };
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateStoreAsync(request);
@@ -131,15 +130,15 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
         }
 
         [DataTestMethod]
-        [DataRow(-180 - double.MinValue)]
-        [DataRow(180 + double.MinValue)]
-        public async Task GivenLongitudeOutOfRangeShouldReturnBadRequest(double longitude)
+        [DataRow(-181)]
+        [DataRow(181)]
+        public async Task GivenInvalidLongitudeShouldReturnBadRequest(double longitude)
         {
             var request = RequestsGenerator.MakeRandomCreateStoreRequest(Guid.NewGuid());
 
             request = request with
             {
-                Place = new PlaceDTO(request.Place.GooglePlaceId, request.Place.FormattedAddress, new Location(request.Place.Location.Latitude, longitude))
+                Place = new PlaceDTO(request.Place.GooglePlaceId, request.Place.FormattedAddress, new LocationDTO(request.Place.Location.Latitude, longitude))
             };
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateStoreAsync(request);

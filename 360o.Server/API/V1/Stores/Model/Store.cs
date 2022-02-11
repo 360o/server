@@ -25,14 +25,7 @@ namespace _360o.Server.Api.V1.Stores.Model
             get => _place;
             set
             {
-                Guard.Against.NullOrWhiteSpace(value.GooglePlaceId, nameof(value.GooglePlaceId));
-                Guard.Against.NullOrWhiteSpace(value.FormattedAddress, nameof(value.FormattedAddress));
-                Guard.Against.Null(value.Location, nameof(value.Location));
-                // See https://docs.mapbox.com/help/glossary/lat-lon/#:~:text=Latitude%20and%20longitude%20are%20a,180%20to%20180%20for%20longitude
-                Guard.Against.OutOfRange(value.Location.Latitude, nameof(value.Location.Latitude), -90, 90);
-                Guard.Against.OutOfRange(value.Location.Longitude, nameof(value.Location.Longitude), -180, 180);
-
-                _place = value;
+                _place = Guard.Against.Null(value, "Place");
             }
         }
 
