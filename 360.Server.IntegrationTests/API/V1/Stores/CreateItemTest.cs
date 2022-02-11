@@ -49,7 +49,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var item = await ProgramTest.ApiClientUser1.Stores.CreateItemAndDeserializeAsync(store.Id, request);
 
-            Assert.AreEqual(string.Empty, item.EnglishName);
+            Assert.IsNull(item.EnglishName);
         }
 
         [DataTestMethod]
@@ -68,7 +68,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var item = await ProgramTest.ApiClientUser1.Stores.CreateItemAndDeserializeAsync(store.Id, request);
 
-            Assert.AreEqual(string.Empty, item.FrenchName);
+            Assert.IsNull(item.FrenchName);
         }
 
         [TestMethod]
@@ -130,7 +130,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var item = await ProgramTest.ApiClientUser1.Stores.CreateItemAndDeserializeAsync(store.Id, request);
 
-            Assert.AreEqual(string.Empty, item.EnglishDescription);
+            Assert.IsNull(item.EnglishDescription);
         }
 
         [DataTestMethod]
@@ -149,7 +149,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var item = await ProgramTest.ApiClientUser1.Stores.CreateItemAndDeserializeAsync(store.Id, request);
 
-            Assert.AreEqual(string.Empty, item.FrenchDescription);
+            Assert.IsNull(item.FrenchDescription);
         }
     }
 }

@@ -4,6 +4,8 @@ namespace _360o.Server.Api.V1.Stores.Model
 {
     public class Offer : BaseEntity
     {
+        private string? _englishName;
+        private string? _frenchName;
         private List<OfferItem> _offerItems;
         private MoneyValue? _discount;
 
@@ -16,9 +18,37 @@ namespace _360o.Server.Api.V1.Stores.Model
         {
         }
 
-        public string? EnglishName { get; set; }
+        public string? EnglishName 
+        {
+            get => _englishName;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    _englishName = null;
+                }
+                else
+                {
+                    _englishName = value.Trim();
+                }
+            } 
+        }
 
-        public string? FrenchName { get; set; }
+        public string? FrenchName
+        {
+            get => _frenchName;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    _frenchName = null;
+                }
+                else
+                {
+                    _frenchName = value.Trim();
+                }
+            }
+        }
 
         public MoneyValue? Discount
         {

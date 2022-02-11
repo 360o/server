@@ -27,7 +27,7 @@ namespace _360o.Server.Api.V1.Stores.Model
             get => _englishName;
             set
             {
-                if (value == null)
+                if (string.IsNullOrWhiteSpace(value))
                 {
                     _englishName = null;
                 }
@@ -43,7 +43,7 @@ namespace _360o.Server.Api.V1.Stores.Model
             get => _englishDescription;
             set
             {
-                if (value == null)
+                if (string.IsNullOrWhiteSpace(value))
                 {
                     _englishDescription = null;
                 }
@@ -61,7 +61,7 @@ namespace _360o.Server.Api.V1.Stores.Model
             get => _frenchName;
             set
             {
-                if (value == null)
+                if (string.IsNullOrWhiteSpace(value))
                 {
                     _frenchName = null;
                 }
@@ -77,7 +77,7 @@ namespace _360o.Server.Api.V1.Stores.Model
             get => _frenchDescription;
             set
             {
-                if (value == null)
+                if (string.IsNullOrWhiteSpace(value))
                 {
                     _frenchDescription = null;
                 }
