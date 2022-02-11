@@ -237,7 +237,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
             return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).PostAsync(OffersRoute(storeId), requestContent);
         }
 
-        public async Task<OfferDTO> CreateRandomOfferAndDeserializeAsync(Guid storeId, ISet<CreateOfferRequestItem> offerItems, MoneyValue? discount)
+        public async Task<OfferDTO> CreateRandomOfferAndDeserializeAsync(Guid storeId, ISet<CreateOfferRequestItem> offerItems, MoneyValueDTO? discount)
         {
             var request = RequestsGenerator.MakeRandomCreateOfferRequest(offerItems, discount);
 

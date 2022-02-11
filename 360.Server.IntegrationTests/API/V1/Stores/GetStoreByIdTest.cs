@@ -17,7 +17,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var store = await ProgramTest.ApiClientUser1.Stores.GetStoreByIdAndDeserializeAsync(createdStore.Id);
 
-            CustomAssertions.AssertDTOsAreEqual(createdStore, store);
+            CustomAssertions.AssertSerializeToSameJson(createdStore, store);
         }
 
         [TestMethod]
@@ -25,7 +25,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
         {
             var response = await ProgramTest.ApiClientUser1.Stores.GetStoreByIdAsync(Guid.NewGuid());
 
-            await CustomAssertions.AssertNotFoundAsync(response, "Store not found");
+            await CustomAssertions.AssertNotFoundWithProblemDetailsAsync(response, "Store not found");
         }
     }
 }

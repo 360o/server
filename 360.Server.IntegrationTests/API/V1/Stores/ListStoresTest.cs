@@ -43,9 +43,9 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
             var resultUser1Store1 = result.Find(s => s.Id == user1Store1.Id);
             var resultUser1Store2 = result.Find(s => s.Id == user1Store2.Id);
             var resultUser2Store1 = result.Find(s => s.Id == user2Store1.Id);
-            CustomAssertions.AssertDTOsAreEqual(user1Store1, resultUser1Store1);
-            CustomAssertions.AssertDTOsAreEqual(user1Store2, resultUser1Store2);
-            CustomAssertions.AssertDTOsAreEqual(user2Store1, resultUser2Store1);
+            CustomAssertions.AssertSerializeToSameJson(user1Store1, resultUser1Store1);
+            CustomAssertions.AssertSerializeToSameJson(user1Store2, resultUser1Store2);
+            CustomAssertions.AssertSerializeToSameJson(user2Store1, resultUser2Store1);
         }
 
         [TestMethod]
@@ -123,18 +123,18 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             Assert.IsNotNull(stores);
 
-            CustomAssertions.AssertDTOsAreEqual(user1StoreWithName, storesDict[user1StoreWithName.Id]);
-            CustomAssertions.AssertDTOsAreEqual(user1StoreWithEnglishShortDescription, storesDict[user1StoreWithEnglishShortDescription.Id]);
-            CustomAssertions.AssertDTOsAreEqual(user1StoreWithEnglishLongDescription, storesDict[user1StoreWithEnglishLongDescription.Id]);
-            CustomAssertions.AssertDTOsAreEqual(user1StoreWithEnglishCategories, storesDict[user1StoreWithEnglishCategories.Id]);
-            CustomAssertions.AssertDTOsAreEqual(user1StoreWithItemWithEnglishName, storesDict[user1StoreWithItemWithEnglishName.Id]);
-            CustomAssertions.AssertDTOsAreEqual(user1StoreWithItemWithEnglishDescription, storesDict[user1StoreWithItemWithEnglishDescription.Id]);
+            CustomAssertions.AssertSerializeToSameJson(user1StoreWithName, storesDict[user1StoreWithName.Id]);
+            CustomAssertions.AssertSerializeToSameJson(user1StoreWithEnglishShortDescription, storesDict[user1StoreWithEnglishShortDescription.Id]);
+            CustomAssertions.AssertSerializeToSameJson(user1StoreWithEnglishLongDescription, storesDict[user1StoreWithEnglishLongDescription.Id]);
+            CustomAssertions.AssertSerializeToSameJson(user1StoreWithEnglishCategories, storesDict[user1StoreWithEnglishCategories.Id]);
+            CustomAssertions.AssertSerializeToSameJson(user1StoreWithItemWithEnglishName, storesDict[user1StoreWithItemWithEnglishName.Id]);
+            CustomAssertions.AssertSerializeToSameJson(user1StoreWithItemWithEnglishDescription, storesDict[user1StoreWithItemWithEnglishDescription.Id]);
 
-            CustomAssertions.AssertDTOsAreEqual(user2StoreWithFrenchShortDescription, storesDict[user2StoreWithFrenchShortDescription.Id]);
-            CustomAssertions.AssertDTOsAreEqual(user2StoreWithFrenchLongDescription, storesDict[user2StoreWithFrenchLongDescription.Id]);
-            CustomAssertions.AssertDTOsAreEqual(user2StoreWithFrenchCategories, storesDict[user2StoreWithFrenchCategories.Id]);
-            CustomAssertions.AssertDTOsAreEqual(user2StoreWithItemWithFrenchName, storesDict[user2StoreWithItemWithFrenchName.Id]);
-            CustomAssertions.AssertDTOsAreEqual(user2StoreWithItemWithFrenchDescription, storesDict[user2StoreWithItemWithFrenchDescription.Id]);
+            CustomAssertions.AssertSerializeToSameJson(user2StoreWithFrenchShortDescription, storesDict[user2StoreWithFrenchShortDescription.Id]);
+            CustomAssertions.AssertSerializeToSameJson(user2StoreWithFrenchLongDescription, storesDict[user2StoreWithFrenchLongDescription.Id]);
+            CustomAssertions.AssertSerializeToSameJson(user2StoreWithFrenchCategories, storesDict[user2StoreWithFrenchCategories.Id]);
+            CustomAssertions.AssertSerializeToSameJson(user2StoreWithItemWithFrenchName, storesDict[user2StoreWithItemWithFrenchName.Id]);
+            CustomAssertions.AssertSerializeToSameJson(user2StoreWithItemWithFrenchDescription, storesDict[user2StoreWithItemWithFrenchDescription.Id]);
         }
 
         [TestMethod]
@@ -236,7 +236,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             foreach (var store in twoHundredMetersStores)
             {
-                CustomAssertions.AssertDTOsAreEqual(storesWithinTwoHundredMeters[store.Id], store);
+                CustomAssertions.AssertSerializeToSameJson(storesWithinTwoHundredMeters[store.Id], store);
             }
 
             var sixHundredMetersStore = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
@@ -251,7 +251,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             foreach (var store in sixHundredMetersStore)
             {
-                CustomAssertions.AssertDTOsAreEqual(storesWithinSixHundredMeters[store.Id], store);
+                CustomAssertions.AssertSerializeToSameJson(storesWithinSixHundredMeters[store.Id], store);
             }
 
             var twoKilometersStores = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
@@ -266,7 +266,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             foreach (var store in twoKilometersStores)
             {
-                CustomAssertions.AssertDTOsAreEqual(storesWithinTwoKilometers[store.Id], store);
+                CustomAssertions.AssertSerializeToSameJson(storesWithinTwoKilometers[store.Id], store);
             }
 
             var tenKilometersStores = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
@@ -281,7 +281,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             foreach (var store in tenKilometersStores)
             {
-                CustomAssertions.AssertDTOsAreEqual(storesWithinTenKilometers[store.Id], store);
+                CustomAssertions.AssertSerializeToSameJson(storesWithinTenKilometers[store.Id], store);
             }
         }
 
@@ -339,7 +339,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
                 Radius = _faker.Random.Double()
             });
 
-            await CustomAssertions.AssertBadRequestAsync(response, "'Longitude' must not be empty");
+            await CustomAssertions.AssertBadRequestWithProblemDetailsAsync(response, "'Longitude' must not be empty");
         }
 
         [TestMethod]
@@ -353,7 +353,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
                 Radius = faker.Random.Double(),
             });
 
-            await CustomAssertions.AssertBadRequestAsync(response, "'Latitude' must not be empty");
+            await CustomAssertions.AssertBadRequestWithProblemDetailsAsync(response, "'Latitude' must not be empty");
         }
 
         [TestMethod]
@@ -365,7 +365,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
                 Longitude = _faker.Address.Longitude(),
             });
 
-            await CustomAssertions.AssertBadRequestAsync(response, "'Radius' must not be empty");
+            await CustomAssertions.AssertBadRequestWithProblemDetailsAsync(response, "'Radius' must not be empty");
         }
 
         [TestMethod]
@@ -454,8 +454,8 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
             var storesDict = stores.ToDictionary(s => s.Id, s => s);
 
             Assert.AreEqual(expectedStores.Count, storesDict.Count);
-            CustomAssertions.AssertDTOsAreEqual(user1Store1, storesDict[user1Store1.Id]);
-            CustomAssertions.AssertDTOsAreEqual(user2Store1, storesDict[user2Store1.Id]);
+            CustomAssertions.AssertSerializeToSameJson(user1Store1, storesDict[user1Store1.Id]);
+            CustomAssertions.AssertSerializeToSameJson(user2Store1, storesDict[user2Store1.Id]);
         }
     }
 }

@@ -6,12 +6,11 @@ namespace _360o.Server.Api.V1.Stores.Model
     {
         private string? _englishName;
         private string? _frenchName;
-        private List<OfferItem> _offerItems;
         private MoneyValue? _discount;
 
         public Offer(Guid storeId)
         {
-            StoreId = storeId;
+            StoreId = Guard.Against.NullOrEmpty(storeId, nameof(storeId));
         }
 
         private Offer()
@@ -55,16 +54,13 @@ namespace _360o.Server.Api.V1.Stores.Model
             get => _discount;
             set
             {
-                if (!value.HasValue)
+                if (value == null || value.Amount == 0)
                 {
                     _discount = null;
                 }
                 else
                 {
-                    Guard.Against.NegativeOrZero(value.Value.Amount, nameof(value.Value.Amount));
-                    Guard.Against.EnumOutOfRange(value.Value.CurrencyCode, nameof(value.Value.CurrencyCode));
-
-                    _discount = value.Value;
+                    _discount = value;
                 }
             }
         }
@@ -73,25 +69,6 @@ namespace _360o.Server.Api.V1.Stores.Model
 
         public Store Store { get; private set; }
 
-        public List<OfferItem> OfferItems
-        {
-            get => _offerItems;
-            set
-            {
-                var offerItems = Guard.Against.NullOrEmpty(value, nameof(value));
-
-                var duplicates = offerItems
-                    .GroupBy(i => i.ItemId)
-                    .Where(g => g.Count() > 1)
-                    .Select(g => g.Key);
-
-                if (duplicates.Any())
-                {
-                    throw new ArgumentException($"Duplicate items {string.Join(',', duplicates)}", nameof(value));
-                }
-
-                _offerItems = offerItems.ToList();
-            }
-        }
+        public List<OfferItem> OfferItems { get; init; } = new List<OfferItem>();
     }
 }

@@ -55,7 +55,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
 
             var response = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAsync(request);
 
-            await CustomAssertions.AssertBadRequestAsync(response, "Name");
+            await CustomAssertions.AssertBadRequestWithProblemDetailsAsync(response, "Name");
         }
 
         [DataTestMethod]
@@ -69,7 +69,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
 
             var response = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAsync(request);
 
-            await CustomAssertions.AssertBadRequestAsync(response, "Name");
+            await CustomAssertions.AssertBadRequestWithProblemDetailsAsync(response, "Name");
         }
 
         [TestMethod]

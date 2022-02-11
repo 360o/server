@@ -33,7 +33,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
                 new CreateOfferRequestItem(storeOffer1Item1.Id, _faker.Random.Int(1, 10)),
             };
 
-            var storeOffer1Discount = new MoneyValue
+            var storeOffer1Discount = new MoneyValueDTO
             {
                 Amount = _faker.Random.Decimal(1, 10),
                 CurrencyCode = _faker.PickRandom<Iso4217CurrencyCode>()
@@ -73,7 +73,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
         {
             var response = await ProgramTest.ApiClientUser1.Stores.ListOffersAsync(Guid.NewGuid());
 
-            await CustomAssertions.AssertNotFoundAsync(response, "Store not found");
+            await CustomAssertions.AssertNotFoundWithProblemDetailsAsync(response, "Store not found");
         }
     }
 }

@@ -91,7 +91,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateStoreAsync(request);
 
-            await CustomAssertions.AssertBadRequestAsync(response, "GooglePlaceId");
+            await CustomAssertions.AssertBadRequestWithProblemDetailsAsync(response, "GooglePlaceId");
         }
 
         [DataTestMethod]
@@ -109,7 +109,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateStoreAsync(request);
 
-            await CustomAssertions.AssertBadRequestAsync(response, "FormattedAddress");
+            await CustomAssertions.AssertBadRequestWithProblemDetailsAsync(response, "FormattedAddress");
         }
 
         [DataTestMethod]
@@ -126,7 +126,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateStoreAsync(request);
 
-            await CustomAssertions.AssertBadRequestAsync(response, "Latitude");
+            await CustomAssertions.AssertBadRequestWithProblemDetailsAsync(response, "Latitude");
         }
 
         [DataTestMethod]
@@ -143,7 +143,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateStoreAsync(request);
 
-            await CustomAssertions.AssertBadRequestAsync(response, "Longitude");
+            await CustomAssertions.AssertBadRequestWithProblemDetailsAsync(response, "Longitude");
         }
     }
 }

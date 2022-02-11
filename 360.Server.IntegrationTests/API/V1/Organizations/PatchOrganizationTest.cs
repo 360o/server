@@ -36,7 +36,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
             var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
 
             Assert.AreEqual(name, updatedOrganization.Name);
-            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { Name = organization.Name });
+            CustomAssertions.AssertSerializeToSameJson(organization, updatedOrganization with { Name = organization.Name });
         }
 
         [TestMethod]
@@ -56,7 +56,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
 
             var response = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAsync(organization.Id, patchDoc);
 
-            await CustomAssertions.AssertBadRequestAsync(response, "Name");
+            await CustomAssertions.AssertBadRequestWithProblemDetailsAsync(response, "Name");
         }
 
         [DataTestMethod]
@@ -78,7 +78,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
 
             var response = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAsync(organization.Id, patchDoc);
 
-            await CustomAssertions.AssertBadRequestAsync(response, "Name");
+            await CustomAssertions.AssertBadRequestWithProblemDetailsAsync(response, "Name");
         }
 
         [TestMethod]
@@ -101,7 +101,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
             var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
 
             Assert.AreEqual(englishShortDescription, updatedOrganization.EnglishShortDescription);
-            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { EnglishShortDescription = organization.EnglishShortDescription });
+            CustomAssertions.AssertSerializeToSameJson(organization, updatedOrganization with { EnglishShortDescription = organization.EnglishShortDescription });
         }
 
         [TestMethod]
@@ -122,7 +122,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
             var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
 
             Assert.IsNull(updatedOrganization.EnglishShortDescription);
-            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { EnglishShortDescription = organization.EnglishShortDescription });
+            CustomAssertions.AssertSerializeToSameJson(organization, updatedOrganization with { EnglishShortDescription = organization.EnglishShortDescription });
         }
 
         [DataTestMethod]
@@ -145,7 +145,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
             var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
 
             Assert.IsNull(updatedOrganization.EnglishShortDescription);
-            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { EnglishShortDescription = organization.EnglishShortDescription });
+            CustomAssertions.AssertSerializeToSameJson(organization, updatedOrganization with { EnglishShortDescription = organization.EnglishShortDescription });
         }
 
         [TestMethod]
@@ -168,7 +168,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
             var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
 
             Assert.AreEqual(englishLongDescription, updatedOrganization.EnglishLongDescription);
-            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { EnglishLongDescription = organization.EnglishLongDescription });
+            CustomAssertions.AssertSerializeToSameJson(organization, updatedOrganization with { EnglishLongDescription = organization.EnglishLongDescription });
         }
 
         [TestMethod]
@@ -194,7 +194,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
 
             Assert.IsNotNull(updatedOrganization.EnglishCategories);
             CollectionAssert.AreEquivalent(categoriesSet.ToList(), updatedOrganization.EnglishCategories.ToList());
-            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { EnglishCategories = organization.EnglishCategories });
+            CustomAssertions.AssertSerializeToSameJson(organization, updatedOrganization with { EnglishCategories = organization.EnglishCategories });
         }
 
         [TestMethod]
@@ -215,7 +215,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
             var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
 
             Assert.IsNull(updatedOrganization.EnglishCategories);
-            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { EnglishCategories = organization.EnglishCategories });
+            CustomAssertions.AssertSerializeToSameJson(organization, updatedOrganization with { EnglishCategories = organization.EnglishCategories });
         }
 
         [TestMethod]
@@ -236,7 +236,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
             var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
 
             Assert.IsNull(updatedOrganization.EnglishCategories);
-            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { EnglishCategories = organization.EnglishCategories });
+            CustomAssertions.AssertSerializeToSameJson(organization, updatedOrganization with { EnglishCategories = organization.EnglishCategories });
         }
 
         [TestMethod]
@@ -259,7 +259,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
             var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
 
             Assert.AreEqual(frenchShortDescription, updatedOrganization.FrenchShortDescription);
-            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { FrenchShortDescription = organization.FrenchShortDescription });
+            CustomAssertions.AssertSerializeToSameJson(organization, updatedOrganization with { FrenchShortDescription = organization.FrenchShortDescription });
         }
 
         [TestMethod]
@@ -280,7 +280,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
             var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
 
             Assert.IsNull(updatedOrganization.FrenchShortDescription);
-            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { FrenchShortDescription = organization.FrenchShortDescription });
+            CustomAssertions.AssertSerializeToSameJson(organization, updatedOrganization with { FrenchShortDescription = organization.FrenchShortDescription });
         }
 
         [DataTestMethod]
@@ -303,7 +303,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
             var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
 
             Assert.IsNull(updatedOrganization.FrenchShortDescription);
-            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { FrenchShortDescription = organization.FrenchShortDescription });
+            CustomAssertions.AssertSerializeToSameJson(organization, updatedOrganization with { FrenchShortDescription = organization.FrenchShortDescription });
         }
 
         [TestMethod]
@@ -326,7 +326,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
             var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
 
             Assert.AreEqual(frenchLongDescription, updatedOrganization.FrenchLongDescription);
-            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { FrenchLongDescription = organization.FrenchLongDescription });
+            CustomAssertions.AssertSerializeToSameJson(organization, updatedOrganization with { FrenchLongDescription = organization.FrenchLongDescription });
         }
 
         [TestMethod]
@@ -347,7 +347,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
             var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
 
             Assert.IsNull(updatedOrganization.FrenchLongDescription);
-            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { FrenchLongDescription = organization.FrenchLongDescription });
+            CustomAssertions.AssertSerializeToSameJson(organization, updatedOrganization with { FrenchLongDescription = organization.FrenchLongDescription });
         }
 
         [DataTestMethod]
@@ -370,7 +370,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
             var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
 
             Assert.IsNull(updatedOrganization.FrenchLongDescription);
-            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { FrenchLongDescription = organization.FrenchLongDescription });
+            CustomAssertions.AssertSerializeToSameJson(organization, updatedOrganization with { FrenchLongDescription = organization.FrenchLongDescription });
         }
 
         public async Task GivenFrenchCategoriesShouldReturnOK()
@@ -395,7 +395,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
 
             Assert.IsNotNull(updatedOrganization.FrenchCategories);
             CollectionAssert.AreEquivalent(categoriesSet.ToList(), updatedOrganization.FrenchCategories.ToList());
-            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { FrenchCategories = organization.FrenchCategories });
+            CustomAssertions.AssertSerializeToSameJson(organization, updatedOrganization with { FrenchCategories = organization.FrenchCategories });
         }
 
         [TestMethod]
@@ -416,7 +416,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
             var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
 
             Assert.IsNull(updatedOrganization.FrenchCategories);
-            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { FrenchCategories = organization.FrenchCategories });
+            CustomAssertions.AssertSerializeToSameJson(organization, updatedOrganization with { FrenchCategories = organization.FrenchCategories });
         }
 
         [TestMethod]
@@ -437,7 +437,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
             var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
 
             Assert.IsNull(updatedOrganization.FrenchCategories);
-            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { FrenchCategories = organization.FrenchCategories });
+            CustomAssertions.AssertSerializeToSameJson(organization, updatedOrganization with { FrenchCategories = organization.FrenchCategories });
         }
 
         [TestMethod]
@@ -486,7 +486,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
 
             var response = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAsync(Guid.NewGuid(), patchDoc);
 
-            await CustomAssertions.AssertNotFoundAsync(response, "Organization not found");
+            await CustomAssertions.AssertNotFoundWithProblemDetailsAsync(response, "Organization not found");
         }
     }
 }

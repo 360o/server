@@ -7,9 +7,7 @@ namespace _360o.Server.Api.V1.Stores.DTOs
         string? EnglishName,
         string? FrenchName,
         IEnumerable<OfferItemDTO> OfferItems,
-        MoneyValue? Discount,
+        MoneyValueDTO? Discount,
         Guid StoreId
-        )
-    {
-    }
+        );
 }

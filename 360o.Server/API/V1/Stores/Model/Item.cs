@@ -95,16 +95,13 @@ namespace _360o.Server.Api.V1.Stores.Model
             get => _price;
             set
             {
-                if (value.HasValue)
-                {
-                    Guard.Against.NegativeOrZero(value.Value.Amount, nameof(value.Value.Amount));
-                    Guard.Against.EnumOutOfRange(value.Value.CurrencyCode, nameof(value.Value.CurrencyCode));
-
-                    _price = value;
-                }
-                else
+                if (value == null || value.Amount == 0)
                 {
                     _price = null;
+                } 
+                else
+                {
+                    _price = value;
                 }
             }
         }

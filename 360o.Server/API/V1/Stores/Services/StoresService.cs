@@ -158,12 +158,22 @@ namespace _360o.Server.Api.V1.Stores.Services
                 throw new KeyNotFoundException("Store not found");
             }
 
+            var duplicates = input.OfferItems
+                    .GroupBy(i => i.ItemId)
+                    .Where(g => g.Count() > 1)
+                    .Select(g => g.Key);
+
+            if (duplicates.Any())
+            {
+                throw new ArgumentException($"Duplicate items {string.Join(',', duplicates)}", nameof(input.OfferItems));
+            }
+
             var offer = new Offer(store.Id);
 
             offer.EnglishName = input.EnglishName;
             offer.FrenchName = input.FrenchName;
+            offer.Discount = input.Discount;
 
-            var offerItems = new List<OfferItem>();
             foreach (var inputItem in input.OfferItems)
             {
                 var item = await GetItembyIdAsync(inputItem.ItemId);
@@ -175,13 +185,10 @@ namespace _360o.Server.Api.V1.Stores.Services
 
                 var offerItem = new OfferItem(item.Id, inputItem.Quantity);
 
-                offerItems.Add(offerItem);
+                offer.OfferItems.Add(offerItem);
             }
-            offer.OfferItems = offerItems;
 
-            offer.Discount = input.Discount;
-
-            _apiContext.Offers.Add(offer);
+            _apiContext.Add(offer);
 
             await _apiContext.SaveChangesAsync();
 

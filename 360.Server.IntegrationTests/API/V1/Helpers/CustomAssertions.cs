@@ -1,6 +1,7 @@
 ﻿using _360o.Server.Api.V1.Errors.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -11,20 +12,20 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers
 {
     internal static class CustomAssertions
     {
-        public static void AssertDTOsAreEqual(object expected, object actual)
+        public static void AssertSerializeToSameJson(object expected, object actual)
         {
-            var serializedExpected = JsonSerializer.Serialize(expected);
-            var serializedActual = JsonSerializer.Serialize(actual);
+            var serializedExpected = JsonConvert.SerializeObject(expected);
+            var serializedActual = JsonConvert.SerializeObject(actual);
             Assert.AreEqual(serializedExpected, serializedActual);
         }
 
-        public static async Task AssertNotFoundAsync(HttpResponseMessage response, string detailMessage)
+        public static async Task AssertNotFoundWithProblemDetailsAsync(HttpResponseMessage response, string detailMessage)
         {
             Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
             var responseContent = await response.Content.ReadAsStringAsync();
 
-            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
+            var result = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.Detail);
@@ -34,13 +35,13 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers
             Assert.AreEqual(detailMessage, result.Detail);
         }
 
-        public static async Task AssertBadRequestAsync(HttpResponseMessage response, string containsDetailMessage)
+        public static async Task AssertBadRequestWithProblemDetailsAsync(HttpResponseMessage response, string containsDetailMessage)
         {
             Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
             var responseContent = await response.Content.ReadAsStringAsync();
 
-            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
+            var result = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.Detail);
@@ -54,7 +55,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers
         {
             foreach (var message in containsDetailMessages)
             {
-                await AssertBadRequestAsync(response, message);
+                await AssertBadRequestWithProblemDetailsAsync(response, message);
             }
         }
     }

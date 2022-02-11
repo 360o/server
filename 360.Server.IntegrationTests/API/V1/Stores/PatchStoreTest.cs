@@ -41,7 +41,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
             var updatedStore = await ProgramTest.ApiClientUser1.Stores.PatchStoreAndDeserializeAsync(store.Id, patchDoc);
 
             Assert.AreEqual(place, updatedStore.Place);
-            CustomAssertions.AssertDTOsAreEqual(store, updatedStore with { Place = store.Place });
+            CustomAssertions.AssertSerializeToSameJson(store, updatedStore with { Place = store.Place });
         }
 
         [TestMethod]
@@ -212,7 +212,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var response = await ProgramTest.ApiClientUser1.Stores.PatchStoreAsync(Guid.NewGuid(), patchDoc);
 
-            await CustomAssertions.AssertNotFoundAsync(response, "Store not found");
+            await CustomAssertions.AssertNotFoundWithProblemDetailsAsync(response, "Store not found");
         }
     }
 }

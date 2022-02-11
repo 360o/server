@@ -25,5 +25,35 @@ namespace _360.Server.UnitTests.Api.V1.Stores
         {
             return new Location(Fakers.EnglishFaker.Address.Latitude(), Fakers.EnglishFaker.Address.Longitude());
         }
+
+        public static Item MakeRandomItem()
+        {
+            var storeId = Fakers.EnglishFaker.Random.Uuid();
+
+            return new Item(storeId);
+        }
+
+        public static MoneyValue MakeRandomMoneyValue()
+        {
+            var amount = Fakers.EnglishFaker.Random.Decimal(0, 100);
+            var currencyCode = Fakers.EnglishFaker.PickRandom<Iso4217CurrencyCode>();
+
+            return new MoneyValue(amount, currencyCode);
+        }
+
+        public static Offer MakeRandomOffer()
+        {
+            var storeId = Fakers.EnglishFaker.Random.Uuid();
+
+            return new Offer(storeId);
+        }
+
+        public static OfferItem MakeRandomOfferItem()
+        {
+            var itemId = Fakers.EnglishFaker.Random.Uuid();
+            var quantity = Fakers.EnglishFaker.Random.Int(min: 1);
+
+            return new OfferItem(itemId, quantity);
+        }
     }
 }

@@ -199,13 +199,18 @@ namespace _360o.Server.Api.V1.Stores.Controllers
                 return Forbid();
             }
 
+            var price = request.Price.HasValue ?
+                new MoneyValue(request.Price.Value.Amount, request.Price.Value.CurrencyCode) :
+                null
+                ;
+
             var createItemInput = new CreateItemInput(
                 store.Id,
                 request.EnglishName,
                 request.EnglishDescription,
                 request.FrenchName,
                 request.FrenchDescription,
-                request.Price
+                price
                 );
 
             var item = await _storesService.CreateItemAsync(createItemInput);
@@ -355,6 +360,11 @@ namespace _360o.Server.Api.V1.Stores.Controllers
                 return Forbid();
             }
 
+            var discount = request.Discount.HasValue ?
+                new MoneyValue(request.Discount.Value.Amount, request.Discount.Value.CurrencyCode) :
+                null
+                ;
+
             var createOfferInput = new CreateOfferInput
             {
                 EnglishName = request.EnglishName,
@@ -364,7 +374,7 @@ namespace _360o.Server.Api.V1.Stores.Controllers
                     ItemId = o.ItemId,
                     Quantity = o.Quantity,
                 }).ToHashSet(),
-                Discount = request.Discount,
+                Discount = discount,
             };
 
             var offer = await _storesService.CreateOfferAsync(store.Id, createOfferInput);
@@ -428,18 +438,31 @@ namespace _360o.Server.Api.V1.Stores.Controllers
 
         private ItemDTO ToItemDTO(Item item)
         {
+            MoneyValueDTO? price = item.Price == null ?
+                null :
+                new MoneyValueDTO(
+                    item.Price.Amount,
+                    item.Price.CurrencyCode
+                    );
+
             return new ItemDTO(
                 item.Id,
                 item.EnglishName,
                 item.EnglishDescription,
                 item.FrenchName,
                 item.FrenchDescription,
-                item.Price
-                );
+                price);
         }
 
         private OfferDTO ToOfferDTO(Offer offer)
         {
+            MoneyValueDTO? discount = offer.Discount == null ?
+                null :
+                new MoneyValueDTO(
+                    offer.Discount.Amount,
+                    offer.Discount.CurrencyCode
+                    );
+
             return new OfferDTO(
                 offer.Id,
                 offer.EnglishName,
@@ -450,7 +473,7 @@ namespace _360o.Server.Api.V1.Stores.Controllers
                     ItemId = i.ItemId,
                     Quantity = i.Quantity,
                 }),
-                offer.Discount,
+                discount,
                 offer.StoreId
                 );
         }

@@ -46,7 +46,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
         {
             var response = await ProgramTest.ApiClientUser1.Organizations.DeleteOrganizationByIdAsync(Guid.NewGuid());
 
-            await CustomAssertions.AssertNotFoundAsync(response, "Organization not found");
+            await CustomAssertions.AssertNotFoundWithProblemDetailsAsync(response, "Organization not found");
         }
     }
 }

@@ -44,7 +44,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             var requestItemsDict = requestItems.ToDictionary(i => i.ItemId, i => i);
 
-            var discount = new MoneyValue
+            var discount = new MoneyValueDTO
             {
                 Amount = _englishFaker.Random.Decimal(1, 10),
                 CurrencyCode = _englishFaker.PickRandom<Iso4217CurrencyCode>()
@@ -121,7 +121,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateOfferAsync(store.Id, request);
 
-            await CustomAssertions.AssertBadRequestAsync(response, "At least one Name must be defined");
+            await CustomAssertions.AssertBadRequestWithProblemDetailsAsync(response, "At least one Name must be defined");
         }
 
         [TestMethod]
@@ -137,7 +137,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateOfferAsync(store.Id, request);
 
-            await CustomAssertions.AssertBadRequestAsync(response, "OfferItems");
+            await CustomAssertions.AssertBadRequestWithProblemDetailsAsync(response, "OfferItems");
         }
 
         [TestMethod]
@@ -160,7 +160,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateOfferAsync(store.Id, request);
 
-            await CustomAssertions.AssertBadRequestAsync(response, "'Item Id' must not be empty.");
+            await CustomAssertions.AssertBadRequestWithProblemDetailsAsync(response, "'Item Id' must not be empty.");
         }
 
         [DataTestMethod]
@@ -185,7 +185,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateOfferAsync(store.Id, request);
 
-            await CustomAssertions.AssertBadRequestAsync(response, "'Quantity' must be greater than '0'");
+            await CustomAssertions.AssertBadRequestWithProblemDetailsAsync(response, "'Quantity' must be greater than '0'");
         }
 
         [DataTestMethod]
@@ -199,7 +199,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             var requestItems = new HashSet<CreateOfferRequestItem>();
 
-            var discount = new MoneyValue
+            var discount = new MoneyValueDTO
             {
                 Amount = amount,
                 CurrencyCode = _englishFaker.PickRandom<Iso4217CurrencyCode>()
@@ -209,7 +209,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateOfferAsync(store.Id, request);
 
-            await CustomAssertions.AssertBadRequestAsync(response, "OfferItems");
+            await CustomAssertions.AssertBadRequestWithProblemDetailsAsync(response, "OfferItems");
         }
 
         [TestMethod]

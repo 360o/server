@@ -3,7 +3,5 @@
     public record class StoreDTO(
         Guid Id,
         PlaceDTO Place
-        )
-    {
-    }
+        );
 }

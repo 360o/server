@@ -17,7 +17,7 @@ namespace _360o.Server.Api.V1.Stores.Validators
 
             When(r => r.Discount.HasValue, () =>
             {
-                RuleFor(r => r.Discount!.Value).SetValidator(new MoneyValueValidator());
+                RuleFor(r => r.Discount.Value).SetValidator(new MoneyValueDTOValidator());
             });
         }
     }

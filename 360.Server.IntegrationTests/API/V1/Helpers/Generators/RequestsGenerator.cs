@@ -41,7 +41,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.Generators
                 EnglishDescription = EnglishFaker.Commerce.ProductDescription(),
                 FrenchName = FrenchFaker.Commerce.ProductName(),
                 FrenchDescription = FrenchFaker.Commerce.ProductDescription(),
-                Price = new MoneyValue
+                Price = new MoneyValueDTO
                 {
                     Amount = EnglishFaker.Random.Decimal(0, 100),
                     CurrencyCode = EnglishFaker.PickRandom<Iso4217CurrencyCode>()
@@ -49,7 +49,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.Generators
             };
         }
 
-        public static CreateOfferRequest MakeRandomCreateOfferRequest(ISet<CreateOfferRequestItem> offerItems, MoneyValue? discount)
+        public static CreateOfferRequest MakeRandomCreateOfferRequest(ISet<CreateOfferRequestItem> offerItems, MoneyValueDTO? discount)
         {
             return new CreateOfferRequest
             {

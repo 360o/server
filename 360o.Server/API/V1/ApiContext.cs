@@ -42,6 +42,7 @@ namespace _360o.Server.Api.V1.Stores.Model
             modelBuilder.Entity<Offer>().Property(e => e.Discount).HasColumnType("jsonb");
             modelBuilder.Entity<Offer>().HasOne(e => e.Store).WithMany(e => e.Offers);
 
+            modelBuilder.Entity<OfferItem>().HasIndex(e => new { e.OfferId, e.ItemId }).IsUnique();
             modelBuilder.Entity<OfferItem>().Property(e => e.Quantity).IsRequired();
             modelBuilder.Entity<OfferItem>().HasOne(e => e.Offer).WithMany(e => e.OfferItems);
             modelBuilder.Entity<OfferItem>().HasOne(e => e.Item).WithMany(e => e.OfferItems);

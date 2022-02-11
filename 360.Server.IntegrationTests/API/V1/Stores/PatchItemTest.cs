@@ -1,5 +1,6 @@
 ﻿using _360.Server.IntegrationTests.Api.V1.Helpers;
 using _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient;
+using _360o.Server.Api.V1.Stores.DTOs;
 using _360o.Server.Api.V1.Stores.Model;
 using Bogus;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -132,7 +133,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var item = await ProgramTest.ApiClientUser1.Stores.CreateRandomItemAndDeserializeAsync(store.Id);
 
-            var price = new MoneyValue
+            var price = new MoneyValueDTO()
             {
                 Amount = _englishFaker.Random.Decimal(0, 100),
                 CurrencyCode = _englishFaker.PickRandom<Iso4217CurrencyCode>()
@@ -151,7 +152,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
             var updatedItem = await ProgramTest.ApiClientUser1.Stores.PatchItemAndDeserializeAsync(store.Id, item.Id, patchDoc);
 
             Assert.AreEqual(price, updatedItem.Price);
-            Assert.AreEqual(item, updatedItem with { Price = item.Price });
+            CustomAssertions.AssertSerializeToSameJson(item, updatedItem with { Price = item.Price });
         }
 
         [TestMethod]
@@ -163,7 +164,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var item = await ProgramTest.ApiClientUser1.Stores.CreateRandomItemAndDeserializeAsync(store.Id);
 
-            var price = new MoneyValue
+            var price = new MoneyValueDTO
             {
                 Amount = _englishFaker.Random.Decimal(decimal.MinValue, -1),
                 CurrencyCode = _englishFaker.PickRandom<Iso4217CurrencyCode>()
@@ -181,7 +182,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var response = await ProgramTest.ApiClientUser1.Stores.PatchItemAsync(store.Id, item.Id, patchDoc);
 
-            await CustomAssertions.AssertBadRequestAsync(response, "Amount");
+            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
         [TestMethod]
@@ -238,7 +239,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var response = await ProgramTest.ApiClientUser1.Stores.PatchItemAsync(store.Id, Guid.NewGuid(), patchDoc);
 
-            await CustomAssertions.AssertNotFoundAsync(response, "Item not found");
+            await CustomAssertions.AssertNotFoundWithProblemDetailsAsync(response, "Item not found");
         }
     }
 }

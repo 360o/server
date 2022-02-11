@@ -16,7 +16,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.GetOrganizationByIdAndDeserializeAsync(createdOrganization.Id);
 
-            CustomAssertions.AssertDTOsAreEqual(createdOrganization, organization);
+            CustomAssertions.AssertSerializeToSameJson(createdOrganization, organization);
         }
 
         [TestMethod]

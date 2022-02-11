@@ -31,7 +31,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var response = await ProgramTest.ApiClientUser1.Stores.GetItemByIdAsync(store.Id, Guid.NewGuid());
 
-            await CustomAssertions.AssertNotFoundAsync(response, "Item not found");
+            await CustomAssertions.AssertNotFoundWithProblemDetailsAsync(response, "Item not found");
         }
     }
 }

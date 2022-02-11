@@ -8,6 +8,6 @@ namespace _360o.Server.Api.V1.Stores.DTOs
         string? EnglishDescription,
         string? FrenchName,
         string? FrenchDescription,
-        MoneyValue? Price
+        MoneyValueDTO? Price
         );
 }

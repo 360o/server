@@ -59,7 +59,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
         {
             var response = await ProgramTest.ApiClientUser1.Stores.ListItemsAsync(Guid.NewGuid());
 
-            await CustomAssertions.AssertNotFoundAsync(response, "Store not found");
+            await CustomAssertions.AssertNotFoundWithProblemDetailsAsync(response, "Store not found");
         }
     }
 }
