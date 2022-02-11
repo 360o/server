@@ -18,7 +18,7 @@ namespace _360o.Server.Api.V1.Stores.Model
         {
         }
 
-        public string? EnglishName 
+        public string? EnglishName
         {
             get => _englishName;
             set
@@ -31,7 +31,7 @@ namespace _360o.Server.Api.V1.Stores.Model
                 {
                     _englishName = value.Trim();
                 }
-            } 
+            }
         }
 
         public string? FrenchName

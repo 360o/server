@@ -23,12 +23,12 @@ namespace _360o.Server.Api.V1.Stores.Model
             modelBuilder.Entity<Organization>().Property(e => e.Name).IsRequired();
             modelBuilder
                 .Entity<Organization>()
-                .HasGeneratedTsVectorColumn(e => e.EnglishSearchVector, "english", e => new { e.Name, e.EnglishShortDescription, e.EnglishLongDescription, e.EnglishCategoriesJoined })
+                .HasGeneratedTsVectorColumn(e => e.EnglishSearchVector, "english", e => new { e.Name, e.EnglishShortDescription, e.EnglishLongDescription, e.EnglishJoinedCategories })
                 .HasIndex(s => s.EnglishSearchVector)
                 .HasMethod("GIN");
             modelBuilder
                 .Entity<Organization>()
-                .HasGeneratedTsVectorColumn(e => e.FrenchSearchVector, "french", e => new { e.Name, e.FrenchShortDescription, e.FrenchLongDescription, e.FrenchCategoriesJoined })
+                .HasGeneratedTsVectorColumn(e => e.FrenchSearchVector, "french", e => new { e.Name, e.FrenchShortDescription, e.FrenchLongDescription, e.FrenchJoinedCategories })
                 .HasIndex(s => s.FrenchSearchVector)
                 .HasMethod("GIN");
 

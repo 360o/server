@@ -84,11 +84,11 @@ namespace _360o.Server.Api.V1.Organizations.Model
                         .ToList();
                 }
 
-                EnglishCategoriesJoined = JoinCategories(_englishCategories);
+                EnglishJoinedCategories = JoinCategories(_englishCategories);
             }
         }
 
-        public string EnglishCategoriesJoined { get; private set; } = string.Empty;
+        public string EnglishJoinedCategories { get; private set; } = string.Empty;
 
         public NpgsqlTsVector EnglishSearchVector { get; private set; }
 
@@ -141,11 +141,11 @@ namespace _360o.Server.Api.V1.Organizations.Model
                         .ToList();
                 }
 
-                FrenchCategoriesJoined = JoinCategories(_frenchCategories);
+                FrenchJoinedCategories = JoinCategories(_frenchCategories);
             }
         }
 
-        public string FrenchCategoriesJoined { get; private set; } = string.Empty;
+        public string FrenchJoinedCategories { get; private set; } = string.Empty;
 
         public NpgsqlTsVector FrenchSearchVector { get; private set; }
 
