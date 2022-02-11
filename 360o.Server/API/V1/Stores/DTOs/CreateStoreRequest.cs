@@ -3,7 +3,5 @@
     public readonly record struct CreateStoreRequest(
         Guid OrganizationId,
         PlaceDTO Place
-        )
-    {
-    }
+        );
 }

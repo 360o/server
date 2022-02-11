@@ -14,11 +14,12 @@ namespace _360.Server.UnitTests.Api.V1.Stores.Model
         public void GivenValidArgumentsShouldReturnStore()
         {
             var organizationId = _faker.Random.Uuid();
+            var place = MakeRandomPlace();
 
-            var store = new Store(organizationId);
+            var store = new Store(organizationId, place);
 
             Assert.AreEqual(organizationId, store.OrganizationId);
-            Assert.IsNull(store.Place);
+            Assert.AreEqual(place, store.Place);
         }
 
         [TestMethod]
@@ -28,63 +29,63 @@ namespace _360.Server.UnitTests.Api.V1.Stores.Model
 
             var place = MakeRandomPlace();
 
-            store.SetPlace(place);
+            store.Place = place;
 
             Assert.AreEqual(place, store.Place);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException), "Value cannot be null. (Parameter 'GooglePlaceId')")]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void GivenNullGooglePlaceIdSetPlaceShouldThrow()
         {
             var store = MakeRandomStore();
             var testPlace = MakeRandomPlace();
             var place = new Place(null!, testPlace.FormattedAddress, testPlace.Location);
 
-            store.SetPlace(place);
+            store.Place = place;
         }
 
         [DataTestMethod]
         [DataRow("")]
         [DataRow(" ")]
-        [ExpectedException(typeof(ArgumentException), "Required input GooglePlaceId was empty. (Parameter 'GooglePlaceId')")]
+        [ExpectedException(typeof(ArgumentException))]
         public void GivenWhitespaceGooglePlaceIdShouldThrow(string googlePlaceId)
         {
             var store = MakeRandomStore();
             var testPlace = MakeRandomPlace();
             var place = new Place(googlePlaceId, testPlace.FormattedAddress, testPlace.Location);
 
-            store.SetPlace(place);
+            store.Place = place;
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException), "Value cannot be null. (Parameter 'FormattedAddress')")]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void GivenNullFormattedAddressShouldThrow()
         {
             var store = MakeRandomStore();
             var testPlace = MakeRandomPlace();
             var place = new Place(testPlace.GooglePlaceId, null!, testPlace.Location);
 
-            store.SetPlace(place);
+            store.Place = place;
         }
 
         [DataTestMethod]
         [DataRow("")]
         [DataRow(" ")]
-        [ExpectedException(typeof(ArgumentException), "Required input FormattedAddress was empty. (Parameter 'FormattedAddress')")]
+        [ExpectedException(typeof(ArgumentException))]
         public void GivenWhitespaceFormattedAddressShouldThrow(string formattedAddress)
         {
             var store = MakeRandomStore();
             var testPlace = MakeRandomPlace();
             var place = new Place(testPlace.GooglePlaceId, formattedAddress, testPlace.Location);
 
-            store.SetPlace(place);
+            store.Place = place;
         }
 
         [DataTestMethod]
         [DataRow(-91)]
         [DataRow(91)]
-        [ExpectedException(typeof(ArgumentOutOfRangeException), "Input Latitude was out of range (Parameter 'Latitude')")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void GivenInvalidLatitudeShouldThrow(double latitude)
         {
             var store = MakeRandomStore();
@@ -95,13 +96,13 @@ namespace _360.Server.UnitTests.Api.V1.Stores.Model
                 Longitude = testPlace.Location.Longitude
             });
 
-            store.SetPlace(place);
+            store.Place = place;
         }
 
         [DataTestMethod]
         [DataRow(-181)]
         [DataRow(181)]
-        [ExpectedException(typeof(ArgumentOutOfRangeException), "Input Longitude was out of range (Parameter 'Latitude')")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void GivenInvalidLongitudeShouldThrow(double longitude)
         {
             var store = MakeRandomStore();
@@ -112,14 +113,15 @@ namespace _360.Server.UnitTests.Api.V1.Stores.Model
                 Longitude = longitude
             });
 
-            store.SetPlace(place);
+            store.Place = place;
         }
 
         private Store MakeRandomStore()
         {
             var organizationId = _faker.Random.Uuid();
+            var place = MakeRandomPlace();
 
-            return new Store(organizationId);
+            return new Store(organizationId, place);
         }
 
         private Place MakeRandomPlace()

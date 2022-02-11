@@ -4,7 +4,8 @@ namespace _360o.Server.Api.V1.Stores.Model
 {
     public class Offer : BaseEntity
     {
-        private List<OfferItem> _offerItems = new List<OfferItem>();
+        private List<OfferItem> _offerItems;
+        private MoneyValue? _discount;
 
         public Offer(Guid storeId)
         {
@@ -15,42 +16,52 @@ namespace _360o.Server.Api.V1.Stores.Model
         {
         }
 
-        public string EnglishName { get; private set; } = string.Empty;
+        public string? EnglishName { get; set; }
 
-        public string FrenchName { get; private set; } = string.Empty;
+        public string? FrenchName { get; set; }
 
-        public MoneyValue? Discount { get; private set; }
+        public MoneyValue? Discount
+        {
+            get => _discount;
+            set
+            {
+                if (!value.HasValue)
+                {
+                    _discount = null;
+                }
+                else
+                {
+                    Guard.Against.NegativeOrZero(value.Value.Amount, nameof(value.Value.Amount));
+                    Guard.Against.EnumOutOfRange(value.Value.CurrencyCode, nameof(value.Value.CurrencyCode));
+
+                    _discount = value.Value;
+                }
+            }
+        }
 
         public Guid StoreId { get; private set; }
 
         public Store Store { get; private set; }
 
-        public IReadOnlyList<OfferItem> OfferItems => _offerItems.AsReadOnly();
-
-        public void SetEnglishName(string englishName)
+        public List<OfferItem> OfferItems
         {
-            EnglishName = Guard.Against.Null(englishName, nameof(englishName));
-        }
-
-        public void SetFrenchName(string frenchName)
-        {
-            FrenchName = Guard.Against.Null(frenchName, nameof(frenchName));
-        }
-
-        public void SetOfferItems(ISet<OfferItem> offerItems)
-        {
-            _offerItems = offerItems.ToList();
-        }
-
-        public void SetDiscount(MoneyValue? discount)
-        {
-            if (discount.HasValue)
+            get => _offerItems;
+            set
             {
-                Guard.Against.NegativeOrZero(discount.Value.Amount, nameof(discount.Value.Amount));
-                Guard.Against.EnumOutOfRange(discount.Value.CurrencyCode, nameof(discount.Value.CurrencyCode));
-            }
+                var offerItems = Guard.Against.NullOrEmpty(value, nameof(value));
 
-            Discount = discount;
+                var duplicates = offerItems
+                    .GroupBy(i => i.ItemId)
+                    .Where(g => g.Count() > 1)
+                    .Select(g => g.Key);
+
+                if (duplicates.Any())
+                {
+                    throw new ArgumentException($"Duplicate items {string.Join(',', duplicates)}", nameof(value));
+                }
+
+                _offerItems = offerItems.ToList();
+            }
         }
     }
 }

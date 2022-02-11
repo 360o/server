@@ -6,9 +6,6 @@ using Bogus;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace _360.Server.IntegrationTests.Api.V1.Stores
@@ -16,41 +13,259 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
     [TestClass]
     public class PatchStoreTest
     {
+        private readonly Faker _faker = new Faker();
+
         [TestMethod]
-        public async Task GivenPlaceIsNotNullShouldReturnOK()
+        public async Task GivenPlaceShouldReturnOK()
         {
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
 
             var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
 
-            var faker = new Faker();
-
-            var request = new PatchStoreRequest
+            var place = new PlaceDTO
             {
-                Place = new PlaceDTO
+                GooglePlaceId = _faker.Random.Uuid().ToString(),
+                FormattedAddress = _faker.Address.FullAddress(),
+                Location = new Location
                 {
-                    GooglePlaceId = faker.Random.Uuid().ToString(),
-                    FormattedAddress = faker.Address.FullAddress(),
-                    Location = new Location
-                    {
-                        Latitude = faker.Address.Latitude(),
-                        Longitude = faker.Address.Longitude(),
-                    }
+                    Latitude = _faker.Address.Latitude(),
+                    Longitude = _faker.Address.Longitude(),
                 }
             };
 
-            var updatedStore = await ProgramTest.ApiClientUser1.Stores.PatchStoreAndDeserializeAsync(store.Id, request);
+            var patchDoc = new[]
+            {
+                new
+                {
+                    op = "replace",
+                    path = "/Place",
+                    value = place
+                }
+            };
 
-            Assert.AreEqual(request.Place, updatedStore.Place);
-            StoresHelper.AssertStoresAreEqual(store, updatedStore with { Place = store.Place });
+            var updatedStore = await ProgramTest.ApiClientUser1.Stores.PatchStoreAndDeserializeAsync(store.Id, patchDoc);
+
+            Assert.AreEqual(place, updatedStore.Place);
+            CustomAssertions.AssertDTOsAreEqual(store, updatedStore with { Place = store.Place });
+        }
+
+        [TestMethod]
+        public async Task GivenNullGooglePlaceIdShouldReturnBadRequest()
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+
+            var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
+
+            var place = new PlaceDTO
+            {
+                GooglePlaceId = null,
+                FormattedAddress = _faker.Address.FullAddress(),
+                Location = new Location
+                {
+                    Latitude = _faker.Address.Latitude(),
+                    Longitude = _faker.Address.Longitude(),
+                }
+            };
+
+            var patchDoc = new[]
+            {
+                new
+                {
+                    op = "replace",
+                    path = "/Place",
+                    value = place
+                }
+            };
+
+            var response = await ProgramTest.ApiClientUser1.Stores.PatchStoreAsync(store.Id, patchDoc);
+
+            await CustomAssertions.AssertBadRequestAsync(response, "GooglePlaceId");
+        }
+
+        [DataTestMethod]
+        [DataRow("")]
+        [DataRow(" ")]
+        public async Task GivenWhitespaceGooglePlaceIdShouldReturnBadRequest(string googlePlaceId)
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+
+            var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
+
+            var place = new PlaceDTO
+            {
+                GooglePlaceId = googlePlaceId,
+                FormattedAddress = _faker.Address.FullAddress(),
+                Location = new Location
+                {
+                    Latitude = _faker.Address.Latitude(),
+                    Longitude = _faker.Address.Longitude(),
+                }
+            };
+
+            var patchDoc = new[]
+            {
+                new
+                {
+                    op = "replace",
+                    path = "/Place",
+                    value = place
+                }
+            };
+
+            var response = await ProgramTest.ApiClientUser1.Stores.PatchStoreAsync(store.Id, patchDoc);
+
+            await CustomAssertions.AssertBadRequestAsync(response, "GooglePlaceId");
+        }
+
+        [TestMethod]
+        public async Task GivenNullFormattedAddressShouldReturnBadRequest()
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+
+            var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
+
+            var place = new PlaceDTO
+            {
+                GooglePlaceId = _faker.Random.Uuid().ToString(),
+                FormattedAddress = null,
+                Location = new Location
+                {
+                    Latitude = _faker.Address.Latitude(),
+                    Longitude = _faker.Address.Longitude(),
+                }
+            };
+
+            var patchDoc = new[]
+            {
+                new
+                {
+                    op = "replace",
+                    path = "/Place",
+                    value = place
+                }
+            };
+
+            var response = await ProgramTest.ApiClientUser1.Stores.PatchStoreAsync(store.Id, patchDoc);
+
+            await CustomAssertions.AssertBadRequestAsync(response, "FormattedAddress");
+        }
+
+        [DataTestMethod]
+        [DataRow("")]
+        [DataRow(" ")]
+        public async Task GivenWhitespaceFormattedAddressShouldReturnBadRequest(string formattedAddress)
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+
+            var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
+
+            var place = new PlaceDTO
+            {
+                GooglePlaceId = _faker.Random.Uuid().ToString(),
+                FormattedAddress = formattedAddress,
+                Location = new Location
+                {
+                    Latitude = _faker.Address.Latitude(),
+                    Longitude = _faker.Address.Longitude(),
+                }
+            };
+
+            var patchDoc = new[]
+            {
+                new
+                {
+                    op = "replace",
+                    path = "/Place",
+                    value = place
+                }
+            };
+
+            var response = await ProgramTest.ApiClientUser1.Stores.PatchStoreAsync(store.Id, patchDoc);
+
+            await CustomAssertions.AssertBadRequestAsync(response, "FormattedAddress");
+        }
+
+        [DataTestMethod]
+        [DataRow(-91)]
+        [DataRow(91)]
+        public async Task GivenInvalidLatitudeShouldReturnBadRequest(double latitude)
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+
+            var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
+
+            var place = new PlaceDTO
+            {
+                GooglePlaceId = _faker.Random.Uuid().ToString(),
+                FormattedAddress = _faker.Address.FullAddress(),
+                Location = new Location
+                {
+                    Latitude = latitude,
+                    Longitude = _faker.Address.Longitude()
+                }
+            };
+
+            var patchDoc = new[]
+            {
+                new
+                {
+                    op = "replace",
+                    path = "/Place",
+                    value = place
+                }
+            };
+
+            var response = await ProgramTest.ApiClientUser1.Stores.PatchStoreAsync(store.Id, patchDoc);
+
+            await CustomAssertions.AssertBadRequestAsync(response, "Latitude");
+        }
+
+        [DataTestMethod]
+        [DataRow(-181)]
+        [DataRow(181)]
+        public async Task GivenInvalidLongitudeShouldReturnBadRequest(double longitude)
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+
+            var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
+
+            var place = new PlaceDTO
+            {
+                GooglePlaceId = _faker.Random.Uuid().ToString(),
+                FormattedAddress = _faker.Address.FullAddress(),
+                Location = new Location
+                {
+                    Latitude = _faker.Address.Latitude(),
+                    Longitude = longitude
+                }
+            };
+
+            var patchDoc = new[]
+            {
+                new
+                {
+                    op = "replace",
+                    path = "/Place",
+                    value = place
+                }
+            };
+
+            var response = await ProgramTest.ApiClientUser1.Stores.PatchStoreAsync(store.Id, patchDoc);
+
+            await CustomAssertions.AssertBadRequestAsync(response, "Longitude");
         }
 
         [TestMethod]
         public async Task GivenNoAccessTokenShouldReturnUnauthorized()
         {
-            var request = new PatchStoreRequest();
+            var patchDoc = new[]
+            {
+                new
+                {
+                }
+            };
 
-            var requestContent = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+            var requestContent = JsonUtils.MakeJsonStringContent(patchDoc);
 
             var response = await ProgramTest.NewClient().PatchAsync(StoresHelper.StoreRoute(Guid.NewGuid()), requestContent);
 
@@ -64,9 +279,14 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
 
-            var request = new PatchStoreRequest();
+            var patchDoc = new[]
+            {
+                new
+                {
+                }
+            };
 
-            var response = await ProgramTest.ApiClientUser2.Stores.PatchStoreAsync(store.Id, request);
+            var response = await ProgramTest.ApiClientUser2.Stores.PatchStoreAsync(store.Id, patchDoc);
 
             Assert.AreEqual(HttpStatusCode.Forbidden, response.StatusCode);
         }
@@ -74,11 +294,16 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
         [TestMethod]
         public async Task GivenStoreDoesNotExistShouldReturnNotFound()
         {
-            var request = new PatchStoreRequest();
+            var patchDoc = new[]
+            {
+                new
+                {
+                }
+            };
 
-            var response = await ProgramTest.ApiClientUser1.Stores.PatchStoreAsync(Guid.NewGuid(), request);
+            var response = await ProgramTest.ApiClientUser1.Stores.PatchStoreAsync(Guid.NewGuid(), patchDoc);
 
-            await ProblemDetailAssertions.AssertNotFoundAsync(response, "Store not found");
+            await CustomAssertions.AssertNotFoundAsync(response, "Store not found");
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient;
+﻿using _360.Server.IntegrationTests.Api.V1.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Net;
@@ -16,7 +16,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.GetOrganizationByIdAndDeserializeAsync(createdOrganization.Id);
 
-            OrganizationsHelper.AssertOrganizationsAreEqual(createdOrganization, organization);
+            CustomAssertions.AssertDTOsAreEqual(createdOrganization, organization);
         }
 
         [TestMethod]

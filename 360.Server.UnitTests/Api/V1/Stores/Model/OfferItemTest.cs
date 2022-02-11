@@ -14,41 +14,31 @@ namespace _360.Server.UnitTests.Api.V1.Stores.Model
         public void GivenValidArgumentsShouldReturnOfferItem()
         {
             var itemId = _faker.Random.Uuid();
+            var quantity = _faker.Random.Int(1, int.MaxValue);
 
-            var offerItem = new OfferItem(itemId);
+            var offerItem = new OfferItem(itemId, quantity);
 
             Assert.AreEqual(itemId, offerItem.ItemId);
-            Assert.IsNull(offerItem.Quantity);
-        }
-
-        [TestMethod]
-        public void SetQuantity()
-        {
-            var offerItem = MakeRandomOfferItem();
-
-            var quantity = _faker.Random.Int(1);
-
-            offerItem.SetQuantity(quantity);
-
             Assert.AreEqual(quantity, offerItem.Quantity);
         }
 
         [DataTestMethod]
         [DataRow(-1)]
         [DataRow(0)]
-        [ExpectedException(typeof(ArgumentException), "Required input quantity cannot be zero or negative. (Parameter 'quantity')")]
+        [ExpectedException(typeof(ArgumentException))]
         public void GivenNegativeOrZeroQuantitySetQuantityShouldThrow(int quantity)
         {
             var offerItem = MakeRandomOfferItem();
 
-            offerItem.SetQuantity(quantity);
+            offerItem.Quantity = quantity;
         }
 
         private OfferItem MakeRandomOfferItem()
         {
             var itemId = _faker.Random.Uuid();
+            var quantity = _faker.Random.Int(1, int.MaxValue);
 
-            return new OfferItem(itemId);
+            return new OfferItem(itemId, quantity);
         }
     }
 }

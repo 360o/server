@@ -1,4 +1,5 @@
-﻿using _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient;
+﻿using _360.Server.IntegrationTests.Api.V1.Helpers;
+using _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient;
 using _360.Server.IntegrationTests.Api.V1.Helpers.Generators;
 using _360o.Server.Api.V1.Errors.Enums;
 using _360o.Server.Api.V1.Stores.DTOs;
@@ -86,28 +87,12 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             request = request with
             {
-                Place = new PlaceDTO
-                {
-                    GooglePlaceId = googlePlaceId,
-                    FormattedAddress = request.Place.FormattedAddress,
-                    Location = request.Place.Location,
-                }
+                Place = new PlaceDTO(googlePlaceId, request.Place.FormattedAddress, request.Place.Location)
             };
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateStoreAsync(request);
 
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
-
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.Detail);
-            Assert.IsNotNull(result.Status);
-            Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
-            Assert.IsTrue(result.Detail.Contains("GooglePlaceId"));
+            await CustomAssertions.AssertBadRequestAsync(response, "GooglePlaceId");
         }
 
         [DataTestMethod]
@@ -120,28 +105,12 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             request = request with
             {
-                Place = new PlaceDTO
-                {
-                    GooglePlaceId = request.Place.GooglePlaceId,
-                    FormattedAddress = formattedAddress,
-                    Location = request.Place.Location,
-                }
+                Place = new PlaceDTO(request.Place.GooglePlaceId, formattedAddress, request.Place.Location)
             };
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateStoreAsync(request);
 
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
-
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.Detail);
-            Assert.IsNotNull(result.Status);
-            Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
-            Assert.IsTrue(result.Detail.Contains("FormattedAddress"));
+            await CustomAssertions.AssertBadRequestAsync(response, "FormattedAddress");
         }
 
         [DataTestMethod]
@@ -153,28 +122,12 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             request = request with
             {
-                Place = new PlaceDTO
-                {
-                    GooglePlaceId = request.Place.GooglePlaceId,
-                    FormattedAddress = request.Place.FormattedAddress,
-                    Location = new Location(latitude, request.Place.Location.Longitude)
-                }
+                Place = new PlaceDTO(request.Place.GooglePlaceId, request.Place.FormattedAddress, new Location(latitude, request.Place.Location.Longitude))
             };
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateStoreAsync(request);
 
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
-
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.Detail);
-            Assert.IsNotNull(result.Status);
-            Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
-            Assert.IsTrue(result.Detail.Contains("Latitude"));
+            await CustomAssertions.AssertBadRequestAsync(response, "Latitude");
         }
 
         [DataTestMethod]
@@ -186,28 +139,12 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             request = request with
             {
-                Place = new PlaceDTO
-                {
-                    GooglePlaceId = request.Place.GooglePlaceId,
-                    FormattedAddress = request.Place.FormattedAddress,
-                    Location = new Location(request.Place.Location.Latitude, longitude)
-                }
+                Place = new PlaceDTO(request.Place.GooglePlaceId, request.Place.FormattedAddress, new Location(request.Place.Location.Latitude, longitude))
             };
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateStoreAsync(request);
 
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
-
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.Detail);
-            Assert.IsNotNull(result.Status);
-            Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
-            Assert.IsTrue(result.Detail.Contains("Longitude"));
+            await CustomAssertions.AssertBadRequestAsync(response, "Longitude");
         }
     }
 }

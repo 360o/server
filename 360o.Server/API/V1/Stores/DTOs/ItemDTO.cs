@@ -2,14 +2,12 @@
 
 namespace _360o.Server.Api.V1.Stores.DTOs
 {
-    public readonly record struct ItemDTO(
+    public record class ItemDTO(
         Guid Id,
         string? EnglishName,
         string? EnglishDescription,
         string? FrenchName,
         string? FrenchDescription,
         MoneyValue? Price
-        )
-    {
-    }
+        );
 }

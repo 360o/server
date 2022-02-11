@@ -1,12 +1,14 @@
 ﻿using _360o.Server.Api.V1.Errors.Enums;
 using _360o.Server.Api.V1.Organizations.DTOs;
+using _360o.Server.Api.V1.Organizations.Model;
 using _360o.Server.Api.V1.Organizations.Services;
 using _360o.Server.Api.V1.Organizations.Services.Inputs;
 using _360o.Server.Api.V1.Organizations.Validators;
-using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Net;
 
 namespace _360o.Server.Api.V1.Organizations.Controllers
@@ -16,12 +18,10 @@ namespace _360o.Server.Api.V1.Organizations.Controllers
     public class OrganizationsController : ControllerBase
     {
         private readonly IOrganizationsService _organizationsService;
-        private readonly IMapper _mapper;
 
-        public OrganizationsController(IOrganizationsService organizationsService, IMapper mapper)
+        public OrganizationsController(IOrganizationsService organizationsService)
         {
             _organizationsService = organizationsService;
-            _mapper = mapper;
         }
 
         [HttpPost]
@@ -46,7 +46,7 @@ namespace _360o.Server.Api.V1.Organizations.Controllers
                     )
                 );
 
-            return CreatedAtAction(nameof(GetOrganizationByIdAsync), new { id = organization.Id }, _mapper.Map<OrganizationDTO>(organization));
+            return CreatedAtAction(nameof(GetOrganizationByIdAsync), new { id = organization.Id }, ToOrganizationDTO(organization));
         }
 
         [HttpGet("{id}")]
@@ -61,30 +61,56 @@ namespace _360o.Server.Api.V1.Organizations.Controllers
                 return Problem(detail: "Organization not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
             }
 
-            return _mapper.Map<OrganizationDTO>(organization);
+            return ToOrganizationDTO(organization);
         }
 
         [HttpPatch("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OrganizationDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize]
-        public async Task<ActionResult<OrganizationDTO>> UpdateOrganizationAsync(Guid id, [FromBody] PatchOrganizationRequest request)
+        public async Task<ActionResult<OrganizationDTO>> PatchOrganizationAsync(Guid id, [FromBody] JsonPatchDocument<Organization> patchDoc)
         {
-            var organization = await _organizationsService.GetOrganizationByIdAsync(id);
-
-            if (organization == null)
+            if (patchDoc != null)
             {
-                return Problem(detail: "Organization not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
-            }
+                var organization = await _organizationsService.GetOrganizationByIdAsync(id);
 
-            if (User.Identity.Name != organization.UserId)
+                if (organization == null)
+                {
+                    return Problem(detail: "Organization not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
+                }
+
+                if (User.Identity.Name != organization.UserId)
+                {
+                    return Forbid();
+                }
+
+                try
+                {
+                    patchDoc.ApplyTo(organization, ModelState);
+                }
+                catch (JsonSerializationException ex)
+                {
+                    if (ex.InnerException is ArgumentException)
+                    {
+                        return Problem(detail: ex.InnerException.Message, statusCode: (int)HttpStatusCode.BadRequest, title: ErrorCode.InvalidRequest.ToString());
+                    }
+
+                    throw;
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                organization = await _organizationsService.UpdateOrganizationAsync(organization);
+
+                return ToOrganizationDTO(organization);
+            }
+            else
             {
-                return Forbid();
+                return BadRequest(ModelState);
             }
-
-            organization = await _organizationsService.PatchOrganizationAsync(organization.Id, _mapper.Map<PatchOrganizationInput>(request));
-
-            return _mapper.Map<OrganizationDTO>(organization);
         }
 
         [HttpDelete("{id}")]
@@ -108,6 +134,21 @@ namespace _360o.Server.Api.V1.Organizations.Controllers
             await _organizationsService.DeleteOrganizationByIdAsync(id);
 
             return NoContent();
+        }
+
+        private OrganizationDTO ToOrganizationDTO(Organization organization)
+        {
+            return new OrganizationDTO
+            {
+                Id = organization.Id,
+                Name = organization.Name,
+                EnglishShortDescription = organization.EnglishShortDescription,
+                EnglishLongDescription = organization.EnglishLongDescription,
+                EnglishCategories = organization.EnglishCategories,
+                FrenchShortDescription = organization.FrenchShortDescription,
+                FrenchLongDescription = organization.FrenchLongDescription,
+                FrenchCategories = organization.FrenchCategories,
+            };
         }
     }
 }

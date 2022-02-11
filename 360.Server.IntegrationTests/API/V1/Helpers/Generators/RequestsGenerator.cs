@@ -20,25 +20,17 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.Generators
                 Name = EnglishFaker.Company.CompanyName(),
                 EnglishShortDescription = EnglishFaker.Company.CatchPhrase(),
                 EnglishLongDescription = EnglishFaker.Commerce.ProductDescription(),
-                EnglishCategories = EnglishFaker.Commerce.Categories(EnglishFaker.Random.Int(0, 5)).ToHashSet(),
+                EnglishCategories = EnglishFaker.Commerce.Categories(EnglishFaker.Random.Int(1, 20)).ToHashSet(),
                 FrenchShortDescription = FrenchFaker.Company.CatchPhrase(),
                 FrenchLongDescription = FrenchFaker.Commerce.ProductDescription(),
-                FrenchCategories = FrenchFaker.Commerce.Categories(FrenchFaker.Random.Int(0, 5)).ToHashSet(),
+                FrenchCategories = FrenchFaker.Commerce.Categories(FrenchFaker.Random.Int(1, 20)).ToHashSet(),
             };
         }
 
         public static CreateStoreRequest MakeRandomCreateStoreRequest(Guid organizationId)
         {
-            return new CreateStoreRequest
-            {
-                OrganizationId = organizationId,
-                Place = new PlaceDTO
-                {
-                    GooglePlaceId = EnglishFaker.Random.Uuid().ToString(),
-                    FormattedAddress = EnglishFaker.Address.FullAddress(),
-                    Location = new Location(EnglishFaker.Address.Latitude(), EnglishFaker.Address.Longitude())
-                },
-            };
+            var place = new PlaceDTO(EnglishFaker.Random.Uuid().ToString(), EnglishFaker.Address.FullAddress(), new Location(EnglishFaker.Address.Latitude(), EnglishFaker.Address.Longitude()));
+            return new CreateStoreRequest(organizationId, place);
         }
 
         public static CreateItemRequest MakeRandomCreateItemRequest()

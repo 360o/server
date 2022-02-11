@@ -6,10 +6,18 @@ namespace _360o.Server.Api.V1.Organizations.Model
 {
     public class Organization : BaseEntity
     {
+        private string _name;
+        private string? _englishShortDescription;
+        private string? _englishLongDescription;
+        private List<string>? _englishCategories;
+        private List<string>? _frenchCategories;
+        private string? _frenchShortDescription;
+        private string? _frenchLongDescription;
+
         public Organization(string userId, string name)
         {
             UserId = Guard.Against.NullOrWhiteSpace(userId, nameof(userId));
-            Name = Guard.Against.NullOrWhiteSpace(name, nameof(name));
+            Name = name;
         }
 
         private Organization()
@@ -18,59 +26,131 @@ namespace _360o.Server.Api.V1.Organizations.Model
 
         public string UserId { get; private set; }
 
-        public string Name { get; private set; }
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                _name = Guard.Against.NullOrWhiteSpace(value, nameof(Name));
+            }
+        }
 
-        public string EnglishShortDescription { get; private set; } = string.Empty;
-        public string EnglishLongDescription { get; private set; } = string.Empty;
-        public List<string> EnglishCategories { get; private set; } = new List<string>();
+        public string? EnglishShortDescription
+        {
+            get => _englishShortDescription;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    _englishShortDescription = null;
+                }
+                else
+                {
+                    _englishShortDescription = value.Trim();
+                }
+            }
+        }
+
+        public string? EnglishLongDescription
+        {
+            get => _englishLongDescription;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    _englishLongDescription = null;
+                }
+                else
+                {
+                    _englishLongDescription = value.Trim();
+                }
+            }
+        }
+
+        public List<string>? EnglishCategories
+        {
+            get => _englishCategories?.ToList();
+            set
+            {
+                if (value == null || value.Count == 0)
+                {
+                    _englishCategories = null;
+                }
+                else
+                {
+                    _englishCategories = value.ToHashSet()
+                        .Where(c => !string.IsNullOrWhiteSpace(c))
+                        .Select(c => c.Trim())
+                        .ToList();
+                }
+
+                EnglishCategoriesJoined = JoinCategories(_englishCategories);
+            }
+        }
+
         public string EnglishCategoriesJoined { get; private set; } = string.Empty;
+
         public NpgsqlTsVector EnglishSearchVector { get; private set; }
 
-        public string FrenchShortDescription { get; private set; } = string.Empty;
-        public string FrenchLongDescription { get; private set; } = string.Empty;
-        public List<string> FrenchCategories { get; private set; } = new List<string>();
+        public string? FrenchShortDescription
+        {
+            get => _frenchShortDescription;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    _frenchShortDescription = null;
+                }
+                else
+                {
+                    _frenchShortDescription = value.Trim();
+                }
+            }
+        }
+
+        public string? FrenchLongDescription
+        {
+            get => _frenchLongDescription;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    _frenchLongDescription = null;
+                }
+                else
+                {
+                    _frenchLongDescription = value.Trim();
+                }
+            }
+        }
+
+        public List<string>? FrenchCategories
+        {
+            get => _frenchCategories?.ToList();
+            set
+            {
+                if (value == null || value.Count == 0)
+                {
+                    _frenchCategories = null;
+                }
+                else
+                {
+                    _frenchCategories = value.ToHashSet()
+                        .Where(c => !string.IsNullOrWhiteSpace(c))
+                        .Select(c => c.Trim())
+                        .ToList();
+                }
+
+                FrenchCategoriesJoined = JoinCategories(_frenchCategories);
+            }
+        }
+
         public string FrenchCategoriesJoined { get; private set; } = string.Empty;
+
         public NpgsqlTsVector FrenchSearchVector { get; private set; }
 
         public List<Store> Stores { get; private set; }
 
-        public void SetName(string name)
-        {
-            Name = Guard.Against.NullOrWhiteSpace(name, nameof(name));
-        }
-
-        public void SetEnglishShortDescription(string englishShortDescription)
-        {
-            EnglishShortDescription = Guard.Against.Null(englishShortDescription, nameof(englishShortDescription)).Trim();
-        }
-
-        public void SetEnglishLongDescription(string englishLongDescription)
-        {
-            EnglishLongDescription = Guard.Against.Null(englishLongDescription, nameof(englishLongDescription)).Trim();
-        }
-
-        public void SetEnglishCategories(ISet<string> categories)
-        {
-            EnglishCategories = categories.Select(c => c.Trim()).ToList();
-            EnglishCategoriesJoined = JoinCategories(EnglishCategories);
-        }
-
-        public void SetFrenchShortDescription(string frenchShortDescription)
-        {
-            FrenchShortDescription = Guard.Against.Null(frenchShortDescription, nameof(frenchShortDescription)).Trim();
-        }
-
-        public void SetFrenchLongDescription(string frenchLongDescription)
-        {
-            FrenchLongDescription = Guard.Against.Null(frenchLongDescription, nameof(frenchLongDescription)).Trim();
-        }
-
-        public void SetFrenchCategories(ISet<string> categories)
-        {
-            FrenchCategories = categories.Select(c => c.Trim()).ToList();
-            FrenchCategoriesJoined = JoinCategories(FrenchCategories);
-        }
-
-        private string JoinCategories(IReadOnlyList<string> categories) => string.Join(" ", categories);
+        private string JoinCategories(IEnumerable<string>? categories) => categories == null ? string.Empty : string.Join(" ", categories);
     }
 }

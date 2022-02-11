@@ -8,7 +8,5 @@
         string? FrenchShortDescription,
         string? FrenchLongDescription,
         ISet<string>? FrenchCategories
-        )
-    {
-    }
+        );
 }

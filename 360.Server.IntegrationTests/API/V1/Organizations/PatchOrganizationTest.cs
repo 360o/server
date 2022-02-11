@@ -1,14 +1,11 @@
 ﻿using _360.Server.IntegrationTests.Api.V1.Helpers;
 using _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient;
-using _360o.Server.Api.V1.Organizations.DTOs;
 using Bogus;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace _360.Server.IntegrationTests.Api.V1.Organizations
@@ -16,138 +13,444 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
     [TestClass]
     public class PatchOrganizationTest
     {
+        private readonly Faker _englishFaker = new Faker();
+        private readonly Faker _frenchFaker = new Faker("fr");
+
         [TestMethod]
-        public async Task GivenNameNotNullShouldReturnOK()
+        public async Task GivenNameShouldReturnOK()
         {
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
 
-            var faker = new Faker();
+            var name = _englishFaker.Company.CompanyName();
 
-            var request = new PatchOrganizationRequest
+            var patchDoc = new[]
             {
-                Name = faker.Company.CompanyName()
+                new
+                {
+                    op = "replace",
+                    path = "/Name",
+                    value = name
+                }
             };
 
-            var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, request);
+            var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
 
-            Assert.AreEqual(request.Name, updatedOrganization.Name);
-            OrganizationsHelper.AssertOrganizationsAreEqual(organization, updatedOrganization with { Name = organization.Name });
+            Assert.AreEqual(name, updatedOrganization.Name);
+            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { Name = organization.Name });
         }
 
         [TestMethod]
-        public async Task GivenEnglishShortDescriptionNotNullShouldReturnOK()
+        public async Task GivenNullNameShouldReturnBadRequest()
         {
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
 
-            var faker = new Faker();
-
-            var request = new PatchOrganizationRequest
+            var patchDoc = new[]
             {
-                EnglishShortDescription = faker.Company.CatchPhrase()
+                new
+                {
+                    op = "replace",
+                    path = "/Name",
+                    value = (string)null
+                }
             };
 
-            var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, request);
+            var response = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAsync(organization.Id, patchDoc);
 
-            Assert.AreEqual(request.EnglishShortDescription, updatedOrganization.EnglishShortDescription);
-            OrganizationsHelper.AssertOrganizationsAreEqual(organization, updatedOrganization with { EnglishShortDescription = organization.EnglishShortDescription });
+            await CustomAssertions.AssertBadRequestAsync(response, "Name");
+        }
+
+        [DataTestMethod]
+        [DataRow("")]
+        [DataRow(" ")]
+        public async Task GivenWhitespaceNameShouldReturnBadRequest(string name)
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+
+            var patchDoc = new[]
+            {
+                new
+                {
+                    op = "replace",
+                    path = "/Name",
+                    value = name
+                }
+            };
+
+            var response = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAsync(organization.Id, patchDoc);
+
+            await CustomAssertions.AssertBadRequestAsync(response, "Name");
         }
 
         [TestMethod]
-        public async Task GivenEnglishLongDescriptionNotNullShouldReturnOK()
+        public async Task GivenEnglishShortDescriptionShouldReturnOK()
         {
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
 
-            var faker = new Faker();
+            var englishShortDescription = _englishFaker.Company.CatchPhrase();
 
-            var request = new PatchOrganizationRequest
+            var patchDoc = new[]
             {
-                EnglishLongDescription = faker.Company.CatchPhrase()
+                new
+                {
+                    op = "replace",
+                    path = "/EnglishShortDescription",
+                    value = englishShortDescription
+                }
             };
 
-            var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, request);
+            var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
 
-            Assert.AreEqual(request.EnglishLongDescription, updatedOrganization.EnglishLongDescription);
-            OrganizationsHelper.AssertOrganizationsAreEqual(organization, updatedOrganization with { EnglishLongDescription = organization.EnglishLongDescription });
+            Assert.AreEqual(englishShortDescription, updatedOrganization.EnglishShortDescription);
+            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { EnglishShortDescription = organization.EnglishShortDescription });
         }
 
         [TestMethod]
-        public async Task GivenEnglishCategoriesNotNullShouldReturnOK()
+        public async Task GivenNullEnglishShortDescriptionShouldReturnOK()
         {
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
 
-            var faker = new Faker();
-
-            var request = new PatchOrganizationRequest
+            var patchDoc = new[]
             {
-                EnglishCategories = faker.Commerce.Categories(faker.Random.Int(0, 5)).ToHashSet()
+                new
+                {
+                    op = "replace",
+                    path = "/EnglishShortDescription",
+                    value = (List<string>)null
+                }
             };
 
-            var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, request);
+            var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
 
-            CollectionAssert.AreEquivalent(request.EnglishCategories.ToList(), updatedOrganization.EnglishCategories.ToList());
-            OrganizationsHelper.AssertOrganizationsAreEqual(organization, updatedOrganization with { EnglishCategories = organization.EnglishCategories });
+            Assert.IsNull(updatedOrganization.EnglishShortDescription);
+            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { EnglishShortDescription = organization.EnglishShortDescription });
+        }
+
+        [DataTestMethod]
+        [DataRow("")]
+        [DataRow(" ")]
+        public async Task GivenWhitespaceEnglishShortDescriptionShouldReturnOK(string englishShortDescription)
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+
+            var patchDoc = new[]
+            {
+                new
+                {
+                    op = "replace",
+                    path = "/EnglishShortDescription",
+                    value = englishShortDescription
+                }
+            };
+
+            var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
+
+            Assert.IsNull(updatedOrganization.EnglishShortDescription);
+            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { EnglishShortDescription = organization.EnglishShortDescription });
         }
 
         [TestMethod]
-        public async Task GivenFrenchShortDescriptionNotNullShouldReturnOK()
+        public async Task GivenEnglishLongDescriptionShouldReturnOK()
         {
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
 
-            var faker = new Faker("fr");
+            var englishLongDescription = _englishFaker.Company.CatchPhrase();
 
-            var request = new PatchOrganizationRequest
+            var patchDoc = new[]
             {
-                FrenchShortDescription = faker.Company.CatchPhrase()
+                new
+                {
+                    op = "replace",
+                    path = "/EnglishLongDescription",
+                    value = englishLongDescription
+                }
             };
 
-            var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, request);
+            var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
 
-            Assert.AreEqual(request.FrenchShortDescription, updatedOrganization.FrenchShortDescription);
-            OrganizationsHelper.AssertOrganizationsAreEqual(organization, updatedOrganization with { FrenchShortDescription = organization.FrenchShortDescription });
+            Assert.AreEqual(englishLongDescription, updatedOrganization.EnglishLongDescription);
+            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { EnglishLongDescription = organization.EnglishLongDescription });
         }
 
         [TestMethod]
-        public async Task GivenFrenchLongDescriptionNotNullShouldReturnOK()
+        public async Task GivenEnglishCategoriesShouldReturnOK()
         {
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
 
-            var faker = new Faker("fr");
+            var categories = _englishFaker.Commerce.Categories(_englishFaker.Random.Int(1, 10));
 
-            var request = new PatchOrganizationRequest
+            var categoriesSet = categories.ToHashSet();
+
+            var patchDoc = new[]
             {
-                FrenchLongDescription = faker.Company.CatchPhrase()
+                new
+                {
+                    op = "replace",
+                    path = "/EnglishCategories",
+                    value = categories
+                }
             };
 
-            var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, request);
+            var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
 
-            Assert.AreEqual(request.FrenchLongDescription, updatedOrganization.FrenchLongDescription);
-            OrganizationsHelper.AssertOrganizationsAreEqual(organization, updatedOrganization with { FrenchLongDescription = organization.FrenchLongDescription });
+            Assert.IsNotNull(updatedOrganization.EnglishCategories);
+            CollectionAssert.AreEquivalent(categoriesSet.ToList(), updatedOrganization.EnglishCategories.ToList());
+            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { EnglishCategories = organization.EnglishCategories });
         }
 
         [TestMethod]
-        public async Task GivenFrenchCategoriesNotNullShouldReturnOK()
+        public async Task GivenNullEnglishCategoriesShouldReturnOK()
         {
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
 
-            var faker = new Faker("fr");
-
-            var request = new PatchOrganizationRequest
+            var patchDoc = new[]
             {
-                FrenchCategories = faker.Commerce.Categories(faker.Random.Int(0, 5)).ToHashSet()
+                new
+                {
+                    op = "replace",
+                    path = "/EnglishCategories",
+                    value = (List<string>)null
+                }
             };
 
-            var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, request);
+            var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
 
-            CollectionAssert.AreEquivalent(request.FrenchCategories.ToList(), updatedOrganization.FrenchCategories.ToList());
-            OrganizationsHelper.AssertOrganizationsAreEqual(organization, updatedOrganization with { FrenchCategories = organization.FrenchCategories });
+            Assert.IsNull(updatedOrganization.EnglishCategories);
+            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { EnglishCategories = organization.EnglishCategories });
+        }
+
+        [TestMethod]
+        public async Task GivenEmptyEnglishCategoriesShouldReturnOK()
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+
+            var patchDoc = new[]
+            {
+                new
+                {
+                    op = "replace",
+                    path = "/EnglishCategories",
+                    value = new List<string>()
+                }
+            };
+
+            var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
+
+            Assert.IsNull(updatedOrganization.EnglishCategories);
+            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { EnglishCategories = organization.EnglishCategories });
+        }
+
+        [TestMethod]
+        public async Task GivenFrenchShortDescriptionShouldReturnOK()
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+
+            var frenchShortDescription = _frenchFaker.Company.CatchPhrase();
+
+            var patchDoc = new[]
+            {
+                new
+                {
+                    op = "replace",
+                    path = "/FrenchShortDescription",
+                    value = frenchShortDescription
+                }
+            };
+
+            var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
+
+            Assert.AreEqual(frenchShortDescription, updatedOrganization.FrenchShortDescription);
+            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { FrenchShortDescription = organization.FrenchShortDescription });
+        }
+
+        [TestMethod]
+        public async Task GivenNullFrenchShortDescriptionShouldReturnOK()
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+
+            var patchDoc = new[]
+            {
+                new
+                {
+                    op = "replace",
+                    path = "/FrenchShortDescription",
+                    value = (List<string>)null
+                }
+            };
+
+            var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
+
+            Assert.IsNull(updatedOrganization.FrenchShortDescription);
+            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { FrenchShortDescription = organization.FrenchShortDescription });
+        }
+
+        [DataTestMethod]
+        [DataRow("")]
+        [DataRow(" ")]
+        public async Task GivenWhitespaceFrenchShortDescriptionShouldReturnOK(string frenchShortDescription)
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+
+            var patchDoc = new[]
+            {
+                new
+                {
+                    op = "replace",
+                    path = "/FrenchShortDescription",
+                    value = frenchShortDescription
+                }
+            };
+
+            var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
+
+            Assert.IsNull(updatedOrganization.FrenchShortDescription);
+            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { FrenchShortDescription = organization.FrenchShortDescription });
+        }
+
+        [TestMethod]
+        public async Task GivenFrenchLongDescriptionShouldReturnOK()
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+
+            var frenchLongDescription = _frenchFaker.Company.CatchPhrase();
+
+            var patchDoc = new[]
+            {
+                new
+                {
+                    op = "replace",
+                    path = "/FrenchLongDescription",
+                    value = frenchLongDescription
+                }
+            };
+
+            var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
+
+            Assert.AreEqual(frenchLongDescription, updatedOrganization.FrenchLongDescription);
+            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { FrenchLongDescription = organization.FrenchLongDescription });
+        }
+
+        [TestMethod]
+        public async Task GivenNullFrenchLongDescriptionShouldReturnOK()
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+
+            var patchDoc = new[]
+            {
+                new
+                {
+                    op = "replace",
+                    path = "/FrenchLongDescription",
+                    value = (List<string>)null
+                }
+            };
+
+            var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
+
+            Assert.IsNull(updatedOrganization.FrenchLongDescription);
+            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { FrenchLongDescription = organization.FrenchLongDescription });
+        }
+
+        [DataTestMethod]
+        [DataRow("")]
+        [DataRow(" ")]
+        public async Task GivenWhitespaceFrenchLongDescriptionShouldReturnOK(string frenchLongDescription)
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+
+            var patchDoc = new[]
+            {
+                new
+                {
+                    op = "replace",
+                    path = "/FrenchLongDescription",
+                    value = frenchLongDescription
+                }
+            };
+
+            var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
+
+            Assert.IsNull(updatedOrganization.FrenchLongDescription);
+            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { FrenchLongDescription = organization.FrenchLongDescription });
+        }
+
+        public async Task GivenFrenchCategoriesShouldReturnOK()
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+
+            var categories = _frenchFaker.Commerce.Categories(_englishFaker.Random.Int(1, 10));
+
+            var categoriesSet = categories.ToHashSet();
+
+            var patchDoc = new[]
+            {
+                new
+                {
+                    op = "replace",
+                    path = "/FrenchCategories",
+                    value = categories
+                }
+            };
+
+            var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
+
+            Assert.IsNotNull(updatedOrganization.FrenchCategories);
+            CollectionAssert.AreEquivalent(categoriesSet.ToList(), updatedOrganization.FrenchCategories.ToList());
+            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { FrenchCategories = organization.FrenchCategories });
+        }
+
+        [TestMethod]
+        public async Task GivenNullFrenchCategoriesShouldReturnOK()
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+
+            var patchDoc = new[]
+            {
+                new
+                {
+                    op = "replace",
+                    path = "/FrenchCategories",
+                    value = (List<string>)null
+                }
+            };
+
+            var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
+
+            Assert.IsNull(updatedOrganization.FrenchCategories);
+            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { FrenchCategories = organization.FrenchCategories });
+        }
+
+        [TestMethod]
+        public async Task GivenEmptyFrenchCategoriesShouldReturnOK()
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+
+            var patchDoc = new[]
+            {
+                new
+                {
+                    op = "replace",
+                    path = "/FrenchCategories",
+                    value = new List<string>()
+                }
+            };
+
+            var updatedOrganization = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAndDeserializeAsync(organization.Id, patchDoc);
+
+            Assert.IsNull(updatedOrganization.FrenchCategories);
+            CustomAssertions.AssertDTOsAreEqual(organization, updatedOrganization with { FrenchCategories = organization.FrenchCategories });
         }
 
         [TestMethod]
         public async Task GivenNoAccessTokenShouldReturnUnauthorized()
         {
-            var request = new PatchOrganizationRequest();
+            var patchDoc = new[]
+            {
+                new
+                {
+                }
+            };
 
-            var requestContent = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+            var requestContent = JsonUtils.MakeJsonStringContent(patchDoc);
 
             var response = await ProgramTest.NewClient().PatchAsync(OrganizationsHelper.OrganizationRoute(Guid.NewGuid()), requestContent);
 
@@ -159,9 +462,14 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
         {
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
 
-            var request = new PatchOrganizationRequest();
+            var patchDoc = new[]
+            {
+                new
+                {
+                }
+            };
 
-            var response = await ProgramTest.ApiClientUser2.Organizations.PatchOrganizationAsync(organization.Id, request);
+            var response = await ProgramTest.ApiClientUser2.Organizations.PatchOrganizationAsync(organization.Id, patchDoc);
 
             Assert.AreEqual(HttpStatusCode.Forbidden, response.StatusCode);
         }
@@ -169,11 +477,16 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
         [TestMethod]
         public async Task GivenOrganizationDoesNotExistShouldReturnNotFound()
         {
-            var request = new PatchOrganizationRequest();
+            var patchDoc = new[]
+            {
+                new
+                {
+                }
+            };
 
-            var response = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAsync(Guid.NewGuid(), request);
+            var response = await ProgramTest.ApiClientUser1.Organizations.PatchOrganizationAsync(Guid.NewGuid(), patchDoc);
 
-            await ProblemDetailAssertions.AssertNotFoundAsync(response, "Organization not found");
+            await CustomAssertions.AssertNotFoundAsync(response, "Organization not found");
         }
     }
 }

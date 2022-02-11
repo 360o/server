@@ -16,39 +16,30 @@ namespace _360o.Server.Api.V1.Organizations.Services
 
         public async Task<Organization> CreateOrganizationAsync(CreateOrganizationInput input)
         {
-            var organization = new Organization(
-                input.UserId,
-                input.Name
-                );
+            var organization = new Organization(input.UserId, input.Name);
 
-            if (input.EnglishShortDescription != null)
-            {
-                organization.SetEnglishShortDescription(input.EnglishShortDescription);
-            }
+            organization.EnglishShortDescription = input.EnglishShortDescription;
 
-            if (input.EnglishLongDescription != null)
-            {
-                organization.SetEnglishLongDescription(input.EnglishLongDescription);
-            }
+            organization.EnglishLongDescription = input.EnglishLongDescription;
 
             if (input.EnglishCategories != null)
             {
-                organization.SetEnglishCategories(input.EnglishCategories);
+                organization.EnglishCategories = input.EnglishCategories.ToList();
             }
 
             if (input.FrenchShortDescription != null)
             {
-                organization.SetFrenchShortDescription(input.FrenchShortDescription);
+                organization.FrenchShortDescription = input.FrenchShortDescription;
             }
 
             if (input.FrenchLongDescription != null)
             {
-                organization.SetFrenchLongDescription(input.FrenchLongDescription);
+                organization.FrenchLongDescription = input.FrenchLongDescription;
             }
 
             if (input.FrenchCategories != null)
             {
-                organization.SetFrenchCategories(input.FrenchCategories);
+                organization.FrenchCategories = input.FrenchCategories.ToList();
             }
 
             _apiContext.Add(organization);
@@ -65,55 +56,13 @@ namespace _360o.Server.Api.V1.Organizations.Services
                 .SingleOrDefaultAsync(o => o.Id == organizationId);
         }
 
-        public async Task<Organization> PatchOrganizationAsync(Guid organizationId, PatchOrganizationInput input)
+        public async Task<Organization> UpdateOrganizationAsync(Organization organization)
         {
-            var organization = await _apiContext.Organizations.FindAsync(organizationId);
+            organization.SetUpdated();
 
-            if (organization == null)
-            {
-                throw new KeyNotFoundException("Organization not found");
-            }
+            _apiContext.Organizations.Update(organization);
 
-            if (input.Name != null)
-            {
-                organization.SetName(input.Name);
-            }
-
-            if (input.EnglishShortDescription != null)
-            {
-                organization.SetEnglishShortDescription(input.EnglishShortDescription);
-            }
-
-            if (input.EnglishLongDescription != null)
-            {
-                organization.SetEnglishLongDescription(input.EnglishLongDescription);
-            }
-
-            if (input.EnglishCategories != null)
-            {
-                organization.SetEnglishCategories(input.EnglishCategories);
-            }
-
-            if (input.FrenchShortDescription != null)
-            {
-                organization.SetFrenchShortDescription(input.FrenchShortDescription);
-            }
-
-            if (input.FrenchLongDescription != null)
-            {
-                organization.SetFrenchLongDescription(input.FrenchLongDescription);
-            }
-
-            if (input.FrenchCategories != null)
-            {
-                organization.SetFrenchCategories(input.FrenchCategories);
-            }
-
-            if (_apiContext.ChangeTracker.HasChanges())
-            {
-                organization.SetUpdated();
-                await _apiContext.SaveChangesAsync();
-            }
+            await _apiContext.SaveChangesAsync();
 
             return organization;
         }

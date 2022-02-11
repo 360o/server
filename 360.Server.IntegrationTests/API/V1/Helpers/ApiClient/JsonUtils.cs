@@ -17,9 +17,11 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
             });
         }
 
-        internal static StringContent MakeJsonRequestContent(object request)
+        public static StringContent MakeJsonStringContent(object request)
         {
-            return new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+            var content = JsonSerializer.Serialize(request);
+
+            return new StringContent(content, Encoding.UTF8, "application/json");
         }
     }
 }

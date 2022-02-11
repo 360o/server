@@ -9,7 +9,7 @@ namespace _360o.Server.Api.V1.Organizations.Services
 
         public Task<Organization?> GetOrganizationByIdAsync(Guid organizationId);
 
-        public Task<Organization> PatchOrganizationAsync(Guid organizationId, PatchOrganizationInput input);
+        public Task<Organization> UpdateOrganizationAsync(Organization organization);
 
         public Task DeleteOrganizationByIdAsync(Guid organizationId);
     }

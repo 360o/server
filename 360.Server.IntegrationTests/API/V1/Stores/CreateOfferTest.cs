@@ -121,7 +121,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateOfferAsync(store.Id, request);
 
-            await ProblemDetailAssertions.AssertBadRequestAsync(response, "At least one Name must be defined");
+            await CustomAssertions.AssertBadRequestAsync(response, "At least one Name must be defined");
         }
 
         [TestMethod]
@@ -137,7 +137,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateOfferAsync(store.Id, request);
 
-            await ProblemDetailAssertions.AssertBadRequestAsync(response, "OfferItems");
+            await CustomAssertions.AssertBadRequestAsync(response, "OfferItems");
         }
 
         [TestMethod]
@@ -160,7 +160,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateOfferAsync(store.Id, request);
 
-            await ProblemDetailAssertions.AssertBadRequestAsync(response, "'Item Id' must not be empty.");
+            await CustomAssertions.AssertBadRequestAsync(response, "'Item Id' must not be empty.");
         }
 
         [DataTestMethod]
@@ -185,7 +185,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateOfferAsync(store.Id, request);
 
-            await ProblemDetailAssertions.AssertBadRequestAsync(response, "'Quantity' must be greater than '0'");
+            await CustomAssertions.AssertBadRequestAsync(response, "'Quantity' must be greater than '0'");
         }
 
         [DataTestMethod]
@@ -209,7 +209,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateOfferAsync(store.Id, request);
 
-            await ProblemDetailAssertions.AssertBadRequestAsync(response, "OfferItems");
+            await CustomAssertions.AssertBadRequestAsync(response, "OfferItems");
         }
 
         [TestMethod]
@@ -223,7 +223,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             var request = RequestsGenerator.MakeRandomCreateOfferRequest(requestItems, null);
 
-            var requestContent = JsonUtils.MakeJsonRequestContent(request);
+            var requestContent = JsonUtils.MakeJsonStringContent(request);
 
             var response = await ProgramTest.NewClient().PostAsync(StoresHelper.OffersRoute(store.Id), requestContent);
 

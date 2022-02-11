@@ -30,18 +30,19 @@ namespace _360.Server.UnitTests.Api.V1.Stores.Model
 
             var englishName = _faker.Commerce.ProductAdjective();
 
-            offer.SetEnglishName(englishName);
+            offer.EnglishName = englishName;
 
             Assert.AreEqual(englishName, offer.EnglishName);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException), "Value cannot be null. (Parameter 'englishName')")]
-        public void GivenNullEnglishNameSetEnglishNameShouldThrow()
+        public void GivenNullArgumentSetEnglishName()
         {
             var offer = MakeRandomOffer();
 
-            offer.SetEnglishName(null!);
+            offer.EnglishName = null;
+
+            Assert.IsNull(offer.EnglishName);
         }
 
         [TestMethod]
@@ -51,18 +52,19 @@ namespace _360.Server.UnitTests.Api.V1.Stores.Model
 
             var frenchName = _faker.Commerce.ProductAdjective();
 
-            offer.SetFrenchName(frenchName);
+            offer.FrenchName = frenchName;
 
             Assert.AreEqual(frenchName, offer.FrenchName);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException), "Value cannot be null. (Parameter 'frenchName')")]
-        public void GivenNullFrenchNameSetFrenchNameShouldThrow()
+        public void GivenNullArgumentSetFrenchName()
         {
             var offer = MakeRandomOffer();
 
-            offer.SetFrenchName(null!);
+            offer.FrenchName = null;
+
+            Assert.IsNull(offer.FrenchName);
         }
 
         [TestMethod]
@@ -70,15 +72,33 @@ namespace _360.Server.UnitTests.Api.V1.Stores.Model
         {
             var offer = MakeRandomOffer();
 
-            var offerItems = new HashSet<OfferItem>
+            var offerItems = new List<OfferItem>
             {
                 MakeRandomOfferItem(),
                 MakeRandomOfferItem()
             };
 
-            offer.SetOfferItems(offerItems);
+            offer.OfferItems = offerItems;
 
             CollectionAssert.AreEquivalent(offerItems.ToList(), offer.OfferItems.ToList());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void GivenDuplicateItemsSetOfferItemsShouldThrow()
+        {
+            var offer = MakeRandomOffer();
+
+            var offerItem = MakeRandomOfferItem();
+            var sameItemId = new OfferItem(offerItem.ItemId, _faker.Random.Int(1));
+
+            var offerItems = new List<OfferItem>
+            {
+                offerItem,
+                sameItemId
+            };
+
+            offer.OfferItems = offerItems;
         }
 
         [TestMethod]
@@ -88,7 +108,7 @@ namespace _360.Server.UnitTests.Api.V1.Stores.Model
 
             var discount = MakeRandomDiscount();
 
-            offer.SetDiscount(discount);
+            offer.Discount = discount;
 
             Assert.AreEqual(discount, offer.Discount);
         }
@@ -96,25 +116,25 @@ namespace _360.Server.UnitTests.Api.V1.Stores.Model
         [DataTestMethod]
         [DataRow(0)]
         [DataRow(-1)]
-        [ExpectedException(typeof(ArgumentException), "Required input Amount cannot be zero or negative. (Parameter 'Amount')")]
+        [ExpectedException(typeof(ArgumentException))]
         public void GivenNegativeOrZeroAmountSetDiscountShouldThrow(int amount)
         {
             var offer = MakeRandomOffer();
 
             var discount = MakeRandomDiscount() with { Amount = amount };
 
-            offer.SetDiscount(discount);
+            offer.Discount = discount;
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidEnumArgumentException), "The value of argument 'CurrencyCode' (-1) is invalid for Enum type 'Iso4217CurrencyCode'. (Parameter 'CurrencyCode')")]
+        [ExpectedException(typeof(InvalidEnumArgumentException))]
         public void GivenInvalidCurrencyCodeSetDiscountShouldThrow()
         {
             var offer = MakeRandomOffer();
 
             var discount = MakeRandomDiscount() with { CurrencyCode = (Iso4217CurrencyCode)(-1) };
 
-            offer.SetDiscount(discount);
+            offer.Discount = discount;
         }
 
         private Offer MakeRandomOffer()
@@ -128,11 +148,9 @@ namespace _360.Server.UnitTests.Api.V1.Stores.Model
         {
             var itemId = _faker.Random.Uuid();
 
-            var offerItem = new OfferItem(itemId);
-
             var quantity = _faker.Random.Int(1);
 
-            offerItem.SetQuantity(quantity);
+            var offerItem = new OfferItem(itemId, quantity);
 
             return offerItem;
         }

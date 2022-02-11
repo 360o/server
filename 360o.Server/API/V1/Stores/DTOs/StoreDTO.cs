@@ -1,6 +1,6 @@
 ﻿namespace _360o.Server.Api.V1.Stores.DTOs
 {
-    public readonly record struct StoreDTO(
+    public record class StoreDTO(
         Guid Id,
         PlaceDTO Place
         )

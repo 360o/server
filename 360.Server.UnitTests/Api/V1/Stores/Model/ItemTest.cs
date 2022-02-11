@@ -28,18 +28,19 @@ namespace _360.Server.UnitTests.Api.V1.Stores.Model
 
             var englishName = _faker.Commerce.ProductName();
 
-            item.SetEnglishName(englishName);
+            item.EnglishName = englishName;
 
             Assert.AreEqual(englishName, item.EnglishName);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException), "Value cannot be null. (Parameter 'englishName')")]
-        public void GivenNullEnglishNameSetEnglishNameShouldThrow()
+        public void GivenNullArgumentSetEnglishName()
         {
             var item = MakeRandomItem();
 
-            item.SetEnglishName(null!);
+            item.EnglishName = null!;
+
+            Assert.IsNull(item.EnglishName);
         }
 
         [TestMethod]
@@ -49,18 +50,19 @@ namespace _360.Server.UnitTests.Api.V1.Stores.Model
 
             var englishDescription = _faker.Commerce.ProductDescription();
 
-            item.SetEnglishDescription(englishDescription);
+            item.EnglishDescription = englishDescription;
 
             Assert.AreEqual(englishDescription, item.EnglishDescription);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException), "Value cannot be null. (Parameter 'englishDescription')")]
-        public void GivenNullEnglishDescriptionSetEnglishDescriptionShouldThrow()
+        public void GivenNullArgumentSetEnglishDescription()
         {
             var item = MakeRandomItem();
 
-            item.SetEnglishDescription(null!);
+            item.EnglishDescription = null;
+
+            Assert.IsNull(item.EnglishDescription);
         }
 
         [TestMethod]
@@ -70,18 +72,19 @@ namespace _360.Server.UnitTests.Api.V1.Stores.Model
 
             var frenchName = _faker.Commerce.ProductName();
 
-            item.SetFrenchName(frenchName);
+            item.FrenchName = frenchName;
 
             Assert.AreEqual(frenchName, item.FrenchName);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException), "Value cannot be null. (Parameter 'frenchName')")]
-        public void GivenNullFrenchNameSetFrenchNameShouldThrow()
+        public void GivenNullArgumentSetFrenchName()
         {
             var item = MakeRandomItem();
 
-            item.SetFrenchName(null!);
+            item.FrenchName = null;
+
+            Assert.IsNull(item.FrenchName);
         }
 
         [TestMethod]
@@ -91,18 +94,19 @@ namespace _360.Server.UnitTests.Api.V1.Stores.Model
 
             var frenchDescription = _faker.Commerce.ProductDescription();
 
-            item.SetFrenchDescription(frenchDescription);
+            item.FrenchDescription = frenchDescription;
 
             Assert.AreEqual(frenchDescription, item.FrenchDescription);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException), "Value cannot be null. (Parameter 'frenchDescription')")]
-        public void GivenNullFrenchDescriptionSetFrenchDescriptionShouldThrow()
+        public void GivenNullArgumentSetFrenchDescription()
         {
             var item = MakeRandomItem();
 
-            item.SetFrenchDescription(null!);
+            item.FrenchDescription = null;
+
+            Assert.IsNull(item.FrenchDescription);
         }
 
         [TestMethod]
@@ -112,33 +116,43 @@ namespace _360.Server.UnitTests.Api.V1.Stores.Model
 
             var price = MakeRandomPrice();
 
-            item.SetPrice(price);
+            item.Price = price;
 
             Assert.AreEqual(price, item.Price);
+        }
+
+        [TestMethod]
+        public void GivenNullArgumentSetPrice()
+        {
+            var item = MakeRandomItem();
+
+            item.Price = null;
+
+            Assert.IsNull(item.Price);
         }
 
         [DataTestMethod]
         [DataRow(-1)]
         [DataRow(0)]
-        [ExpectedException(typeof(ArgumentException), "Required input Amount cannot be zero or negative. (Parameter 'Amount')")]
+        [ExpectedException(typeof(ArgumentException))]
         public void GivenZeroOrNegativeAmountSetPriceShouldThrow(decimal amount)
         {
             var item = MakeRandomItem();
 
             var price = MakeRandomPrice() with { Amount = amount };
 
-            item.SetPrice(price);
+            item.Price = price;
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidEnumArgumentException), "The value of argument 'CurrencyCode' (-1) is invalid for Enum type 'Iso4217CurrencyCode'. (Parameter 'CurrencyCode')")]
+        [ExpectedException(typeof(InvalidEnumArgumentException))]
         public void GivenInvalidCurrencyCodeSetPriceShouldThrow()
         {
             var item = MakeRandomItem();
 
             var price = MakeRandomPrice() with { CurrencyCode = (Iso4217CurrencyCode)(-1) };
 
-            item.SetPrice(price);
+            item.Price = price;
         }
 
         private Item MakeRandomItem()

@@ -1,13 +1,15 @@
 ﻿using _360o.Server.Api.V1.Errors.Enums;
 using _360o.Server.Api.V1.Organizations.Services;
 using _360o.Server.Api.V1.Stores.DTOs;
+using _360o.Server.Api.V1.Stores.Model;
 using _360o.Server.Api.V1.Stores.Services;
 using _360o.Server.Api.V1.Stores.Services.Inputs;
 using _360o.Server.Api.V1.Stores.Validators;
-using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Net;
 
 namespace _360o.Server.Api.V1.Stores.Controllers
@@ -18,13 +20,11 @@ namespace _360o.Server.Api.V1.Stores.Controllers
     {
         private readonly IOrganizationsService _organizationsService;
         private readonly IStoresService _storesService;
-        private readonly IMapper _mapper;
 
-        public StoresController(IOrganizationsService organizations, IStoresService storesService, IMapper mapper)
+        public StoresController(IOrganizationsService organizations, IStoresService storesService)
         {
             _organizationsService = organizations;
             _storesService = storesService;
-            _mapper = mapper;
         }
 
         [HttpPost]
@@ -48,9 +48,18 @@ namespace _360o.Server.Api.V1.Stores.Controllers
                 return Forbid();
             }
 
-            var store = await _storesService.CreateStoreAsync(_mapper.Map<CreateStoreInput>(request));
+            var createStoreInput = new CreateStoreInput
+            {
+                OrganizationId = organization.Id,
+                Place = new Place(
+                    request.Place.GooglePlaceId,
+                    request.Place.FormattedAddress,
+                    request.Place.Location)
+            };
 
-            return CreatedAtAction(nameof(GetStoreByIdAsync), new { id = store.Id }, _mapper.Map<StoreDTO>(store));
+            var store = await _storesService.CreateStoreAsync(createStoreInput);
+
+            return CreatedAtAction(nameof(GetStoreByIdAsync), new { id = store.Id }, ToStoreDTO(store));
         }
 
         [HttpGet("{id}")]
@@ -65,7 +74,7 @@ namespace _360o.Server.Api.V1.Stores.Controllers
                 return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
             }
 
-            return _mapper.Map<StoreDTO>(store);
+            return ToStoreDTO(store);
         }
 
         [HttpGet]
@@ -76,32 +85,64 @@ namespace _360o.Server.Api.V1.Stores.Controllers
 
             validator.ValidateAndThrow(request);
 
-            var stores = await _storesService.ListStoresAsync(_mapper.Map<ListStoresInput>(request));
+            var listStoresInput = new ListStoresInput(
+                request.Query,
+                request.Latitude,
+                request.Longitude,
+                request.Radius);
 
-            return stores.Select(s => _mapper.Map<StoreDTO>(s)).ToList();
+            var stores = await _storesService.ListStoresAsync(listStoresInput);
+
+            return stores.Select(s => ToStoreDTO(s)).ToList();
         }
 
         [HttpPatch("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(StoreDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize]
-        public async Task<ActionResult<StoreDTO>> UpdateStoreAsync(Guid id, PatchStoreRequest request)
+        public async Task<ActionResult<StoreDTO>> PatchStoreAsync(Guid id, JsonPatchDocument<Store> patchDoc)
         {
-            var store = await _storesService.GetStoreByIdByAsync(id);
-
-            if (store == null)
+            if (patchDoc != null)
             {
-                return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
-            }
+                var store = await _storesService.GetStoreByIdByAsync(id);
 
-            if (User.Identity.Name != store.Organization.UserId)
+                if (store == null)
+                {
+                    return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
+                }
+
+                if (User.Identity.Name != store.Organization.UserId)
+                {
+                    return Forbid();
+                }
+
+                try
+                {
+                    patchDoc.ApplyTo(store, ModelState);
+                }
+                catch (JsonSerializationException ex)
+                {
+                    if (ex.InnerException is ArgumentException)
+                    {
+                        return Problem(detail: ex.InnerException.Message, statusCode: (int)HttpStatusCode.BadRequest, title: ErrorCode.InvalidRequest.ToString());
+                    }
+
+                    throw;
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                store = await _storesService.UpdateStoreAsync(store);
+
+                return ToStoreDTO(store);
+            }
+            else
             {
-                return Forbid();
+                return BadRequest(ModelState);
             }
-
-            store = await _storesService.PatchStoreAsync(store.Id, _mapper.Map<PatchStoreInput>(request));
-
-            return _mapper.Map<StoreDTO>(store);
         }
 
         [HttpDelete("{id}")]
@@ -155,9 +196,18 @@ namespace _360o.Server.Api.V1.Stores.Controllers
                 return Forbid();
             }
 
-            var item = await _storesService.CreateItemAsync(_mapper.Map<CreateItemInput>(request) with { StoreId = storeId });
+            var createItemInput = new CreateItemInput(
+                store.Id,
+                request.EnglishName,
+                request.EnglishDescription,
+                request.FrenchName,
+                request.FrenchDescription,
+                request.Price
+                );
 
-            return CreatedAtAction(nameof(GetItemByIdAsync), new { storeId = storeId, itemId = item.Id }, _mapper.Map<ItemDTO>(item));
+            var item = await _storesService.CreateItemAsync(createItemInput);
+
+            return CreatedAtAction(nameof(GetItemByIdAsync), new { storeId = storeId, itemId = item.Id }, ToItemDTO(item));
         }
 
         [HttpGet("{storeId}/items/{itemId}")]
@@ -179,7 +229,7 @@ namespace _360o.Server.Api.V1.Stores.Controllers
                 return Problem(detail: "Item not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
             }
 
-            return _mapper.Map<ItemDTO>(item);
+            return ToItemDTO(item);
         }
 
         [HttpGet("{storeId}/items")]
@@ -196,39 +246,61 @@ namespace _360o.Server.Api.V1.Stores.Controllers
 
             var items = await _storesService.ListItemsAsync(storeId);
 
-            return items.Select(i => _mapper.Map<ItemDTO>(i)).ToList();
+            return items.Select(i => ToItemDTO(i)).ToList();
         }
 
         [HttpPatch("{storeId}/items/{itemId}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ItemDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize]
-        public async Task<ActionResult<ItemDTO>> UpdateItemAsync(Guid storeId, Guid itemId, [FromBody] PatchItemRequest request)
+        public async Task<ActionResult<ItemDTO>> PatchItemAsync(Guid storeId, Guid itemId, [FromBody] JsonPatchDocument<Item> patchDoc)
         {
-            var validator = new PatchItemRequestValidator();
-
-            validator.ValidateAndThrow(request);
-
-            var item = await _storesService.GetItembyIdAsync(itemId);
-
-            if (item == null)
+            if (patchDoc != null)
             {
-                return Problem(detail: "Item not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
-            }
+                var item = await _storesService.GetItembyIdAsync(itemId);
 
-            if (item.StoreId != storeId)
+                if (item == null)
+                {
+                    return Problem(detail: "Item not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
+                }
+
+                if (item.StoreId != storeId)
+                {
+                    return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
+                }
+
+                if (User.Identity.Name != item.Store.Organization.UserId)
+                {
+                    return Forbid();
+                }
+
+                try
+                {
+                    patchDoc.ApplyTo(item, ModelState);
+                }
+                catch (JsonSerializationException ex)
+                {
+                    if (ex.InnerException is ArgumentException)
+                    {
+                        return Problem(detail: ex.InnerException.Message, statusCode: (int)HttpStatusCode.BadRequest, title: ErrorCode.InvalidRequest.ToString());
+                    }
+
+                    throw;
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                item = await _storesService.UpdateItemAsync(item);
+
+                return ToItemDTO(item);
+            }
+            else
             {
-                return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
+                return BadRequest(ModelState);
             }
-
-            if (User.Identity.Name != item.Store.Organization.UserId)
-            {
-                return Forbid();
-            }
-
-            item = await _storesService.PatchItemAsync(item.Id, _mapper.Map<PatchItemInput>(request));
-
-            return _mapper.Map<ItemDTO>(item);
         }
 
         [HttpDelete("{storeId}/items/{itemId}")]
@@ -280,9 +352,21 @@ namespace _360o.Server.Api.V1.Stores.Controllers
                 return Forbid();
             }
 
-            var offer = await _storesService.CreateOfferAsync(store.Id, _mapper.Map<CreateOrUpdateOfferInput>(request));
+            var createOfferInput = new CreateOfferInput
+            {
+                EnglishName = request.EnglishName,
+                FrenchName = request.FrenchName,
+                OfferItems = request.OfferItems.Select(o => new CreateOfferItem
+                {
+                    ItemId = o.ItemId,
+                    Quantity = o.Quantity,
+                }).ToHashSet(),
+                Discount = request.Discount,
+            };
 
-            return CreatedAtAction(nameof(GetOfferByIdAsync), new { storeId = store.Id, offerId = offer.Id }, _mapper.Map<OfferDTO>(offer));
+            var offer = await _storesService.CreateOfferAsync(store.Id, createOfferInput);
+
+            return CreatedAtAction(nameof(GetOfferByIdAsync), new { storeId = store.Id, offerId = offer.Id }, ToOfferDTO(offer));
         }
 
         [HttpGet("{storeId}/offers/{offerId}")]
@@ -304,7 +388,7 @@ namespace _360o.Server.Api.V1.Stores.Controllers
                 return Problem(detail: "Offer not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
             }
 
-            return _mapper.Map<OfferDTO>(offer);
+            return ToOfferDTO(offer);
         }
 
         [HttpGet("{storeId}/offers")]
@@ -321,7 +405,48 @@ namespace _360o.Server.Api.V1.Stores.Controllers
 
             var offers = await _storesService.ListOffersAsync(storeId);
 
-            return offers.Select(o => _mapper.Map<OfferDTO>(o)).ToList();
+            return offers.Select(o => ToOfferDTO(o)).ToList();
+        }
+
+        private StoreDTO ToStoreDTO(Store store)
+        {
+            var place = new PlaceDTO
+            {
+                GooglePlaceId = store.Place.GooglePlaceId,
+                FormattedAddress = store.Place.FormattedAddress,
+                Location = store.Place.Location,
+            };
+
+            return new StoreDTO(store.Id, place);
+        }
+
+        private ItemDTO ToItemDTO(Item item)
+        {
+            return new ItemDTO(
+                item.Id,
+                item.EnglishName,
+                item.EnglishDescription,
+                item.FrenchName,
+                item.FrenchDescription,
+                item.Price
+                );
+        }
+
+        private OfferDTO ToOfferDTO(Offer offer)
+        {
+            return new OfferDTO(
+                offer.Id,
+                offer.EnglishName,
+                offer.FrenchName,
+                offer.OfferItems.Select(i => new OfferItemDTO
+                {
+                    Id = i.Id,
+                    ItemId = i.ItemId,
+                    Quantity = i.Quantity,
+                }),
+                offer.Discount,
+                offer.StoreId
+                );
         }
     }
 }

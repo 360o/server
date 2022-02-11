@@ -51,7 +51,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
         {
             var response = await ProgramTest.ApiClientUser1.Stores.GetOfferByIdAsync(Guid.NewGuid(), Guid.NewGuid());
 
-            await ProblemDetailAssertions.AssertNotFoundAsync(response, "Store not found");
+            await CustomAssertions.AssertNotFoundAsync(response, "Store not found");
         }
 
         [TestMethod]
@@ -63,7 +63,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             var response = await ProgramTest.ApiClientUser1.Stores.GetOfferByIdAsync(store.Id, Guid.NewGuid());
 
-            await ProblemDetailAssertions.AssertNotFoundAsync(response, "Offer not found");
+            await CustomAssertions.AssertNotFoundAsync(response, "Offer not found");
         }
     }
 }

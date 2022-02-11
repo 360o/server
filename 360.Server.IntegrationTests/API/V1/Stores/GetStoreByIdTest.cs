@@ -1,10 +1,6 @@
-﻿using _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient;
-using _360o.Server.Api.V1.Errors.Enums;
-using Microsoft.AspNetCore.Mvc;
+﻿using _360.Server.IntegrationTests.Api.V1.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Net;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace _360.Server.IntegrationTests.Api.V1.Stores
@@ -21,7 +17,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var store = await ProgramTest.ApiClientUser1.Stores.GetStoreByIdAndDeserializeAsync(createdStore.Id);
 
-            StoresHelper.AssertStoresAreEqual(createdStore, store);
+            CustomAssertions.AssertDTOsAreEqual(createdStore, store);
         }
 
         [TestMethod]
@@ -29,18 +25,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
         {
             var response = await ProgramTest.ApiClientUser1.Stores.GetStoreByIdAsync(Guid.NewGuid());
 
-            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
-
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.Detail);
-            Assert.IsNotNull(result.Status);
-            Assert.AreEqual(ErrorCode.NotFound.ToString(), result.Title);
-            Assert.AreEqual((int)HttpStatusCode.NotFound, result.Status.Value);
-            Assert.AreEqual("Store not found", result.Detail);
+            await CustomAssertions.AssertNotFoundAsync(response, "Store not found");
         }
     }
 }

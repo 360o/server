@@ -2,7 +2,5 @@
 {
     public readonly record struct Location(
         double Latitude,
-        double Longitude)
-    {
-    }
+        double Longitude);
 }

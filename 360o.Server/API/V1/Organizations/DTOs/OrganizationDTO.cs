@@ -3,13 +3,11 @@
     public readonly record struct OrganizationDTO(
         Guid Id,
         string Name,
-        string EnglishShortDescription,
-        string EnglishLongDescription,
-        IList<string> EnglishCategories,
-        string FrenchShortDescription,
-        string FrenchLongDescription,
-        IList<string> FrenchCategories
-        )
-    {
-    }
+        string? EnglishShortDescription,
+        string? EnglishLongDescription,
+        IEnumerable<string>? EnglishCategories,
+        string? FrenchShortDescription,
+        string? FrenchLongDescription,
+        IEnumerable<string>? FrenchCategories
+        );
 }

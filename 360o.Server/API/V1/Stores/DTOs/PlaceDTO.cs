@@ -6,7 +6,5 @@ namespace _360o.Server.Api.V1.Stores.DTOs
         string GooglePlaceId,
         string FormattedAddress,
         Location Location
-        )
-    {
-    }
+        );
 }

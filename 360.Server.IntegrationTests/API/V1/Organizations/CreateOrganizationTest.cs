@@ -1,7 +1,6 @@
-﻿using _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient;
+﻿using _360.Server.IntegrationTests.Api.V1.Helpers;
+using _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient;
 using _360.Server.IntegrationTests.Api.V1.Helpers.Generators;
-using _360o.Server.Api.V1.Errors.Enums;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,9 +25,13 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
             Assert.AreEqual(request.Name, organization.Name);
             Assert.AreEqual(request.EnglishShortDescription, organization.EnglishShortDescription);
             Assert.AreEqual(request.EnglishLongDescription, organization.EnglishLongDescription);
+            Assert.IsNotNull(request.EnglishCategories);
+            Assert.IsNotNull(organization.EnglishCategories);
             CollectionAssert.AreEquivalent(request.EnglishCategories.ToList(), organization.EnglishCategories.ToList());
             Assert.AreEqual(request.FrenchShortDescription, organization.FrenchShortDescription);
             Assert.AreEqual(request.FrenchLongDescription, organization.FrenchLongDescription);
+            Assert.IsNotNull(request.FrenchCategories);
+            Assert.IsNotNull(organization.FrenchCategories);
             CollectionAssert.AreEquivalent(request.FrenchCategories.ToList(), organization.FrenchCategories.ToList());
         }
 
@@ -44,11 +47,21 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
             Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
+        public async Task GivenNullNameShouldReturnBadRequest()
+        {
+            var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+
+            request = request with { Name = null };
+
+            var response = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAsync(request);
+
+            await CustomAssertions.AssertBadRequestAsync(response, "Name");
+        }
+
         [DataTestMethod]
-        [DataRow(null)]
         [DataRow("")]
         [DataRow(" ")]
-        public async Task GivenNullWhitespaceNameShouldReturnBadRequest(string name)
+        public async Task GivenWhitespaceNameShouldReturnBadRequest(string name)
         {
             var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
@@ -56,25 +69,25 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
 
             var response = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAsync(request);
 
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+            await CustomAssertions.AssertBadRequestAsync(response, "Name");
+        }
 
-            var responseContent = await response.Content.ReadAsStringAsync();
+        [TestMethod]
+        public async Task GivenNullEnglishShortDescriptionShouldReturnCreated()
+        {
+            var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
-            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
+            request = request with { EnglishShortDescription = null };
 
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.Detail);
-            Assert.IsNotNull(result.Status);
-            Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
-            Assert.IsTrue(result.Detail.Contains("Name"));
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
+
+            Assert.IsNull(organization.EnglishShortDescription);
         }
 
         [DataTestMethod]
         [DataRow("")]
         [DataRow(" ")]
-        [DataRow(null)]
-        public async Task GivenNullOrWhitespaceEnglishShortDescriptionShouldReturnCreated(string englishShortDescription)
+        public async Task GivenWhitespaceEnglishShortDescriptionShouldReturnCreated(string englishShortDescription)
         {
             var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
@@ -82,14 +95,25 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
 
-            Assert.AreEqual(string.Empty, organization.EnglishShortDescription);
+            Assert.IsNull(organization.EnglishShortDescription);
+        }
+
+        [TestMethod]
+        public async Task GivenNullEnglishLongDescriptionShouldReturnCreated()
+        {
+            var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+
+            request = request with { EnglishLongDescription = null };
+
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
+
+            Assert.IsNull(organization.EnglishLongDescription);
         }
 
         [DataTestMethod]
-        [DataRow(null)]
         [DataRow("")]
         [DataRow(" ")]
-        public async Task GivenNullOrWhitespaceEnglishLongDescriptionShouldReturnCreated(string englishLongDescription)
+        public async Task GivenWhitespaceEnglishLongDescriptionShouldReturnCreated(string englishLongDescription)
         {
             var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
@@ -97,7 +121,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
 
-            Assert.AreEqual(string.Empty, organization.EnglishLongDescription);
+            Assert.IsNull(organization.EnglishLongDescription);
         }
 
         [TestMethod]
@@ -109,7 +133,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
 
-            Assert.AreEqual(0, organization.EnglishCategories.Count);
+            Assert.IsNull(organization.EnglishCategories);
         }
 
         [TestMethod]
@@ -121,14 +145,25 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
 
-            Assert.AreEqual(0, organization.EnglishCategories.Count);
+            Assert.IsNull(organization.EnglishCategories);
+        }
+
+        [TestMethod]
+        public async Task GivenNullFrenchShortDescriptionShouldReturnCreated()
+        {
+            var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+
+            request = request with { FrenchShortDescription = null };
+
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
+
+            Assert.IsNull(organization.FrenchShortDescription);
         }
 
         [DataTestMethod]
-        [DataRow(null)]
         [DataRow("")]
         [DataRow(" ")]
-        public async Task GivenNullOrWhitespaceFrenchShortDescriptionShouldReturnCreated(string frenchShortDescription)
+        public async Task GivenWhitespaceFrenchShortDescriptionShouldReturnCreated(string frenchShortDescription)
         {
             var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
@@ -136,14 +171,25 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
 
-            Assert.AreEqual(string.Empty, organization.FrenchShortDescription);
+            Assert.IsNull(organization.FrenchShortDescription);
+        }
+
+        [TestMethod]
+        public async Task GivenNullFrenchLongDescriptionShouldReturnCreated()
+        {
+            var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+
+            request = request with { FrenchLongDescription = null };
+
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
+
+            Assert.IsNull(organization.FrenchLongDescription);
         }
 
         [DataTestMethod]
-        [DataRow(null)]
         [DataRow("")]
         [DataRow(" ")]
-        public async Task GivenEmptyhitespaceFrenchLongDescriptionShouldReturnCreated(string frenchLongDescription)
+        public async Task GivenWhitespaceFrenchLongDescriptionShouldReturnCreated(string frenchLongDescription)
         {
             var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
 
@@ -151,7 +197,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
 
-            Assert.AreEqual(string.Empty, organization.FrenchLongDescription);
+            Assert.IsNull(organization.FrenchLongDescription);
         }
 
         [TestMethod]
@@ -163,7 +209,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
 
-            Assert.AreEqual(0, organization.FrenchCategories.Count);
+            Assert.IsNull(organization.FrenchCategories);
         }
 
         [TestMethod]
@@ -175,7 +221,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
 
-            Assert.AreEqual(0, organization.FrenchCategories.Count);
+            Assert.IsNull(organization.FrenchCategories);
         }
     }
 }

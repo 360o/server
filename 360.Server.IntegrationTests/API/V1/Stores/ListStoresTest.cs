@@ -1,5 +1,4 @@
 ﻿using _360.Server.IntegrationTests.Api.V1.Helpers;
-using _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient;
 using _360.Server.IntegrationTests.Api.V1.Helpers.Generators;
 using _360o.Server.Api.V1.Stores.DTOs;
 using _360o.Server.Api.V1.Stores.Model;
@@ -44,9 +43,9 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
             var resultUser1Store1 = result.Find(s => s.Id == user1Store1.Id);
             var resultUser1Store2 = result.Find(s => s.Id == user1Store2.Id);
             var resultUser2Store1 = result.Find(s => s.Id == user2Store1.Id);
-            StoresHelper.AssertStoresAreEqual(user1Store1, resultUser1Store1);
-            StoresHelper.AssertStoresAreEqual(user1Store2, resultUser1Store2);
-            StoresHelper.AssertStoresAreEqual(user2Store1, resultUser2Store1);
+            CustomAssertions.AssertDTOsAreEqual(user1Store1, resultUser1Store1);
+            CustomAssertions.AssertDTOsAreEqual(user1Store2, resultUser1Store2);
+            CustomAssertions.AssertDTOsAreEqual(user2Store1, resultUser2Store1);
         }
 
         [TestMethod]
@@ -124,18 +123,18 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             Assert.IsNotNull(stores);
 
-            StoresHelper.AssertStoresAreEqual(user1StoreWithName, storesDict[user1StoreWithName.Id]);
-            StoresHelper.AssertStoresAreEqual(user1StoreWithEnglishShortDescription, storesDict[user1StoreWithEnglishShortDescription.Id]);
-            StoresHelper.AssertStoresAreEqual(user1StoreWithEnglishLongDescription, storesDict[user1StoreWithEnglishLongDescription.Id]);
-            StoresHelper.AssertStoresAreEqual(user1StoreWithEnglishCategories, storesDict[user1StoreWithEnglishCategories.Id]);
-            StoresHelper.AssertStoresAreEqual(user1StoreWithItemWithEnglishName, storesDict[user1StoreWithItemWithEnglishName.Id]);
-            StoresHelper.AssertStoresAreEqual(user1StoreWithItemWithEnglishDescription, storesDict[user1StoreWithItemWithEnglishDescription.Id]);
+            CustomAssertions.AssertDTOsAreEqual(user1StoreWithName, storesDict[user1StoreWithName.Id]);
+            CustomAssertions.AssertDTOsAreEqual(user1StoreWithEnglishShortDescription, storesDict[user1StoreWithEnglishShortDescription.Id]);
+            CustomAssertions.AssertDTOsAreEqual(user1StoreWithEnglishLongDescription, storesDict[user1StoreWithEnglishLongDescription.Id]);
+            CustomAssertions.AssertDTOsAreEqual(user1StoreWithEnglishCategories, storesDict[user1StoreWithEnglishCategories.Id]);
+            CustomAssertions.AssertDTOsAreEqual(user1StoreWithItemWithEnglishName, storesDict[user1StoreWithItemWithEnglishName.Id]);
+            CustomAssertions.AssertDTOsAreEqual(user1StoreWithItemWithEnglishDescription, storesDict[user1StoreWithItemWithEnglishDescription.Id]);
 
-            StoresHelper.AssertStoresAreEqual(user2StoreWithFrenchShortDescription, storesDict[user2StoreWithFrenchShortDescription.Id]);
-            StoresHelper.AssertStoresAreEqual(user2StoreWithFrenchLongDescription, storesDict[user2StoreWithFrenchLongDescription.Id]);
-            StoresHelper.AssertStoresAreEqual(user2StoreWithFrenchCategories, storesDict[user2StoreWithFrenchCategories.Id]);
-            StoresHelper.AssertStoresAreEqual(user2StoreWithItemWithFrenchName, storesDict[user2StoreWithItemWithFrenchName.Id]);
-            StoresHelper.AssertStoresAreEqual(user2StoreWithItemWithFrenchDescription, storesDict[user2StoreWithItemWithFrenchDescription.Id]);
+            CustomAssertions.AssertDTOsAreEqual(user2StoreWithFrenchShortDescription, storesDict[user2StoreWithFrenchShortDescription.Id]);
+            CustomAssertions.AssertDTOsAreEqual(user2StoreWithFrenchLongDescription, storesDict[user2StoreWithFrenchLongDescription.Id]);
+            CustomAssertions.AssertDTOsAreEqual(user2StoreWithFrenchCategories, storesDict[user2StoreWithFrenchCategories.Id]);
+            CustomAssertions.AssertDTOsAreEqual(user2StoreWithItemWithFrenchName, storesDict[user2StoreWithItemWithFrenchName.Id]);
+            CustomAssertions.AssertDTOsAreEqual(user2StoreWithItemWithFrenchDescription, storesDict[user2StoreWithItemWithFrenchDescription.Id]);
         }
 
         [TestMethod]
@@ -167,75 +166,40 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
             // 200m
             user1Store1Request = user1Store1Request with
             {
-                Place = new PlaceDTO
-                {
-                    GooglePlaceId = "ChIJmwaUgluXuEwRWZsk59TJKnY",
-                    FormattedAddress = "249 Rue Saint-Jean, Québec, QC G1R 1N8, Canada",
-                    Location = new Location(46.8074417, -71.2271805)
-                }
+                Place = new PlaceDTO("ChIJmwaUgluXuEwRWZsk59TJKnY", "249 Rue Saint-Jean, Québec, QC G1R 1N8, Canada", new Location(46.8074417, -71.2271805))
             };
 
             user1Store2Request = user1Store2Request with
             {
-                Place = new PlaceDTO
-                {
-                    GooglePlaceId = "ChIJmTMHIHqWuEwRPXPWy5zuZNI",
-                    FormattedAddress = "165 Rue Saint-Jean, Québec, QC G1R 1N4",
-                    Location = new Location(46.807864, -71.2270421)
-                }
+                Place = new PlaceDTO("ChIJmTMHIHqWuEwRPXPWy5zuZNI", "165 Rue Saint-Jean, Québec, QC G1R 1N4", new Location(46.807864, -71.2270421))
             };
 
             // 600m
             user2Store1Request = user2Store1Request with
             {
-                Place = new PlaceDTO
-                {
-                    GooglePlaceId = "ChIJVTZiSnmWuEwRiMC1PoeqRFY",
-                    FormattedAddress = "85 Boulevard René-Lévesque O, Québec, QC G1R 2A3, Canada",
-                    Location = new Location(46.8048075, -71.2256069)
-                }
+                Place = new PlaceDTO("ChIJVTZiSnmWuEwRiMC1PoeqRFY", "85 Boulevard René-Lévesque O, Québec, QC G1R 2A3, Canada", new Location(46.8048075, -71.2256069))
             };
 
             user1Store3Request = user1Store3Request with
             {
-                Place = new PlaceDTO
-                {
-                    GooglePlaceId = "ChIJf4k1oo-WuEwRO-iB-_Asl5Q",
-                    FormattedAddress = "269 Bd René-Lévesque E, Québec, QC G1R 2B3, Canada",
-                    Location = new Location(46.8068828, -71.2245926)
-                }
+                Place = new PlaceDTO("ChIJf4k1oo-WuEwRO-iB-_Asl5Q", "269 Bd René-Lévesque E, Québec, QC G1R 2B3, Canada", new Location(46.8068828, -71.2245926))
             };
 
             // 2km
             user2Store2Request = user2Store2Request with
             {
-                Place = new PlaceDTO
-                {
-                    GooglePlaceId = "ChIJO_wtXNqVuEwRBoNhbzRrcZg",
-                    FormattedAddress = "1 Côte de la Citadelle, Québec, QC G1R 3R2, Canada",
-                    Location = new Location(46.8079412, -71.2189697)
-                }
+                Place = new PlaceDTO("ChIJO_wtXNqVuEwRBoNhbzRrcZg", "1 Côte de la Citadelle, Québec, QC G1R 3R2, Canada", new Location(46.8079412, -71.2189697))
             };
 
             // 10km
             user1Store4Request = user1Store4Request with
             {
-                Place = new PlaceDTO
-                {
-                    GooglePlaceId = "ChIJTWbEbimRuEwRT_YQIJcyOl8",
-                    FormattedAddress = "3121 Bd Hochelaga, Québec, QC G1W 2P9, Canada",
-                    Location = new Location(46.7863078, -71.2841527)
-                }
+                Place = new PlaceDTO("ChIJTWbEbimRuEwRT_YQIJcyOl8", "3121 Bd Hochelaga, Québec, QC G1W 2P9, Canada", new Location(46.7863078, -71.2841527))
             };
 
             user2Store3Request = user2Store3Request with
             {
-                Place = new PlaceDTO
-                {
-                    GooglePlaceId = "ChIJp8qY5EaWuEwR_Su2geare9E",
-                    FormattedAddress = "552 Bd Wilfrid-Hamel, Québec, QC G1M 3E5, Canada",
-                    Location = new Location(46.8180445, -71.2536773)
-                }
+                Place = new PlaceDTO("ChIJp8qY5EaWuEwR_Su2geare9E", "552 Bd Wilfrid-Hamel, Québec, QC G1M 3E5, Canada", new Location(46.8180445, -71.2536773))
             };
 
             var user1Store1 = await ProgramTest.ApiClientUser1.Stores.CreateStoreAndDeserializeAsync(user1Store1Request);
@@ -272,7 +236,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             foreach (var store in twoHundredMetersStores)
             {
-                StoresHelper.AssertStoresAreEqual(storesWithinTwoHundredMeters[store.Id], store);
+                CustomAssertions.AssertDTOsAreEqual(storesWithinTwoHundredMeters[store.Id], store);
             }
 
             var sixHundredMetersStore = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
@@ -287,7 +251,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             foreach (var store in sixHundredMetersStore)
             {
-                StoresHelper.AssertStoresAreEqual(storesWithinSixHundredMeters[store.Id], store);
+                CustomAssertions.AssertDTOsAreEqual(storesWithinSixHundredMeters[store.Id], store);
             }
 
             var twoKilometersStores = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
@@ -302,7 +266,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             foreach (var store in twoKilometersStores)
             {
-                StoresHelper.AssertStoresAreEqual(storesWithinTwoKilometers[store.Id], store);
+                CustomAssertions.AssertDTOsAreEqual(storesWithinTwoKilometers[store.Id], store);
             }
 
             var tenKilometersStores = await ProgramTest.ApiClientUser1.Stores.ListStoresAndDeserializeAsync(new ListStoresRequest
@@ -317,7 +281,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             foreach (var store in tenKilometersStores)
             {
-                StoresHelper.AssertStoresAreEqual(storesWithinTenKilometers[store.Id], store);
+                CustomAssertions.AssertDTOsAreEqual(storesWithinTenKilometers[store.Id], store);
             }
         }
 
@@ -329,7 +293,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
                 Radius = _faker.Random.Double()
             });
 
-            await ProblemDetailAssertions.AssertBadRequestAsync(response, new HashSet<string>
+            await CustomAssertions.AssertBadRequestAsync(response, new HashSet<string>
             {
                 "'Longitude' must not be empty",
                 "'Latitude' must not be empty"
@@ -344,7 +308,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
                 Latitude = _faker.Address.Latitude()
             });
 
-            await ProblemDetailAssertions.AssertBadRequestAsync(response, new HashSet<string>
+            await CustomAssertions.AssertBadRequestAsync(response, new HashSet<string>
             {
                 "'Longitude' must not be empty",
                 "'Radius' must not be empty"
@@ -359,7 +323,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
                 Longitude = _faker.Address.Longitude()
             });
 
-            await ProblemDetailAssertions.AssertBadRequestAsync(response, new HashSet<string>
+            await CustomAssertions.AssertBadRequestAsync(response, new HashSet<string>
             {
                 "'Latitude' must not be empty",
                 "'Radius' must not be empty"
@@ -375,7 +339,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
                 Radius = _faker.Random.Double()
             });
 
-            await ProblemDetailAssertions.AssertBadRequestAsync(response, "'Longitude' must not be empty");
+            await CustomAssertions.AssertBadRequestAsync(response, "'Longitude' must not be empty");
         }
 
         [TestMethod]
@@ -389,7 +353,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
                 Radius = faker.Random.Double(),
             });
 
-            await ProblemDetailAssertions.AssertBadRequestAsync(response, "'Latitude' must not be empty");
+            await CustomAssertions.AssertBadRequestAsync(response, "'Latitude' must not be empty");
         }
 
         [TestMethod]
@@ -401,7 +365,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
                 Longitude = _faker.Address.Longitude(),
             });
 
-            await ProblemDetailAssertions.AssertBadRequestAsync(response, "'Radius' must not be empty");
+            await CustomAssertions.AssertBadRequestAsync(response, "'Radius' must not be empty");
         }
 
         [TestMethod]
@@ -450,42 +414,22 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             user1Store1Request = user1Store1Request with
             {
-                Place = new PlaceDTO
-                {
-                    GooglePlaceId = "ChIJ_RYTY4nNHkcRl6fA-1FcRRE",
-                    FormattedAddress = "Chmielna 106, 00-801 Warszawa, Poland",
-                    Location = new Location(52.2288783, 20.9963373)
-                }
+                Place = new PlaceDTO("ChIJ_RYTY4nNHkcRl6fA-1FcRRE", "Chmielna 106, 00-801 Warszawa, Poland", new Location(52.2288783, 20.9963373))
             };
 
             user1Store2Request = user1Store2Request with
             {
-                Place = new PlaceDTO
-                {
-                    GooglePlaceId = "ChIJSYbSBiXNHkcRPVTeBjMEWBE",
-                    FormattedAddress = "al. Jana Pawła II 12, 00-001 Warszawa, Poland",
-                    Location = new Location(52.2318464, 20.9998793)
-                }
+                Place = new PlaceDTO("ChIJSYbSBiXNHkcRPVTeBjMEWBE", "al. Jana Pawła II 12, 00-001 Warszawa, Poland", new Location(52.2318464, 20.9998793))
             };
 
             user2Store1Request = user2Store1Request with
             {
-                Place = new PlaceDTO
-                {
-                    GooglePlaceId = "ChIJkb3oh_TMHkcRvwTuCI-g9us",
-                    FormattedAddress = "Świętokrzyska 30, 00-116 Warszawa, Poland",
-                    Location = new Location(52.2349257, 21.0032608)
-                }
+                Place = new PlaceDTO("ChIJkb3oh_TMHkcRvwTuCI-g9us", "Świętokrzyska 30, 00-116 Warszawa, Poland", new Location(52.2349257, 21.0032608))
             };
 
             user2Store2Request = user2Store2Request with
             {
-                Place = new PlaceDTO
-                {
-                    GooglePlaceId = "ChIJAWdPJtEyGUcRFfnT7IcNGFg",
-                    FormattedAddress = "Domaniewska 22A, 02-672 Warszawa, Poland",
-                    Location = new Location(52.1881715, 21.0114313)
-                }
+                Place = new PlaceDTO("ChIJAWdPJtEyGUcRFfnT7IcNGFg", "Domaniewska 22A, 02-672 Warszawa, Poland", new Location(52.1881715, 21.0114313))
             };
 
             var user1Store1 = await ProgramTest.ApiClientUser1.Stores.CreateStoreAndDeserializeAsync(user1Store1Request);
@@ -510,8 +454,8 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
             var storesDict = stores.ToDictionary(s => s.Id, s => s);
 
             Assert.AreEqual(expectedStores.Count, storesDict.Count);
-            StoresHelper.AssertStoresAreEqual(user1Store1, storesDict[user1Store1.Id]);
-            StoresHelper.AssertStoresAreEqual(user2Store1, storesDict[user2Store1.Id]);
+            CustomAssertions.AssertDTOsAreEqual(user1Store1, storesDict[user1Store1.Id]);
+            CustomAssertions.AssertDTOsAreEqual(user2Store1, storesDict[user2Store1.Id]);
         }
     }
 }

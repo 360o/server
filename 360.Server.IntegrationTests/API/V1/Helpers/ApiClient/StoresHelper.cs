@@ -33,11 +33,6 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
 
         public static string OfferRoute(Guid storeId, Guid offerId) => $"{OffersRoute(storeId)}/{offerId}";
 
-        public static void AssertStoresAreEqual(StoreDTO expected, StoreDTO actual)
-        {
-            Assert.AreEqual(expected, actual);
-        }
-
         public static void AssertOffersAreEqual(OfferDTO expected, OfferDTO actual)
         {
             Assert.AreEqual(expected.Id, actual.Id);
@@ -48,7 +43,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
 
         public async Task<HttpResponseMessage> CreateStoreAsync(CreateStoreRequest request)
         {
-            var requestContent = JsonUtils.MakeJsonRequestContent(request);
+            var requestContent = JsonUtils.MakeJsonStringContent(request);
 
             return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).PostAsync(StoresRoute, requestContent);
         }
@@ -62,6 +57,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
 
             var store = await JsonUtils.DeserializeAsync<StoreDTO>(response);
 
+            Assert.IsNotNull(store);
             Assert.IsTrue(Guid.TryParse(store.Id.ToString(), out var _));
             Assert.AreEqual(StoreRoute(store.Id), response.Headers.Location.AbsolutePath);
 
@@ -134,16 +130,16 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
             return await JsonUtils.DeserializeAsync<List<StoreDTO>>(response);
         }
 
-        public async Task<HttpResponseMessage> PatchStoreAsync(Guid storeId, PatchStoreRequest request)
+        public async Task<HttpResponseMessage> PatchStoreAsync(Guid storeId, object patchDoc)
         {
-            var requestContent = JsonUtils.MakeJsonRequestContent(request);
+            var requestContent = JsonUtils.MakeJsonStringContent(patchDoc);
 
             return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).PatchAsync(StoreRoute(storeId), requestContent);
         }
 
-        public async Task<StoreDTO> PatchStoreAndDeserializeAsync(Guid storeId, PatchStoreRequest request)
+        public async Task<StoreDTO> PatchStoreAndDeserializeAsync(Guid storeId, object patchDoc)
         {
-            var response = await PatchStoreAsync(storeId, request);
+            var response = await PatchStoreAsync(storeId, patchDoc);
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
@@ -157,7 +153,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
 
         public async Task<HttpResponseMessage> CreateItemAsync(Guid storeId, CreateItemRequest request)
         {
-            var requestContent = JsonUtils.MakeJsonRequestContent(request);
+            var requestContent = JsonUtils.MakeJsonStringContent(request);
 
             return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).PostAsync(ItemsRoute(storeId), requestContent);
         }
@@ -213,16 +209,16 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
             return await JsonUtils.DeserializeAsync<IList<ItemDTO>>(response);
         }
 
-        public async Task<HttpResponseMessage> PatchItemAsync(Guid storeId, Guid itemId, PatchItemRequest request)
+        public async Task<HttpResponseMessage> PatchItemAsync(Guid storeId, Guid itemId, object patchDoc)
         {
-            var requestContent = JsonUtils.MakeJsonRequestContent(request);
+            var requestContent = JsonUtils.MakeJsonStringContent(patchDoc);
 
             return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).PatchAsync(ItemRoute(storeId, itemId), requestContent);
         }
 
-        public async Task<ItemDTO> PatchItemAndDeserializeAsync(Guid storeId, Guid itemId, PatchItemRequest request)
+        public async Task<ItemDTO> PatchItemAndDeserializeAsync(Guid storeId, Guid itemId, object patchDoc)
         {
-            var response = await PatchItemAsync(storeId, itemId, request);
+            var response = await PatchItemAsync(storeId, itemId, patchDoc);
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
@@ -236,7 +232,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
 
         public async Task<HttpResponseMessage> CreateOfferAsync(Guid storeId, CreateOfferRequest request)
         {
-            var requestContent = JsonUtils.MakeJsonRequestContent(request);
+            var requestContent = JsonUtils.MakeJsonStringContent(request);
 
             return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).PostAsync(OffersRoute(storeId), requestContent);
         }

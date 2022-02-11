@@ -22,16 +22,18 @@ namespace _360.Server.UnitTests.Api.V1.Organizations.Model
 
             Assert.AreEqual(userId, organization.UserId);
             Assert.AreEqual(name, organization.Name);
-            Assert.AreEqual(string.Empty, organization.EnglishShortDescription);
-            Assert.AreEqual(string.Empty, organization.EnglishLongDescription);
-            CollectionAssert.AreEqual(new List<string>(), organization.EnglishCategories);
-            Assert.AreEqual(string.Empty, organization.FrenchShortDescription);
-            Assert.AreEqual(string.Empty, organization.FrenchLongDescription);
-            CollectionAssert.AreEqual(new List<string>(), organization.FrenchCategories);
+            Assert.IsNull(organization.EnglishShortDescription);
+            Assert.IsNull(organization.EnglishLongDescription);
+            Assert.IsNull(organization.EnglishCategories);
+            Assert.AreEqual(string.Empty, organization.EnglishCategoriesJoined);
+            Assert.IsNull(organization.FrenchShortDescription);
+            Assert.IsNull(organization.FrenchLongDescription);
+            Assert.IsNull(organization.FrenchCategories);
+            Assert.AreEqual(string.Empty, organization.FrenchCategoriesJoined);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException), "Value cannot be null. (Parameter 'userId')")]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void GivenNullUserIdShouldThrowArgumentNullException()
         {
             var name = _faker.Company.CompanyName();
@@ -42,7 +44,7 @@ namespace _360.Server.UnitTests.Api.V1.Organizations.Model
         [DataTestMethod]
         [DataRow("")]
         [DataRow(" ")]
-        [ExpectedException(typeof(ArgumentException), "Required input userId was empty. (Parameter 'userId')")]
+        [ExpectedException(typeof(ArgumentException))]
         public void GivenWhitespaceUserIdShouldThrow(string userId)
         {
             var name = _faker.Company.CompanyName();
@@ -51,7 +53,7 @@ namespace _360.Server.UnitTests.Api.V1.Organizations.Model
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException), "Value cannot be null. (Parameter 'name')")]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void GivenNullNameShouldThrow()
         {
             var userId = _faker.Internet.UserName();
@@ -62,7 +64,7 @@ namespace _360.Server.UnitTests.Api.V1.Organizations.Model
         [DataTestMethod]
         [DataRow("")]
         [DataRow(" ")]
-        [ExpectedException(typeof(ArgumentException), "Required input name was empty. (Parameter 'name')")]
+        [ExpectedException(typeof(ArgumentException))]
         public void GivenWhitespaceNameShouldThrow(string name)
         {
             var userId = _faker.Internet.UserName();
@@ -77,18 +79,31 @@ namespace _360.Server.UnitTests.Api.V1.Organizations.Model
 
             var englishShortDescription = _faker.Company.CatchPhrase();
 
-            organization.SetEnglishShortDescription(englishShortDescription);
+            organization.EnglishShortDescription = englishShortDescription;
 
             Assert.AreEqual(englishShortDescription, organization.EnglishShortDescription);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException), "Value cannot be null. (Parameter 'englishShortDescription')")]
-        public void GivenNullArgumentSetEnglishShortDescriptionShouldThrow()
+        public void GivenNullArgumentSetEnglishShortDescription()
         {
             var organization = MakeRandomOrganization();
 
-            organization.SetEnglishShortDescription(null!);
+            organization.EnglishShortDescription = null;
+
+            Assert.IsNull(organization.EnglishShortDescription);
+        }
+
+        [DataTestMethod]
+        [DataRow("")]
+        [DataRow(" ")]
+        public void GivenWhitespaceArgumentSetEnglishShortDescription(string englishShortDescription)
+        {
+            var organization = MakeRandomOrganization();
+
+            organization.EnglishShortDescription = englishShortDescription;
+
+            Assert.IsNull(organization.EnglishShortDescription);
         }
 
         [TestMethod]
@@ -98,36 +113,72 @@ namespace _360.Server.UnitTests.Api.V1.Organizations.Model
 
             var englishLongDescription = _faker.Company.CatchPhrase();
 
-            organization.SetEnglishLongDescription(englishLongDescription);
+            organization.EnglishLongDescription = englishLongDescription;
 
             Assert.AreEqual(englishLongDescription, organization.EnglishLongDescription);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException), "Value cannot be null. (Parameter 'englishLongDescription')")]
-        public void GivenNullArgumentSetEnglishLongDescriptionShouldThrow()
+        public void GivenNullArgumentSetEnglishLongDescription()
         {
             var organization = MakeRandomOrganization();
 
-            organization.SetEnglishLongDescription(null!);
+            organization.EnglishLongDescription = null;
+
+            Assert.IsNull(organization.EnglishLongDescription);
         }
 
         [DataTestMethod]
-        [DataRow(0)]
+        [DataRow("")]
+        [DataRow(" ")]
+        public void GivenWhitespaceArgumentSetEnglishLongDescription(string englishLongDescription)
+        {
+            var organization = MakeRandomOrganization();
+
+            organization.EnglishShortDescription = englishLongDescription;
+
+            Assert.IsNull(organization.EnglishShortDescription);
+        }
+
+        [DataTestMethod]
         [DataRow(1)]
         [DataRow(10)]
-        public void SetEnglishCategoriesShouldAlsoSetEnglishCategoriesJoined(int numberOfCategories)
+        public void SetEnglishCategoriesShouldRemoveDuplicatesAndSetEnglishCategoriesJoined(int numberOfCategories)
         {
-            var categories = _faker.Commerce.Categories(numberOfCategories).ToHashSet();
+            var categories = _faker.Commerce.Categories(numberOfCategories).ToList();
 
-            var joinedCategories = string.Join(" ", categories);
+            var categoriesSet = categories.ToHashSet();
+
+            var joinedCategories = string.Join(" ", categoriesSet);
 
             var organization = MakeRandomOrganization();
 
-            organization.SetEnglishCategories(categories);
+            organization.EnglishCategories = categories;
 
-            CollectionAssert.AreEquivalent(categories.ToList(), organization.EnglishCategories);
+            CollectionAssert.AreEquivalent(categoriesSet.ToList(), organization.EnglishCategories);
             Assert.AreEqual(joinedCategories, organization.EnglishCategoriesJoined);
+        }
+
+        [TestMethod]
+        public void GivenNullArgumentSetEnglishCategories()
+        {
+            var organization = MakeRandomOrganization();
+
+            organization.EnglishCategories = null;
+
+            Assert.IsNull(organization.EnglishCategories);
+            Assert.AreEqual(string.Empty, organization.EnglishCategoriesJoined);
+        }
+
+        [TestMethod]
+        public void GivenEmptyArgumentSetEnglishCategories()
+        {
+            var organization = MakeRandomOrganization();
+
+            organization.EnglishCategories = new List<string>();
+
+            Assert.IsNull(organization.EnglishCategories);
+            Assert.AreEqual(string.Empty, organization.EnglishCategoriesJoined);
         }
 
         [TestMethod]
@@ -137,18 +188,31 @@ namespace _360.Server.UnitTests.Api.V1.Organizations.Model
 
             var frenchShortDescription = _faker.Company.CatchPhrase();
 
-            organization.SetFrenchShortDescription(frenchShortDescription);
+            organization.FrenchShortDescription = frenchShortDescription;
 
             Assert.AreEqual(frenchShortDescription, organization.FrenchShortDescription);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException), "Value cannot be null. (Parameter 'frenchShortDescription')")]
-        public void GivenNullArgumentSetFrenchShortDescriptionShouldThrow()
+        public void GivenNullArgumentSetFrenchShortDescription()
         {
             var organization = MakeRandomOrganization();
 
-            organization.SetFrenchShortDescription(null!);
+            organization.FrenchShortDescription = null;
+
+            Assert.IsNull(organization.FrenchShortDescription);
+        }
+
+        [DataTestMethod]
+        [DataRow("")]
+        [DataRow(" ")]
+        public void GivenWhitespaceArgumentSetFrenchShortDescription(string frenchShortDescription)
+        {
+            var organization = MakeRandomOrganization();
+
+            organization.FrenchShortDescription = frenchShortDescription;
+
+            Assert.IsNull(organization.FrenchShortDescription);
         }
 
         [TestMethod]
@@ -158,36 +222,72 @@ namespace _360.Server.UnitTests.Api.V1.Organizations.Model
 
             var frenchLongDescription = _faker.Company.CatchPhrase();
 
-            organization.SetFrenchLongDescription(frenchLongDescription);
+            organization.FrenchLongDescription = frenchLongDescription;
 
             Assert.AreEqual(frenchLongDescription, organization.FrenchLongDescription);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException), "Value cannot be null. (Parameter 'frenchLongDescription')")]
-        public void GivenNullArgumentSetFrenchLongDescriptionShouldThrow()
+        public void GivenNullArgumentSetFrenchLongDescription()
         {
             var organization = MakeRandomOrganization();
 
-            organization.SetFrenchLongDescription(null!);
+            organization.FrenchLongDescription = null;
+
+            Assert.IsNull(organization.FrenchLongDescription);
         }
 
         [DataTestMethod]
-        [DataRow(0)]
+        [DataRow("")]
+        [DataRow(" ")]
+        public void GivenWhitespaceArgumentSetFrenchLongDescription(string frenchLongDescription)
+        {
+            var organization = MakeRandomOrganization();
+
+            organization.FrenchLongDescription = frenchLongDescription;
+
+            Assert.IsNull(organization.FrenchLongDescription);
+        }
+
+        [DataTestMethod]
         [DataRow(1)]
         [DataRow(10)]
-        public void SetFrenchCategoriesShouldAlsoSetFrenchCategoriesJoined(int numberOfCategories)
+        public void SetFrenchCategoriesShouldRemoveDuplicatesAndSetFrenchCategoriesJoined(int numberOfCategories)
         {
-            var categories = _faker.Commerce.Categories(numberOfCategories).ToHashSet();
+            var categories = _faker.Commerce.Categories(numberOfCategories).ToList();
 
-            var joinedCategories = string.Join(" ", categories);
+            var categoriesSet = categories.ToHashSet();
+
+            var joinedCategories = string.Join(" ", categoriesSet);
 
             var organization = MakeRandomOrganization();
 
-            organization.SetFrenchCategories(categories);
+            organization.FrenchCategories = categories;
 
-            CollectionAssert.AreEquivalent(categories.ToList(), organization.FrenchCategories);
+            CollectionAssert.AreEquivalent(categoriesSet.ToList(), organization.FrenchCategories);
             Assert.AreEqual(joinedCategories, organization.FrenchCategoriesJoined);
+        }
+
+        [TestMethod]
+        public void GivenNullArgumentSetFrenchCategories()
+        {
+            var organization = MakeRandomOrganization();
+
+            organization.FrenchCategories = null;
+
+            Assert.IsNull(organization.FrenchCategories);
+            Assert.AreEqual(string.Empty, organization.FrenchCategoriesJoined);
+        }
+
+        [TestMethod]
+        public void GivenEmptyArgumentSetFrenchCategories()
+        {
+            var organization = MakeRandomOrganization();
+
+            organization.FrenchCategories = new List<string>();
+
+            Assert.IsNull(organization.FrenchCategories);
+            Assert.AreEqual(string.Empty, organization.FrenchCategoriesJoined);
         }
 
         private Organization MakeRandomOrganization()

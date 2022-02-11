@@ -1,5 +1,4 @@
 ﻿using _360o.Server;
-using _360o.Server.Api.V1;
 using _360o.Server.Api.V1.Organizations.Services;
 using _360o.Server.Api.V1.Stores.Model;
 using _360o.Server.Api.V1.Stores.Services;
@@ -45,9 +44,8 @@ builder.Services
     .AddControllers(options =>
     {
         options.SuppressAsyncSuffixInActionNames = false;
-    });
-
-builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
+    })
+    .AddNewtonsoftJson();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

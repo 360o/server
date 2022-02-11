@@ -2,9 +2,11 @@
 
 namespace _360o.Server.Api.V1.Stores.DTOs
 {
-    public readonly record struct OfferDTO(
+    public record class OfferDTO(
         Guid Id,
-        IList<OfferItemDTO> OfferItems,
+        string? EnglishName,
+        string? FrenchName,
+        IEnumerable<OfferItemDTO> OfferItems,
         MoneyValue? Discount,
         Guid StoreId
         )

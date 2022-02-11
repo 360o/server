@@ -9,8 +9,15 @@ using System.Threading.Tasks;
 
 namespace _360.Server.IntegrationTests.Api.V1.Helpers
 {
-    internal static class ProblemDetailAssertions
+    internal static class CustomAssertions
     {
+        public static void AssertDTOsAreEqual(object expected, object actual)
+        {
+            var serializedExpected = JsonSerializer.Serialize(expected);
+            var serializedActual = JsonSerializer.Serialize(actual);
+            Assert.AreEqual(serializedExpected, serializedActual);
+        }
+
         public static async Task AssertNotFoundAsync(HttpResponseMessage response, string detailMessage)
         {
             Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
