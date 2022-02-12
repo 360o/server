@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace _360.Server.IntegrationTests.Api.V1.Helpers.Generators
 {
-    internal static class RequestsGenerator
+    internal static class Generator
     {
         private static Faker EnglishFaker => new Faker();
         private static Faker FrenchFaker => new Faker("fr");
@@ -29,8 +29,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.Generators
 
         public static CreateStoreRequest MakeRandomCreateStoreRequest(Guid organizationId)
         {
-            var place = new PlaceDTO(EnglishFaker.Random.Uuid().ToString(), EnglishFaker.Address.FullAddress(), new LocationDTO(EnglishFaker.Address.Latitude(), EnglishFaker.Address.Longitude()));
-            return new CreateStoreRequest(organizationId, place);
+            return new CreateStoreRequest(organizationId, MakeRandomPlace());
         }
 
         public static CreateItemRequest MakeRandomCreateItemRequest()
@@ -57,6 +56,25 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.Generators
                 FrenchName = FrenchFaker.Commerce.ProductAdjective(),
                 OfferItems = offerItems,
                 Discount = discount
+            };
+        }
+
+        public static PlaceDTO MakeRandomPlace()
+        {
+            return new PlaceDTO
+            {
+                GooglePlaceId = EnglishFaker.Random.Uuid().ToString(),
+                FormattedAddress = EnglishFaker.Address.FullAddress(),
+                Location = MakeRandomLocation()
+            };
+        }
+
+        public static LocationDTO MakeRandomLocation()
+        {
+            return new LocationDTO
+            {
+                Latitude = EnglishFaker.Address.Latitude(),
+                Longitude = EnglishFaker.Address.Longitude(),
             };
         }
     }

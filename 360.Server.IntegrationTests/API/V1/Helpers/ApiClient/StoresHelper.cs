@@ -66,7 +66,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
 
         public async Task<StoreDTO> CreateRandomStoreAndDeserializeAsync(Guid organizationId)
         {
-            var request = RequestsGenerator.MakeRandomCreateStoreRequest(organizationId);
+            var request = Generator.MakeRandomCreateStoreRequest(organizationId);
 
             return await CreateStoreAndDeserializeAsync(request);
         }
@@ -176,7 +176,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
 
         public async Task<ItemDTO> CreateRandomItemAndDeserializeAsync(Guid storeId)
         {
-            var request = RequestsGenerator.MakeRandomCreateItemRequest();
+            var request = Generator.MakeRandomCreateItemRequest();
 
             return await CreateItemAndDeserializeAsync(storeId, request);
         }
@@ -239,7 +239,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
 
         public async Task<OfferDTO> CreateRandomOfferAndDeserializeAsync(Guid storeId, ISet<CreateOfferRequestItem> offerItems, MoneyValueDTO? discount)
         {
-            var request = RequestsGenerator.MakeRandomCreateOfferRequest(offerItems, discount);
+            var request = Generator.MakeRandomCreateOfferRequest(offerItems, discount);
 
             var response = await CreateOfferAsync(storeId, request);
 

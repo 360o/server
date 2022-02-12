@@ -113,7 +113,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
                 }
             };
 
-            var request = RequestsGenerator.MakeRandomCreateOfferRequest(requestItems, null) with
+            var request = Generator.MakeRandomCreateOfferRequest(requestItems, null) with
             {
                 EnglishName = nullOrWhitespaceName,
                 FrenchName = nullOrWhitespaceName,
@@ -133,7 +133,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             var requestItems = new HashSet<CreateOfferRequestItem>();
 
-            var request = RequestsGenerator.MakeRandomCreateOfferRequest(requestItems, null);
+            var request = Generator.MakeRandomCreateOfferRequest(requestItems, null);
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateOfferAsync(store.Id, request);
 
@@ -156,7 +156,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
                 }
             };
 
-            var request = RequestsGenerator.MakeRandomCreateOfferRequest(requestItems, null);
+            var request = Generator.MakeRandomCreateOfferRequest(requestItems, null);
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateOfferAsync(store.Id, request);
 
@@ -181,7 +181,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
                 }
             };
 
-            var request = RequestsGenerator.MakeRandomCreateOfferRequest(requestItems, null);
+            var request = Generator.MakeRandomCreateOfferRequest(requestItems, null);
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateOfferAsync(store.Id, request);
 
@@ -205,7 +205,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
                 CurrencyCode = _englishFaker.PickRandom<Iso4217CurrencyCode>()
             };
 
-            var request = RequestsGenerator.MakeRandomCreateOfferRequest(requestItems, discount);
+            var request = Generator.MakeRandomCreateOfferRequest(requestItems, discount);
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateOfferAsync(store.Id, request);
 
@@ -221,7 +221,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
 
             var requestItems = new HashSet<CreateOfferRequestItem>();
 
-            var request = RequestsGenerator.MakeRandomCreateOfferRequest(requestItems, null);
+            var request = Generator.MakeRandomCreateOfferRequest(requestItems, null);
 
             var requestContent = JsonUtils.MakeJsonStringContent(request);
 
@@ -248,7 +248,7 @@ namespace _360.Server.IntegrationTests.API.V1.Stores
                 }
             };
 
-            var request = RequestsGenerator.MakeRandomCreateOfferRequest(requestItems, null);
+            var request = Generator.MakeRandomCreateOfferRequest(requestItems, null);
 
             var response = await ProgramTest.ApiClientUser2.Stores.CreateOfferAsync(store.Id, request);
 

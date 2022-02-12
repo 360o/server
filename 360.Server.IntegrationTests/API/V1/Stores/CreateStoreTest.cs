@@ -1,9 +1,7 @@
 ﻿using _360.Server.IntegrationTests.Api.V1.Helpers;
 using _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient;
 using _360.Server.IntegrationTests.Api.V1.Helpers.Generators;
-using _360o.Server.Api.V1.Errors.Enums;
 using _360o.Server.Api.V1.Stores.DTOs;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Net;
@@ -22,7 +20,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
         {
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
 
-            var request = RequestsGenerator.MakeRandomCreateStoreRequest(organization.Id);
+            var request = Generator.MakeRandomCreateStoreRequest(organization.Id);
 
             var store = await ProgramTest.ApiClientUser1.Stores.CreateStoreAndDeserializeAsync(request);
 
@@ -34,7 +32,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
         [TestMethod]
         public async Task GivenNoAccessTokenShouldReturnUnauthorized()
         {
-            var request = RequestsGenerator.MakeRandomCreateStoreRequest(Guid.NewGuid());
+            var request = Generator.MakeRandomCreateStoreRequest(Guid.NewGuid());
 
             var requestContent = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
 
@@ -46,22 +44,11 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
         [TestMethod]
         public async Task GivenOrganizationDoesNotExistShouldReturnNotFound()
         {
-            var request = RequestsGenerator.MakeRandomCreateStoreRequest(Guid.NewGuid());
+            var request = Generator.MakeRandomCreateStoreRequest(Guid.NewGuid());
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateStoreAsync(request);
 
-            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
-
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.Detail);
-            Assert.IsNotNull(result.Status);
-            Assert.AreEqual(ErrorCode.NotFound.ToString(), result.Title);
-            Assert.AreEqual((int)HttpStatusCode.NotFound, result.Status.Value);
-            Assert.AreEqual("Organization not found", result.Detail);
+            await CustomAssertions.AssertNotFoundWithProblemDetailsAsync(response, "Organization not found");
         }
 
         [TestMethod]
@@ -69,7 +56,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
         {
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
 
-            var request = RequestsGenerator.MakeRandomCreateStoreRequest(organization.Id);
+            var request = Generator.MakeRandomCreateStoreRequest(organization.Id);
 
             var response = await ProgramTest.ApiClientUser2.Stores.CreateStoreAsync(request);
 
@@ -82,7 +69,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
         [DataRow(" ")]
         public async Task GivenNullOrWhitespaceGooglePlaceIdShouldReturnBadRequest(string googlePlaceId)
         {
-            var request = RequestsGenerator.MakeRandomCreateStoreRequest(Guid.NewGuid());
+            var request = Generator.MakeRandomCreateStoreRequest(Guid.NewGuid());
 
             request = request with
             {
@@ -100,7 +87,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
         [DataRow(" ")]
         public async Task GivenNullOrWhitespaceFormattedAddressShouldReturnBadRequest(string formattedAddress)
         {
-            var request = RequestsGenerator.MakeRandomCreateStoreRequest(Guid.NewGuid());
+            var request = Generator.MakeRandomCreateStoreRequest(Guid.NewGuid());
 
             request = request with
             {
@@ -117,7 +104,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
         [DataRow(91)]
         public async Task GivenInvalidLatitudeShouldReturnBadRequest(double latitude)
         {
-            var request = RequestsGenerator.MakeRandomCreateStoreRequest(Guid.NewGuid());
+            var request = Generator.MakeRandomCreateStoreRequest(Guid.NewGuid());
 
             request = request with
             {
@@ -134,7 +121,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
         [DataRow(181)]
         public async Task GivenInvalidLongitudeShouldReturnBadRequest(double longitude)
         {
-            var request = RequestsGenerator.MakeRandomCreateStoreRequest(Guid.NewGuid());
+            var request = Generator.MakeRandomCreateStoreRequest(Guid.NewGuid());
 
             request = request with
             {

@@ -45,7 +45,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
 
         public async Task<OrganizationDTO> CreateRandomOrganizationAndDeserializeAsync()
         {
-            var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var request = Generator.MakeRandomCreateOrganizationRequest();
 
             return await CreateOrganizationAndDeserializeAsync(request);
         }

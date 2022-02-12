@@ -22,7 +22,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
 
-            var request = RequestsGenerator.MakeRandomCreateItemRequest();
+            var request = Generator.MakeRandomCreateItemRequest();
 
             var item = await ProgramTest.ApiClientUser1.Stores.CreateItemAndDeserializeAsync(store.Id, request);
 
@@ -43,7 +43,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
 
-            var request = RequestsGenerator.MakeRandomCreateItemRequest();
+            var request = Generator.MakeRandomCreateItemRequest();
 
             request = request with { EnglishName = englishName };
 
@@ -62,7 +62,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
 
-            var request = RequestsGenerator.MakeRandomCreateItemRequest();
+            var request = Generator.MakeRandomCreateItemRequest();
 
             request = request with { FrenchName = frenchName };
 
@@ -78,7 +78,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
 
-            var request = RequestsGenerator.MakeRandomCreateItemRequest();
+            var request = Generator.MakeRandomCreateItemRequest();
 
             request = request with
             {
@@ -105,7 +105,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
         [TestMethod]
         public async Task GivenNoAccessTokenShouldReturnUnauthorized()
         {
-            var request = RequestsGenerator.MakeRandomCreateItemRequest();
+            var request = Generator.MakeRandomCreateItemRequest();
 
             var requestContent = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
 
@@ -124,7 +124,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
 
-            var request = RequestsGenerator.MakeRandomCreateItemRequest();
+            var request = Generator.MakeRandomCreateItemRequest();
 
             request = request with { EnglishDescription = englishDescription };
 
@@ -143,7 +143,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
 
-            var request = RequestsGenerator.MakeRandomCreateItemRequest();
+            var request = Generator.MakeRandomCreateItemRequest();
 
             request = request with { FrenchDescription = frenchDescription };
 

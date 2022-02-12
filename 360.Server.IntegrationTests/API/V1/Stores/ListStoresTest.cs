@@ -53,16 +53,16 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
         {
             var myQuery = "amigurumi";
 
-            var user1OrganizationWithNameRequest = RequestsGenerator.MakeRandomCreateOrganizationRequest();
-            var user1OrganizationWithEnglishShortDescriptionRequest = RequestsGenerator.MakeRandomCreateOrganizationRequest();
-            var user1OrganizationWithEnglishLongDescriptionRequest = RequestsGenerator.MakeRandomCreateOrganizationRequest();
-            var user1OrganizationWithEnglishCategoriesRequest = RequestsGenerator.MakeRandomCreateOrganizationRequest();
-            var user1OrganizationWithoutQueryRequest = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var user1OrganizationWithNameRequest = Generator.MakeRandomCreateOrganizationRequest();
+            var user1OrganizationWithEnglishShortDescriptionRequest = Generator.MakeRandomCreateOrganizationRequest();
+            var user1OrganizationWithEnglishLongDescriptionRequest = Generator.MakeRandomCreateOrganizationRequest();
+            var user1OrganizationWithEnglishCategoriesRequest = Generator.MakeRandomCreateOrganizationRequest();
+            var user1OrganizationWithoutQueryRequest = Generator.MakeRandomCreateOrganizationRequest();
 
-            var user2OrganizationWithFrenchShortDescriptionRequest = RequestsGenerator.MakeRandomCreateOrganizationRequest();
-            var user2OrganizationWithFrenchLongDescriptionRequest = RequestsGenerator.MakeRandomCreateOrganizationRequest();
-            var user2OrganizationWithFrenchCategoriesRequest = RequestsGenerator.MakeRandomCreateOrganizationRequest();
-            var user2OrganizationWithoutQueryRequest = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var user2OrganizationWithFrenchShortDescriptionRequest = Generator.MakeRandomCreateOrganizationRequest();
+            var user2OrganizationWithFrenchLongDescriptionRequest = Generator.MakeRandomCreateOrganizationRequest();
+            var user2OrganizationWithFrenchCategoriesRequest = Generator.MakeRandomCreateOrganizationRequest();
+            var user2OrganizationWithoutQueryRequest = Generator.MakeRandomCreateOrganizationRequest();
 
             user1OrganizationWithNameRequest = user1OrganizationWithNameRequest with { Name = $"{user1OrganizationWithNameRequest.Name} {myQuery}" };
             user1OrganizationWithEnglishShortDescriptionRequest = user1OrganizationWithNameRequest with { EnglishShortDescription = $"{user1OrganizationWithEnglishShortDescriptionRequest.EnglishShortDescription} {myQuery}" };
@@ -97,16 +97,16 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
             var user2StoreWithItemWithFrenchName = await ProgramTest.ApiClientUser2.Stores.CreateRandomStoreAndDeserializeAsync(user2OrganizationWithoutQuery.Id);
             var user2StoreWithItemWithFrenchDescription = await ProgramTest.ApiClientUser2.Stores.CreateRandomStoreAndDeserializeAsync(user2OrganizationWithoutQuery.Id);
 
-            var user1ItemWithEnglishNameRequest = RequestsGenerator.MakeRandomCreateItemRequest();
+            var user1ItemWithEnglishNameRequest = Generator.MakeRandomCreateItemRequest();
             user1ItemWithEnglishNameRequest = user1ItemWithEnglishNameRequest with { EnglishName = $"{user1ItemWithEnglishNameRequest.EnglishName} {myQuery}" };
 
-            var user1ItemWithEnglishDescriptionRequest = RequestsGenerator.MakeRandomCreateItemRequest();
+            var user1ItemWithEnglishDescriptionRequest = Generator.MakeRandomCreateItemRequest();
             user1ItemWithEnglishDescriptionRequest = user1ItemWithEnglishDescriptionRequest with { EnglishDescription = $"{user1ItemWithEnglishDescriptionRequest.EnglishDescription} {myQuery}" };
 
-            var user2ItemWithFrenchNameRequest = RequestsGenerator.MakeRandomCreateItemRequest();
+            var user2ItemWithFrenchNameRequest = Generator.MakeRandomCreateItemRequest();
             user2ItemWithFrenchNameRequest = user2ItemWithFrenchNameRequest with { FrenchName = $"{user2ItemWithFrenchNameRequest.FrenchName} {myQuery}" };
 
-            var user2ItemWithFrenchDescriptionRequest = RequestsGenerator.MakeRandomCreateItemRequest();
+            var user2ItemWithFrenchDescriptionRequest = Generator.MakeRandomCreateItemRequest();
             user2ItemWithFrenchDescriptionRequest = user2ItemWithFrenchDescriptionRequest with { FrenchDescription = $"{user2ItemWithFrenchDescriptionRequest.FrenchDescription} {myQuery}" };
 
             await ProgramTest.ApiClientUser1.Stores.CreateItemAsync(user1StoreWithItemWithEnglishName.Id, user1ItemWithEnglishNameRequest);
@@ -155,13 +155,13 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
             var user1Organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
             var user2Organization = await ProgramTest.ApiClientUser2.Organizations.CreateRandomOrganizationAndDeserializeAsync();
 
-            var user1Store1Request = RequestsGenerator.MakeRandomCreateStoreRequest(user1Organization.Id);
-            var user1Store2Request = RequestsGenerator.MakeRandomCreateStoreRequest(user1Organization.Id);
-            var user1Store3Request = RequestsGenerator.MakeRandomCreateStoreRequest(user1Organization.Id);
-            var user1Store4Request = RequestsGenerator.MakeRandomCreateStoreRequest(user1Organization.Id);
-            var user2Store1Request = RequestsGenerator.MakeRandomCreateStoreRequest(user2Organization.Id);
-            var user2Store2Request = RequestsGenerator.MakeRandomCreateStoreRequest(user2Organization.Id);
-            var user2Store3Request = RequestsGenerator.MakeRandomCreateStoreRequest(user2Organization.Id);
+            var user1Store1Request = Generator.MakeRandomCreateStoreRequest(user1Organization.Id);
+            var user1Store2Request = Generator.MakeRandomCreateStoreRequest(user1Organization.Id);
+            var user1Store3Request = Generator.MakeRandomCreateStoreRequest(user1Organization.Id);
+            var user1Store4Request = Generator.MakeRandomCreateStoreRequest(user1Organization.Id);
+            var user2Store1Request = Generator.MakeRandomCreateStoreRequest(user2Organization.Id);
+            var user2Store2Request = Generator.MakeRandomCreateStoreRequest(user2Organization.Id);
+            var user2Store3Request = Generator.MakeRandomCreateStoreRequest(user2Organization.Id);
 
             // 200m
             user1Store1Request = user1Store1Request with
@@ -375,10 +375,10 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
             var myLocation = new Location(52.2318464, 20.9998793);
             var twoKilometers = 2000;
 
-            var user1Organization1Request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
-            var user1Organization2Request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
-            var user2Organization1Request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
-            var user2Organization2Request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var user1Organization1Request = Generator.MakeRandomCreateOrganizationRequest();
+            var user1Organization2Request = Generator.MakeRandomCreateOrganizationRequest();
+            var user2Organization1Request = Generator.MakeRandomCreateOrganizationRequest();
+            var user2Organization2Request = Generator.MakeRandomCreateOrganizationRequest();
 
             user1Organization1Request = user1Organization1Request with
             {
@@ -407,10 +407,10 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
             var user2Organization1 = await ProgramTest.ApiClientUser2.Organizations.CreateOrganizationAndDeserializeAsync(user2Organization1Request);
             var user2Organization2 = await ProgramTest.ApiClientUser2.Organizations.CreateOrganizationAndDeserializeAsync(user2Organization2Request);
 
-            var user1Store1Request = RequestsGenerator.MakeRandomCreateStoreRequest(user1Organization1.Id);
-            var user1Store2Request = RequestsGenerator.MakeRandomCreateStoreRequest(user1Organization2.Id);
-            var user2Store1Request = RequestsGenerator.MakeRandomCreateStoreRequest(user2Organization1.Id);
-            var user2Store2Request = RequestsGenerator.MakeRandomCreateStoreRequest(user2Organization2.Id);
+            var user1Store1Request = Generator.MakeRandomCreateStoreRequest(user1Organization1.Id);
+            var user1Store2Request = Generator.MakeRandomCreateStoreRequest(user1Organization2.Id);
+            var user2Store1Request = Generator.MakeRandomCreateStoreRequest(user2Organization1.Id);
+            var user2Store2Request = Generator.MakeRandomCreateStoreRequest(user2Organization2.Id);
 
             user1Store1Request = user1Store1Request with
             {

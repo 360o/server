@@ -18,7 +18,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
         [TestMethod]
         public async Task GivenValidRequestShouldReturnCreated()
         {
-            var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var request = Generator.MakeRandomCreateOrganizationRequest();
 
             var organization = await ProgramTest.ApiClientUser1.Organizations.CreateOrganizationAndDeserializeAsync(request);
 
@@ -38,7 +38,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
         [TestMethod]
         public async Task GivenNoAccessTokenShouldReturnUnauthorized()
         {
-            var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var request = Generator.MakeRandomCreateOrganizationRequest();
 
             var requestContent = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
 
@@ -49,7 +49,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
 
         public async Task GivenNullNameShouldReturnBadRequest()
         {
-            var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var request = Generator.MakeRandomCreateOrganizationRequest();
 
             request = request with { Name = null };
 
@@ -63,7 +63,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
         [DataRow(" ")]
         public async Task GivenWhitespaceNameShouldReturnBadRequest(string name)
         {
-            var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var request = Generator.MakeRandomCreateOrganizationRequest();
 
             request = request with { Name = name };
 
@@ -75,7 +75,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
         [TestMethod]
         public async Task GivenNullEnglishShortDescriptionShouldReturnCreated()
         {
-            var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var request = Generator.MakeRandomCreateOrganizationRequest();
 
             request = request with { EnglishShortDescription = null };
 
@@ -89,7 +89,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
         [DataRow(" ")]
         public async Task GivenWhitespaceEnglishShortDescriptionShouldReturnCreated(string englishShortDescription)
         {
-            var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var request = Generator.MakeRandomCreateOrganizationRequest();
 
             request = request with { EnglishShortDescription = englishShortDescription };
 
@@ -101,7 +101,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
         [TestMethod]
         public async Task GivenNullEnglishLongDescriptionShouldReturnCreated()
         {
-            var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var request = Generator.MakeRandomCreateOrganizationRequest();
 
             request = request with { EnglishLongDescription = null };
 
@@ -115,7 +115,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
         [DataRow(" ")]
         public async Task GivenWhitespaceEnglishLongDescriptionShouldReturnCreated(string englishLongDescription)
         {
-            var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var request = Generator.MakeRandomCreateOrganizationRequest();
 
             request = request with { EnglishLongDescription = englishLongDescription };
 
@@ -127,7 +127,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
         [TestMethod]
         public async Task GivenNullEnglishCategoriesShouldReturnCreated()
         {
-            var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var request = Generator.MakeRandomCreateOrganizationRequest();
 
             request = request with { EnglishCategories = null };
 
@@ -139,7 +139,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
         [TestMethod]
         public async Task GivenEmptyEnglishCategoriesShouldReturnCreated()
         {
-            var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var request = Generator.MakeRandomCreateOrganizationRequest();
 
             request = request with { EnglishCategories = new HashSet<string>() };
 
@@ -151,7 +151,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
         [TestMethod]
         public async Task GivenNullFrenchShortDescriptionShouldReturnCreated()
         {
-            var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var request = Generator.MakeRandomCreateOrganizationRequest();
 
             request = request with { FrenchShortDescription = null };
 
@@ -165,7 +165,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
         [DataRow(" ")]
         public async Task GivenWhitespaceFrenchShortDescriptionShouldReturnCreated(string frenchShortDescription)
         {
-            var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var request = Generator.MakeRandomCreateOrganizationRequest();
 
             request = request with { FrenchShortDescription = frenchShortDescription };
 
@@ -177,7 +177,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
         [TestMethod]
         public async Task GivenNullFrenchLongDescriptionShouldReturnCreated()
         {
-            var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var request = Generator.MakeRandomCreateOrganizationRequest();
 
             request = request with { FrenchLongDescription = null };
 
@@ -191,7 +191,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
         [DataRow(" ")]
         public async Task GivenWhitespaceFrenchLongDescriptionShouldReturnCreated(string frenchLongDescription)
         {
-            var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var request = Generator.MakeRandomCreateOrganizationRequest();
 
             request = request with { FrenchLongDescription = frenchLongDescription };
 
@@ -203,7 +203,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
         [TestMethod]
         public async Task GivenNullFrenchCategoriesShouldReturnCreated()
         {
-            var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var request = Generator.MakeRandomCreateOrganizationRequest();
 
             request = request with { FrenchCategories = null };
 
@@ -215,7 +215,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Organizations
         [TestMethod]
         public async Task GivenEmptyFrenchCategoriesShouldReturnCreated()
         {
-            var request = RequestsGenerator.MakeRandomCreateOrganizationRequest();
+            var request = Generator.MakeRandomCreateOrganizationRequest();
 
             request = request with { FrenchCategories = new HashSet<string>() };
 
