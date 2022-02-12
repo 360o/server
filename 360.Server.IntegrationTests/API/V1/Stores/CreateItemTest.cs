@@ -1,7 +1,6 @@
-﻿using _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient;
+﻿using _360.Server.IntegrationTests.Api.V1.Helpers;
+using _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient;
 using _360.Server.IntegrationTests.Api.V1.Helpers.Generators;
-using _360o.Server.Api.V1.Errors.Enums;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Net;
@@ -88,18 +87,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
 
             var response = await ProgramTest.ApiClientUser1.Stores.CreateItemAsync(store.Id, request);
 
-            Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            var result = JsonSerializer.Deserialize<ProblemDetails>(responseContent);
-
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.Detail);
-            Assert.IsNotNull(result.Status);
-            Assert.AreEqual(ErrorCode.InvalidRequest.ToString(), result.Title);
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.Status.Value);
-            Assert.IsTrue(result.Detail.Contains("At least one Name must be defined"));
+            await CustomAssertions.AssertBadRequestWithProblemDetailsAsync(response, "At least one Name must be defined");
         }
 
         [TestMethod]
@@ -150,6 +138,44 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
             var item = await ProgramTest.ApiClientUser1.Stores.CreateItemAndDeserializeAsync(store.Id, request);
 
             Assert.IsNull(item.FrenchDescription);
+        }
+
+        [TestMethod]
+        public async Task GivenNullPriceShouldReturnCreated()
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+
+            var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
+
+            var request = Generator.MakeRandomCreateItemRequest();
+
+            request = request with { Price = null };
+
+            var item = await ProgramTest.ApiClientUser1.Stores.CreateItemAndDeserializeAsync(store.Id, request);
+
+            Assert.IsNull(item.Price);
+        }
+
+        [TestMethod]
+        public async Task GivenZeroPriceShouldReturnCreated()
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+
+            var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
+
+            var request = Generator.MakeRandomCreateItemRequest();
+
+            request = request with
+            {
+                Price = Generator.MakeRandomMoneyValueGreaterThanZero() with
+                {
+                    Amount = 0
+                }
+            };
+
+            var item = await ProgramTest.ApiClientUser1.Stores.CreateItemAndDeserializeAsync(store.Id, request);
+
+            Assert.IsNull(item.Price);
         }
     }
 }

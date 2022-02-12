@@ -40,11 +40,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.Generators
                 EnglishDescription = EnglishFaker.Commerce.ProductDescription(),
                 FrenchName = FrenchFaker.Commerce.ProductName(),
                 FrenchDescription = FrenchFaker.Commerce.ProductDescription(),
-                Price = new MoneyValueDTO
-                {
-                    Amount = EnglishFaker.Random.Decimal(0, 100),
-                    CurrencyCode = EnglishFaker.PickRandom<Iso4217CurrencyCode>()
-                }
+                Price = MakeRandomMoneyValueGreaterThanZero()
             };
         }
 
@@ -75,6 +71,15 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.Generators
             {
                 Latitude = EnglishFaker.Address.Latitude(),
                 Longitude = EnglishFaker.Address.Longitude(),
+            };
+        }
+
+        public static MoneyValueDTO MakeRandomMoneyValueGreaterThanZero()
+        {
+            return new MoneyValueDTO
+            {
+                Amount = EnglishFaker.Random.Decimal(1, 100),
+                CurrencyCode = EnglishFaker.PickRandom<Iso4217CurrencyCode>()
             };
         }
     }

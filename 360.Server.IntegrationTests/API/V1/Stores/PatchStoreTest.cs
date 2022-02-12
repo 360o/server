@@ -208,8 +208,8 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
             var updatedStore = await ProgramTest.ApiClientUser1.Stores.PatchStoreAndDeserializeAsync(store.Id, patchDoc);
 
             Assert.AreEqual(0, updatedStore.Place.Location.Latitude);
-            CustomAssertions.AssertSerializeToSameJson(store, updatedStore with 
-            { 
+            CustomAssertions.AssertSerializeToSameJson(store, updatedStore with
+            {
                 Place = updatedStore.Place with
                 {
                     Location = updatedStore.Place.Location with
