@@ -1,5 +1,4 @@
 ﻿using _360o.Server.Api.V1.Stores.DTOs;
-using _360o.Server.Api.V1.Stores.Model;
 using FluentValidation;
 
 namespace _360o.Server.Api.V1.Stores.Validators

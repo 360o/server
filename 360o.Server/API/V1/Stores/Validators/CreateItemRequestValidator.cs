@@ -10,6 +10,11 @@ namespace _360o.Server.Api.V1.Stores.Validators
             RuleFor(r => new { r.EnglishName, r.FrenchName })
                 .Must(r => !string.IsNullOrWhiteSpace(r.EnglishName) || !string.IsNullOrWhiteSpace(r.FrenchName))
                 .WithMessage("At least one Name must be defined");
+
+            When(r => r.Price.HasValue, () =>
+            {
+                RuleFor(r => r.Price.Value).SetValidator(new MoneyValueDTOValidator());
+            });
         }
     }
 }

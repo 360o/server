@@ -1,6 +1,7 @@
 ﻿using _360.Server.IntegrationTests.Api.V1.Helpers;
 using _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient;
 using _360.Server.IntegrationTests.Api.V1.Helpers.Generators;
+using _360o.Server.Api.V1.Stores.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Net;
@@ -176,6 +177,52 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
             var item = await ProgramTest.ApiClientUser1.Stores.CreateItemAndDeserializeAsync(store.Id, request);
 
             Assert.IsNull(item.Price);
+        }
+
+        [TestMethod]
+        public async Task GivenNegativePriceShouldReturnBadRequest()
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+
+            var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
+
+            var request = Generator.MakeRandomCreateItemRequest();
+
+            request = request with
+            {
+                Price = Generator.MakeRandomMoneyValueGreaterThanZero() with
+                {
+                    Amount = -1
+                }
+            };
+
+            var response = await ProgramTest.ApiClientUser1.Stores.CreateItemAsync(store.Id, request);
+
+            await CustomAssertions.AssertBadRequestWithProblemDetailsAsync(response, "'Amount' must be greater than or equal to '0'");
+        }
+
+        [TestMethod]
+        public async Task GivenInvalidCurrencyCodeShouldReturnBadRequest()
+        {
+            var organization = await ProgramTest.ApiClientUser1.Organizations.CreateRandomOrganizationAndDeserializeAsync();
+
+            var store = await ProgramTest.ApiClientUser1.Stores.CreateRandomStoreAndDeserializeAsync(organization.Id);
+
+            var request = Generator.MakeRandomCreateItemRequest();
+
+            var invalidCurrencyCode = -1;
+
+            request = request with
+            {
+                Price = Generator.MakeRandomMoneyValueGreaterThanZero() with
+                {
+                    CurrencyCode = (Iso4217CurrencyCode)(invalidCurrencyCode)
+                }
+            };
+
+            var response = await ProgramTest.ApiClientUser1.Stores.CreateItemAsync(store.Id, request);
+
+            await CustomAssertions.AssertBadRequestWithProblemDetailsAsync(response, $"'Currency Code' has a range of values which does not include '{invalidCurrencyCode}'");
         }
     }
 }
