@@ -1,6 +1,5 @@
 ﻿using _360.Server.IntegrationTests.Api.V1.Helpers.Generators;
 using _360o.Server.Api.V1.Stores.DTOs;
-using _360o.Server.Api.V1.Stores.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -237,7 +236,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
             return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).PostAsync(OffersRoute(storeId), requestContent);
         }
 
-        public async Task<OfferDTO> CreateRandomOfferAndDeserializeAsync(Guid storeId, ISet<CreateOfferRequestItem> offerItems, MoneyValueDTO? discount)
+        public async Task<OfferDTO> CreateRandomOfferAndDeserializeAsync(Guid storeId, IEnumerable<CreateOfferRequestItem> offerItems, MoneyValueDTO? discount)
         {
             var request = Generator.MakeRandomCreateOfferRequest(offerItems, discount);
 
@@ -281,6 +280,11 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.ApiClient
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
             return await JsonUtils.DeserializeAsync<IList<OfferDTO>>(response);
+        }
+
+        public async Task<HttpResponseMessage> DeleteOfferByIdAsync(Guid storeId, Guid offerId)
+        {
+            return await ProgramTest.NewClient(await _authHelper.GetAccessToken()).DeleteAsync(OfferRoute(storeId, offerId));
         }
     }
 }

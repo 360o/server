@@ -44,7 +44,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.Generators
             };
         }
 
-        public static CreateOfferRequest MakeRandomCreateOfferRequest(ISet<CreateOfferRequestItem> offerItems, MoneyValueDTO? discount)
+        public static CreateOfferRequest MakeRandomCreateOfferRequest(IEnumerable<CreateOfferRequestItem> offerItems, MoneyValueDTO? discount)
         {
             return new CreateOfferRequest
             {
@@ -54,6 +54,21 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers.Generators
                 Discount = discount
             };
         }
+
+        public static CreateOfferRequestItem MakeRandomCreateOfferRequestItem(Guid itemId)
+        {
+            return new CreateOfferRequestItem
+            {
+                ItemId = itemId,
+                Quantity = EnglishFaker.Random.Int(1, 10)
+            };
+        }
+
+        public static IEnumerable<CreateOfferRequestItem> MakeRandomCreateOfferRequestItems(IEnumerable<Guid> itemIds)
+        {
+            return itemIds.Select(i => MakeRandomCreateOfferRequestItem(i));
+        }
+
 
         public static PlaceDTO MakeRandomPlace()
         {

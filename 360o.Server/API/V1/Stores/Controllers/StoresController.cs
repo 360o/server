@@ -478,5 +478,33 @@ namespace _360o.Server.Api.V1.Stores.Controllers
                 offer.StoreId
                 );
         }
+
+        [HttpDelete("{storeId}/offers/{offerId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize]
+        public async Task<IActionResult> DeleteOfferByIdAsync(Guid storeId, Guid offerId)
+        {
+            var offer = await _storesService.GetOfferByIdAsync(offerId);
+
+            if (offer == null)
+            {
+                return Problem(detail: "Offer not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
+            }
+
+            if (offer.StoreId != storeId)
+            {
+                return Problem(detail: "Store not found", statusCode: (int)HttpStatusCode.NotFound, title: ErrorCode.NotFound.ToString());
+            }
+
+            if (User.Identity.Name != offer.Store.Organization.UserId)
+            {
+                return Forbid();
+            }
+
+            await _storesService.DeleteOfferByIdAsync(offerId);
+
+            return NoContent();
+        }
     }
 }

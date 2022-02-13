@@ -32,5 +32,7 @@ namespace _360o.Server.Api.V1.Stores.Services
         Task<IList<Offer>> ListOffersAsync(Guid storeId);
 
         Task<Offer> UpdateOfferAsync(Offer offer);
+
+        Task DeleteOfferByIdAsync(Guid offerId);
     }
 }

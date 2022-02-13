@@ -3,7 +3,7 @@
     public readonly record struct CreateOfferRequest(
         string? EnglishName,
         string? FrenchName,
-        ISet<CreateOfferRequestItem> OfferItems,
+        IEnumerable<CreateOfferRequestItem> OfferItems,
         MoneyValueDTO? Discount
         );
 

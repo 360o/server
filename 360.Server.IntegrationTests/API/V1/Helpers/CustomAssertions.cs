@@ -50,7 +50,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Helpers
             Assert.IsTrue(result.Detail.Contains(containsDetailMessage));
         }
 
-        public static async Task AssertBadRequestAsync(HttpResponseMessage response, ISet<string> containsDetailMessages)
+        public static async Task AssertBadRequestAsyncWithProblemDetailsAsync(HttpResponseMessage response, ISet<string> containsDetailMessages)
         {
             foreach (var message in containsDetailMessages)
             {

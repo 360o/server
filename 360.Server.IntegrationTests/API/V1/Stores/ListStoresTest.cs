@@ -293,7 +293,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
                 Radius = _faker.Random.Double()
             });
 
-            await CustomAssertions.AssertBadRequestAsync(response, new HashSet<string>
+            await CustomAssertions.AssertBadRequestAsyncWithProblemDetailsAsync(response, new HashSet<string>
             {
                 "'Longitude' must not be empty",
                 "'Latitude' must not be empty"
@@ -308,7 +308,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
                 Latitude = _faker.Address.Latitude()
             });
 
-            await CustomAssertions.AssertBadRequestAsync(response, new HashSet<string>
+            await CustomAssertions.AssertBadRequestAsyncWithProblemDetailsAsync(response, new HashSet<string>
             {
                 "'Longitude' must not be empty",
                 "'Radius' must not be empty"
@@ -323,7 +323,7 @@ namespace _360.Server.IntegrationTests.Api.V1.Stores
                 Longitude = _faker.Address.Longitude()
             });
 
-            await CustomAssertions.AssertBadRequestAsync(response, new HashSet<string>
+            await CustomAssertions.AssertBadRequestAsyncWithProblemDetailsAsync(response, new HashSet<string>
             {
                 "'Latitude' must not be empty",
                 "'Radius' must not be empty"

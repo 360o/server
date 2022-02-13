@@ -199,6 +199,8 @@ namespace _360o.Server.Api.V1.Stores.Services
         {
             return await _apiContext.Offers
                 .Include(o => o.OfferItems)
+                .Include(o => o.Store)
+                .Include(o => o.Store.Organization)
                 .Where(o => !o.DeletedAt.HasValue)
                 .SingleOrDefaultAsync(o => o.Id == offerId);
         }
@@ -207,6 +209,8 @@ namespace _360o.Server.Api.V1.Stores.Services
         {
             return await _apiContext.Offers
                 .Include(o => o.OfferItems)
+                .Include(o => o.Store)
+                .Include(o => o.Store.Organization)
                 .Where(o => o.StoreId == storeId)
                 .Where(o => !o.DeletedAt.HasValue)
                 .ToListAsync();
@@ -219,6 +223,20 @@ namespace _360o.Server.Api.V1.Stores.Services
             await _apiContext.SaveChangesAsync();
 
             return offer;
+        }
+
+        public async Task DeleteOfferByIdAsync(Guid offerId)
+        {
+            var offer = await _apiContext.Offers.FindAsync(offerId);
+
+            if (offer == null)
+            {
+                throw new KeyNotFoundException("Offer not found");
+            }
+
+            offer.SetDelete();
+
+            await _apiContext.SaveChangesAsync();
         }
     }
 }
