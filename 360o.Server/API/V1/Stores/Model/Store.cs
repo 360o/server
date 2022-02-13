@@ -17,9 +17,6 @@ namespace _360o.Server.Api.V1.Stores.Model
         {
         }
 
-        public Guid OrganizationId { get; private set; }
-        public Organization Organization { get; private set; }
-
         public Place Place
         {
             get => _place;
@@ -29,7 +26,12 @@ namespace _360o.Server.Api.V1.Stores.Model
             }
         }
 
+        public Guid OrganizationId { get; private set; }
+
+        public Organization Organization { get; private set; }
+
         public List<Item> Items { get; private set; } = new List<Item>();
+        
         public List<Offer> Offers { get; private set; } = new List<Offer>();
     }
 }

@@ -2,6 +2,7 @@
 {
     public record class StoreDTO(
         Guid Id,
-        PlaceDTO Place
+        PlaceDTO Place,
+        Guid OrganizationId
         );
 }

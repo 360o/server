@@ -433,7 +433,7 @@ namespace _360o.Server.Api.V1.Stores.Controllers
                     )
             };
 
-            return new StoreDTO(store.Id, place);
+            return new StoreDTO(store.Id, place, store.OrganizationId);
         }
 
         private ItemDTO ToItemDTO(Item item)
@@ -451,7 +451,8 @@ namespace _360o.Server.Api.V1.Stores.Controllers
                 item.EnglishDescription,
                 item.FrenchName,
                 item.FrenchDescription,
-                price);
+                price,
+                item.StoreId);
         }
 
         private OfferDTO ToOfferDTO(Offer offer)

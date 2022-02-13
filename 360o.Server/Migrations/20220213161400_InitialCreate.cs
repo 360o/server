@@ -1,7 +1,9 @@
-﻿using _360o.Server.Api.V1.Stores.Model;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 using NetTopologySuite.Geometries;
 using NpgsqlTypes;
+using _360o.Server.Api.V1.Stores.Model;
 
 #nullable disable
 
@@ -21,20 +23,20 @@ namespace _360o.Server.Migrations
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     user_id = table.Column<string>(type: "text", nullable: false),
                     name = table.Column<string>(type: "text", nullable: false),
-                    english_short_description = table.Column<string>(type: "text", nullable: false),
-                    english_long_description = table.Column<string>(type: "text", nullable: false),
-                    english_categories = table.Column<List<string>>(type: "text[]", nullable: false),
-                    english_categories_joined = table.Column<string>(type: "text", nullable: false),
+                    english_short_description = table.Column<string>(type: "text", nullable: true),
+                    english_long_description = table.Column<string>(type: "text", nullable: true),
+                    english_categories = table.Column<List<string>>(type: "text[]", nullable: true),
+                    english_joined_categories = table.Column<string>(type: "text", nullable: false),
                     english_search_vector = table.Column<NpgsqlTsVector>(type: "tsvector", nullable: false)
                         .Annotation("Npgsql:TsVectorConfig", "english")
-                        .Annotation("Npgsql:TsVectorProperties", new[] { "name", "english_short_description", "english_long_description", "english_categories_joined" }),
-                    french_short_description = table.Column<string>(type: "text", nullable: false),
-                    french_long_description = table.Column<string>(type: "text", nullable: false),
-                    french_categories = table.Column<List<string>>(type: "text[]", nullable: false),
-                    french_categories_joined = table.Column<string>(type: "text", nullable: false),
+                        .Annotation("Npgsql:TsVectorProperties", new[] { "name", "english_short_description", "english_long_description", "english_joined_categories" }),
+                    french_short_description = table.Column<string>(type: "text", nullable: true),
+                    french_long_description = table.Column<string>(type: "text", nullable: true),
+                    french_categories = table.Column<List<string>>(type: "text[]", nullable: true),
+                    french_joined_categories = table.Column<string>(type: "text", nullable: false),
                     french_search_vector = table.Column<NpgsqlTsVector>(type: "tsvector", nullable: false)
                         .Annotation("Npgsql:TsVectorConfig", "french")
-                        .Annotation("Npgsql:TsVectorProperties", new[] { "name", "french_short_description", "french_long_description", "french_categories_joined" }),
+                        .Annotation("Npgsql:TsVectorProperties", new[] { "name", "french_short_description", "french_long_description", "french_joined_categories" }),
                     created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     deleted_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
@@ -70,13 +72,13 @@ namespace _360o.Server.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    english_name = table.Column<string>(type: "text", nullable: false),
-                    english_description = table.Column<string>(type: "text", nullable: false),
+                    english_name = table.Column<string>(type: "text", nullable: true),
+                    english_description = table.Column<string>(type: "text", nullable: true),
                     english_search_vector = table.Column<NpgsqlTsVector>(type: "tsvector", nullable: false)
                         .Annotation("Npgsql:TsVectorConfig", "english")
                         .Annotation("Npgsql:TsVectorProperties", new[] { "english_name", "english_description" }),
-                    french_name = table.Column<string>(type: "text", nullable: false),
-                    french_description = table.Column<string>(type: "text", nullable: false),
+                    french_name = table.Column<string>(type: "text", nullable: true),
+                    french_description = table.Column<string>(type: "text", nullable: true),
                     french_search_vector = table.Column<NpgsqlTsVector>(type: "tsvector", nullable: false)
                         .Annotation("Npgsql:TsVectorConfig", "french")
                         .Annotation("Npgsql:TsVectorProperties", new[] { "french_name", "french_description" }),
@@ -102,8 +104,9 @@ namespace _360o.Server.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    discount = table.Column<MoneyValue>(type: "jsonb", nullable: false),
+                    english_name = table.Column<string>(type: "text", nullable: false),
+                    french_name = table.Column<string>(type: "text", nullable: true),
+                    discount = table.Column<MoneyValue>(type: "jsonb", nullable: true),
                     store_id = table.Column<Guid>(type: "uuid", nullable: false),
                     created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
@@ -196,9 +199,10 @@ namespace _360o.Server.Migrations
                 column: "item_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_offer_items_offer_id",
+                name: "ix_offer_items_offer_id_item_id",
                 table: "offer_items",
-                column: "offer_id");
+                columns: new[] { "offer_id", "item_id" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_offers_store_id",

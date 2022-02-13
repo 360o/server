@@ -15,20 +15,20 @@ using _360o.Server.Api.V1.Stores.Model;
 namespace _360o.Server.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    [Migration("20220202011158_InitialCreate")]
+    [Migration("20220213161400_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.1")
+                .HasAnnotation("ProductVersion", "6.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "postgis");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("_360o.Server.API.V1.Organizations.Model.Organization", b =>
+            modelBuilder.Entity("_360o.Server.Api.V1.Organizations.Model.Organization", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -44,17 +44,15 @@ namespace _360o.Server.Migrations
                         .HasColumnName("deleted_at");
 
                     b.Property<List<string>>("EnglishCategories")
-                        .IsRequired()
                         .HasColumnType("text[]")
                         .HasColumnName("english_categories");
 
-                    b.Property<string>("EnglishCategoriesJoined")
+                    b.Property<string>("EnglishJoinedCategories")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("english_categories_joined");
+                        .HasColumnName("english_joined_categories");
 
                     b.Property<string>("EnglishLongDescription")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("english_long_description");
 
@@ -64,25 +62,22 @@ namespace _360o.Server.Migrations
                         .HasColumnType("tsvector")
                         .HasColumnName("english_search_vector")
                         .HasAnnotation("Npgsql:TsVectorConfig", "english")
-                        .HasAnnotation("Npgsql:TsVectorProperties", new[] { "Name", "EnglishShortDescription", "EnglishLongDescription", "EnglishCategoriesJoined" });
+                        .HasAnnotation("Npgsql:TsVectorProperties", new[] { "Name", "EnglishShortDescription", "EnglishLongDescription", "EnglishJoinedCategories" });
 
                     b.Property<string>("EnglishShortDescription")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("english_short_description");
 
                     b.Property<List<string>>("FrenchCategories")
-                        .IsRequired()
                         .HasColumnType("text[]")
                         .HasColumnName("french_categories");
 
-                    b.Property<string>("FrenchCategoriesJoined")
+                    b.Property<string>("FrenchJoinedCategories")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("french_categories_joined");
+                        .HasColumnName("french_joined_categories");
 
                     b.Property<string>("FrenchLongDescription")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("french_long_description");
 
@@ -92,10 +87,9 @@ namespace _360o.Server.Migrations
                         .HasColumnType("tsvector")
                         .HasColumnName("french_search_vector")
                         .HasAnnotation("Npgsql:TsVectorConfig", "french")
-                        .HasAnnotation("Npgsql:TsVectorProperties", new[] { "Name", "FrenchShortDescription", "FrenchLongDescription", "FrenchCategoriesJoined" });
+                        .HasAnnotation("Npgsql:TsVectorProperties", new[] { "Name", "FrenchShortDescription", "FrenchLongDescription", "FrenchJoinedCategories" });
 
                     b.Property<string>("FrenchShortDescription")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("french_short_description");
 
@@ -129,7 +123,7 @@ namespace _360o.Server.Migrations
                     b.ToTable("organizations", (string)null);
                 });
 
-            modelBuilder.Entity("_360o.Server.API.V1.Stores.Model.Item", b =>
+            modelBuilder.Entity("_360o.Server.Api.V1.Stores.Model.Item", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -145,12 +139,10 @@ namespace _360o.Server.Migrations
                         .HasColumnName("deleted_at");
 
                     b.Property<string>("EnglishDescription")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("english_description");
 
                     b.Property<string>("EnglishName")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("english_name");
 
@@ -163,12 +155,10 @@ namespace _360o.Server.Migrations
                         .HasAnnotation("Npgsql:TsVectorProperties", new[] { "EnglishName", "EnglishDescription" });
 
                     b.Property<string>("FrenchDescription")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("french_description");
 
                     b.Property<string>("FrenchName")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("french_name");
 
@@ -180,7 +170,7 @@ namespace _360o.Server.Migrations
                         .HasAnnotation("Npgsql:TsVectorConfig", "french")
                         .HasAnnotation("Npgsql:TsVectorProperties", new[] { "FrenchName", "FrenchDescription" });
 
-                    b.Property<MoneyValue?>("Price")
+                    b.Property<MoneyValue>("Price")
                         .HasColumnType("jsonb")
                         .HasColumnName("price");
 
@@ -211,7 +201,7 @@ namespace _360o.Server.Migrations
                     b.ToTable("items", (string)null);
                 });
 
-            modelBuilder.Entity("_360o.Server.API.V1.Stores.Model.Offer", b =>
+            modelBuilder.Entity("_360o.Server.Api.V1.Stores.Model.Offer", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -230,10 +220,14 @@ namespace _360o.Server.Migrations
                         .HasColumnType("jsonb")
                         .HasColumnName("discount");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("EnglishName")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("name");
+                        .HasColumnName("english_name");
+
+                    b.Property<string>("FrenchName")
+                        .HasColumnType("text")
+                        .HasColumnName("french_name");
 
                     b.Property<Guid>("StoreId")
                         .HasColumnType("uuid")
@@ -252,7 +246,7 @@ namespace _360o.Server.Migrations
                     b.ToTable("offers", (string)null);
                 });
 
-            modelBuilder.Entity("_360o.Server.API.V1.Stores.Model.OfferItem", b =>
+            modelBuilder.Entity("_360o.Server.Api.V1.Stores.Model.OfferItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -289,13 +283,14 @@ namespace _360o.Server.Migrations
                     b.HasIndex("ItemId")
                         .HasDatabaseName("ix_offer_items_item_id");
 
-                    b.HasIndex("OfferId")
-                        .HasDatabaseName("ix_offer_items_offer_id");
+                    b.HasIndex("OfferId", "ItemId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_offer_items_offer_id_item_id");
 
                     b.ToTable("offer_items", (string)null);
                 });
 
-            modelBuilder.Entity("_360o.Server.API.V1.Stores.Model.Place", b =>
+            modelBuilder.Entity("_360o.Server.Api.V1.Stores.Model.Place", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -343,7 +338,7 @@ namespace _360o.Server.Migrations
                     b.ToTable("places", (string)null);
                 });
 
-            modelBuilder.Entity("_360o.Server.API.V1.Stores.Model.Store", b =>
+            modelBuilder.Entity("_360o.Server.Api.V1.Stores.Model.Store", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -375,9 +370,9 @@ namespace _360o.Server.Migrations
                     b.ToTable("stores", (string)null);
                 });
 
-            modelBuilder.Entity("_360o.Server.API.V1.Stores.Model.Item", b =>
+            modelBuilder.Entity("_360o.Server.Api.V1.Stores.Model.Item", b =>
                 {
-                    b.HasOne("_360o.Server.API.V1.Stores.Model.Store", "Store")
+                    b.HasOne("_360o.Server.Api.V1.Stores.Model.Store", "Store")
                         .WithMany("Items")
                         .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -387,9 +382,9 @@ namespace _360o.Server.Migrations
                     b.Navigation("Store");
                 });
 
-            modelBuilder.Entity("_360o.Server.API.V1.Stores.Model.Offer", b =>
+            modelBuilder.Entity("_360o.Server.Api.V1.Stores.Model.Offer", b =>
                 {
-                    b.HasOne("_360o.Server.API.V1.Stores.Model.Store", "Store")
+                    b.HasOne("_360o.Server.Api.V1.Stores.Model.Store", "Store")
                         .WithMany("Offers")
                         .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -399,16 +394,16 @@ namespace _360o.Server.Migrations
                     b.Navigation("Store");
                 });
 
-            modelBuilder.Entity("_360o.Server.API.V1.Stores.Model.OfferItem", b =>
+            modelBuilder.Entity("_360o.Server.Api.V1.Stores.Model.OfferItem", b =>
                 {
-                    b.HasOne("_360o.Server.API.V1.Stores.Model.Item", "Item")
+                    b.HasOne("_360o.Server.Api.V1.Stores.Model.Item", "Item")
                         .WithMany("OfferItems")
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_offer_items_items_item_id");
 
-                    b.HasOne("_360o.Server.API.V1.Stores.Model.Offer", "Offer")
+                    b.HasOne("_360o.Server.Api.V1.Stores.Model.Offer", "Offer")
                         .WithMany("OfferItems")
                         .HasForeignKey("OfferId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -420,11 +415,11 @@ namespace _360o.Server.Migrations
                     b.Navigation("Offer");
                 });
 
-            modelBuilder.Entity("_360o.Server.API.V1.Stores.Model.Place", b =>
+            modelBuilder.Entity("_360o.Server.Api.V1.Stores.Model.Place", b =>
                 {
-                    b.HasOne("_360o.Server.API.V1.Stores.Model.Store", "Store")
+                    b.HasOne("_360o.Server.Api.V1.Stores.Model.Store", "Store")
                         .WithOne("Place")
-                        .HasForeignKey("_360o.Server.API.V1.Stores.Model.Place", "StoreId")
+                        .HasForeignKey("_360o.Server.Api.V1.Stores.Model.Place", "StoreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_places_stores_store_id");
@@ -432,9 +427,9 @@ namespace _360o.Server.Migrations
                     b.Navigation("Store");
                 });
 
-            modelBuilder.Entity("_360o.Server.API.V1.Stores.Model.Store", b =>
+            modelBuilder.Entity("_360o.Server.Api.V1.Stores.Model.Store", b =>
                 {
-                    b.HasOne("_360o.Server.API.V1.Organizations.Model.Organization", "Organization")
+                    b.HasOne("_360o.Server.Api.V1.Organizations.Model.Organization", "Organization")
                         .WithMany("Stores")
                         .HasForeignKey("OrganizationId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -444,22 +439,22 @@ namespace _360o.Server.Migrations
                     b.Navigation("Organization");
                 });
 
-            modelBuilder.Entity("_360o.Server.API.V1.Organizations.Model.Organization", b =>
+            modelBuilder.Entity("_360o.Server.Api.V1.Organizations.Model.Organization", b =>
                 {
                     b.Navigation("Stores");
                 });
 
-            modelBuilder.Entity("_360o.Server.API.V1.Stores.Model.Item", b =>
+            modelBuilder.Entity("_360o.Server.Api.V1.Stores.Model.Item", b =>
                 {
                     b.Navigation("OfferItems");
                 });
 
-            modelBuilder.Entity("_360o.Server.API.V1.Stores.Model.Offer", b =>
+            modelBuilder.Entity("_360o.Server.Api.V1.Stores.Model.Offer", b =>
                 {
                     b.Navigation("OfferItems");
                 });
 
-            modelBuilder.Entity("_360o.Server.API.V1.Stores.Model.Store", b =>
+            modelBuilder.Entity("_360o.Server.Api.V1.Stores.Model.Store", b =>
                 {
                     b.Navigation("Items");
 

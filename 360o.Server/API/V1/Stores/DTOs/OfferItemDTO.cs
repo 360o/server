@@ -2,6 +2,6 @@
 {
     public readonly record struct OfferItemDTO(
         Guid Id,
-        Guid ItemId,
-        int Quantity);
+        int Quantity,
+        Guid ItemId);
 }
